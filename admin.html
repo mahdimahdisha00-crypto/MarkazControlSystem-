@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Markaz Control System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #1e40af;
+            color: white;
+            position: fixed;
+            padding-top: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+        }
+
+        .sidebar a:hover {
+            background: #2563eb;
+        }
+
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+
+        .card {
+            display: inline-block;
+            width: 220px;
+            margin: 10px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Markaz</h2>
+
+    <a href="#">Dashboard</a>
+    <a href="#">Students</a>
+    <a href="#">Teachers</a>
+    <a href="#">Attendance</a>
+    <a href="#">Hifz Progress</a>
+    <a href="#">Reports</a>
+</div>
+
+<div class="content">
+    <h1>Admin Dashboard</h1>
+
+    <button onclick="loadDashboard()">Refresh Data</button>
+
+    <div class="card">
+        <h3>Students</h3>
+        <div id="students" class="number">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Teachers</h3>
+        <div id="teachers" class="number">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Attendance</h3>
+        <div id="attendance" class="number">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Hifz Records</h3>
+        <div id="hifz" class="number">0</div>
+    </div>
+</div>
+
+<script>
+async function loadDashboard() {
+    const response = await fetch("http://localhost:5000/api/dashboard");
+    const data = await response.json();
+
+    document.getElementById("students").innerText = data.totalStudents;
+    document.getElementById("teachers").innerText = data.totalTeachers;
+    document.getElementById("attendance").innerText = data.totalAttendance;
+    document.getElementById("hifz").innerText = data.totalHifzRecords;
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>

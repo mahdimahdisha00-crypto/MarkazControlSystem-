@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Markaz Control System - Daily Sabaq</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #064e3b, #0f766e);
+            color: white;
+            padding: 20px 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            opacity: 0.9;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* TOP ACTIONS */
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            background: white;
+            color: #064e3b;
+            border: 1px solid #d5dce5;
+            padding: 11px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #ecfdf5;
+        }
+
+        .today {
+            font-weight: bold;
+            color: #475569;
+        }
+
+        /* CARDS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .stat-card .icon {
+            font-size: 25px;
+        }
+
+        .stat-card h3 {
+            margin: 10px 0 5px;
+            font-size: 28px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        /* MAIN GRID */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #064e3b;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #334155;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #0f766e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #115e59;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .grade {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .grade-mumtaz {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .grade-jayyid-jiddan {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .grade-jayyid {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .grade-daeef {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .delete-btn {
+            border: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 35px;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #064e3b;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 9px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .notification.error {
+            background: #991b1b;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .row,
+            .three-col {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-content">
+            <h1>📝 Daily Sabaq Entry</h1>
+            <p>Daily Qur'an memorization and teacher assessment</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="top-actions">
+            <a href="dashboard.html" class="back-btn">← Dashboard</a>
+            <div class="today" id="todayText"></div>
+        </div>
+
+        <!-- STATISTICS -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="icon">📝</div>
+                <h3 id="todayCount">0</h3>
+                <p>Today's Sabaq</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">👨‍🎓</div>
+                <h3 id="studentCount">0</h3>
+                <p>Students Recorded</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">⭐</div>
+                <h3 id="excellentCount">0</h3>
+                <p>Mumtaz Today</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">📖</div>
+                <h3 id="totalCount">0</h3>
+                <p>Total Sabaq Records</p>
+            </div>
+
+        </section>
+
+        <div class="main-grid">
+
+            <!-- FORM -->
+            <section class="card">
+
+                <h2>➕ Record Daily Sabaq</h2>
+
+                <form id="sabaqForm">
+
+                    <div class="form-group">
+                        <label for="studentId">👨‍🎓 Student</label>
+
+                        <select id="studentId" required>
+                            <option value="">Select Student</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">📅 Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="surah">📖 Surah</label>
+
+                        <select id="surah" required>
+                            <option value="">Select Surah</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group">
+                            <label for="ayahFrom">Ayah From</label>
+                            <input type="number" id="ayahFrom" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ayahTo">Ayah To</label>
+                            <input type="number" id="ayahTo" min="1" required>
+                        </div>
+
+                    </div>
+
+                    <div class="three-col">
+
+                        <div class="form-group">
+                            <label for="juz">📚 Juz</label>
+
+                            <select id="juz" required>
+                                <option value="">Juz</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pageFrom">Page From</label>
+                            <input type="number" id="pageFrom" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pageTo">Page To</label>
+                            <input type="number" id="pageTo" min="1">
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grade">⭐ Performance Grade</label>
+
+                        <select id="grade" required>
+                            <option value="">Select Grade</option>
+                            <option value="Mumtaz">Mumtaz — Excellent</option>
+                            <option value="Jayyid Jiddan">Jayyid Jiddan — Very Good</option>
+                            <option value="Jayyid">Jayyid — Good</option>
+                            <option value="Daeef">Daeef — Needs Improvement</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tajweedMistakes">
+                            🕌 Tajweed Mistakes
+                        </label>
+
+                        <textarea
+                            id="tajweedMistakes"
+                            placeholder="Example: Madd mistake, Ghunnah, Ikhfa..."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mutashabihat">
+                            🔄 Mutashabihaat / Memory Slips
+                        </label>
+
+                        <textarea
+                            id="mutashabihat"
+                            placeholder="Record repeated words, similar ayahs or memory slips..."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="teacherRemarks">
+                            📝 Teacher Remarks
+                        </label>
+
+                        <textarea
+                            id="teacherRemarks"
+                            placeholder="Teacher's comments about today's Sabaq..."
+                        ></textarea>
+                    </div>
+
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            💾 Save Sabaq
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="resetForm()"
+                        >
+                            Clear
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+            <!-- TODAY'S RECORDS -->
+            <section class="card">
+
+                <h2>📋 Today's Sabaq Records</h2>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Surah</th>
+                                <th>Ayah</th>
+                                <th>Juz</th>
+                                <th>Grade</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recordsTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <div id="notification" class="notification"></div>
+
+<script>
+
+    /* ================================
+       DATA
+    ================================= */
+
+    let students = [];
+    let sabaqRecords = [];
+
+    const surahs = [
+        "Al-Fatihah",
+        "Al-Baqarah",
+        "Aal-E-Imran",
+        "An-Nisa",
+        "Al-Ma'idah",
+        "Al-An'am",
+        "Al-A'raf",
+        "Al-Anfal",
+        "At-Tawbah",
+        "Yunus",
+        "Hud",
+        "Yusuf",
+        "Ar-Ra'd",
+        "Ibrahim",
+        "Al-Hijr",
+        "An-Nahl",
+        "Al-Isra",
+        "Al-Kahf",
+        "Maryam",
+        "Ta-Ha",
+        "Al-Anbiya",
+        "Al-Hajj",
+        "Al-Mu'minun",
+        "An-Nur",
+        "Al-Furqan",
+        "Ash-Shu'ara",
+        "An-Naml",
+        "Al-Qasas",
+        "Al-Ankabut",
+        "Ar-Rum",
+        "Luqman",
+        "As-Sajdah",
+        "Al-Ahzab",
+        "Saba",
+        "Fatir",
+        "Ya-Sin",
+        "As-Saffat",
+        "Sad",
+        "Az-Zumar",
+        "Ghafir",
+        "Fussilat",
+        "Ash-Shura",
+        "Az-Zukhruf",
+        "Ad-Dukhan",
+        "Al-Jathiyah",
+        "Al-Ahqaf",
+        "Muhammad",
+        "Al-Fath",
+        "Al-Hujurat",
+        "Qaf",
+        "Adh-Dhariyat",
+        "At-Tur",
+        "An-Najm",
+        "Al-Qamar",
+        "Ar-Rahman",
+        "Al-Waqi'ah",
+        "Al-Hadid",
+        "Al-Mujadilah",
+        "Al-Hashr",
+        "Al-Mumtahanah",
+        "As-Saff",
+        "Al-Jumu'ah",
+        "Al-Munafiqun",
+        "At-Taghabun",
+        "At-Talaq",
+        "At-Tahrim",
+        "Al-Mulk",
+        "Al-Qalam",
+        "Al-Haqqah",
+        "Al-Ma'arij",
+        "Nuh",
+        "Al-Jinn",
+        "Al-Muzzammil",
+        "Al-Muddaththir",
+        "Al-Qiyamah",
+        "Al-Insan",
+        "Al-Mursalat",
+        "An-Naba",
+        "An-Nazi'at",
+        "Abasa",
+        "At-Takwir",
+        "Al-Infitar",
+        "Al-Mutaffifin",
+        "Al-Inshiqaq",
+        "Al-Buruj",
+        "At-Tariq",
+        "Al-A'la",
+        "Al-Ghashiyah",
+        "Al-Fajr",
+        "Al-Balad",
+        "Ash-Shams",
+        "Al-Layl",
+        "Ad-Duha",
+        "Ash-Sharh",
+        "At-Tin",
+        "Al-Alaq",
+        "Al-Qadr",
+        "Al-Bayyinah",
+        "Az-Zalzalah",
+        "Al-Adiyat",
+        "Al-Qari'ah",
+        "At-Takathur",
+        "Al-Asr",
+        "Al-Humazah",
+        "Al-Fil",
+        "Quraysh",
+        "Al-Ma'un",
+        "Al-Kawthar",
+        "Al-Kafirun",
+        "An-Nasr",
+        "Al-Masad",
+        "Al-Ikhlas",
+        "Al-Falaq",
+        "An-Nas"
+    ];
+
+
+    /* ================================
+       INITIALIZE
+    ================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        setToday();
+
+        loadSurahs();
+
+        loadJuz();
+
+        loadStudents();
+
+        loadRecords();
+
+        document
+            .getElementById("sabaqForm")
+            .addEventListener("submit", saveSabaq);
+
+    });
+
+
+    /* ================================
+       DATE
+    ================================= */
+
+    function setToday() {
+
+        const today = new Date();
+
+        const dateString =
+            today.toISOString().split("T")[0];
+
+        document.getElementById("date").value = dateString;
+
+        document.getElementById("todayText").textContent =
+            today.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+    }
+
+
+    /* ================================
+       SURAH LIST
+    ================================= */
+
+    function loadSurahs() {
+
+        const select =
+            document.getElementById("surah");
+
+        surahs.forEach(function (surah) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = surah;
+
+            option.textContent = surah;
+
+            select.appendChild(option);
+
+        });
+    }
+
+
+    /* ================================
+       JUZ LIST
+    ================================= */
+
+    function loadJuz() {
+
+        const select =
+            document.getElementById("juz");
+
+        for (let i = 1; i <= 30; i++) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = i;
+
+            option.textContent = "Juz " + i;
+
+            select.appendChild(option);
+
+        }
+    }
+
+
+    /* ================================
+       LOAD STUDENTS
+    ================================= */
+
+    async function loadStudents() {
+
+        try {
+
+            const response =
+                await fetch("/api/students");
+
+            if (!response.ok) {
+                throw new Error("API unavailable");
+            }
+
+            students = await response.json();
+
+        } catch (error) {
+
+            console.log(
+                "Using local student data."
+            );
+
+            const local =
+                localStorage.getItem("markaz_students");
+
+            students =
+                local ? JSON.parse(local) : [];
+
+        }
+
+        populateStudents();
+
+    }
+
+
+    function populateStudents() {
+
+        const select =
+            document.getElementById("studentId");
+
+        select.innerHTML =
+            '<option value="">Select Student</option>';
+
+        students.forEach(function (student) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = student.id;
+
+            option.textContent =
+                student.name;
+
+            select.appendChild(option);
+
+        });
+
+    }
+
+
+    /* ================================
+       LOAD SABAQ RECORDS
+    ================================= */
+
+    async function loadRecords() {
+
+        try {
+
+            const response =
+                await fetch("/api/daily-sabaq");
+
+            if (!response.ok) {
+                throw new Error("API unavailable");
+            }
+
+            sabaqRecords =
+                await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem("markaz_daily_sabaq");
+
+            sabaqRecords =
+                local ? JSON.parse(local) : [];
+
+        }
+
+        renderRecords();
+
+        updateStatistics();
+
+    }
+
+
+    /* ================================
+       SAVE SABAQ
+    ================================= */
+
+    async function saveSabaq(event) {
+
+        event.preventDefault();
+
+        const studentId =
+            document.getElementById("studentId").value;
+
+        const student =
+            students.find(
+                s => String(s.id) === String(studentId)
+            );
+
+        if (!student) {
+
+            showNotification(
+                "Please select a student.",
+                true
+            );
+
+            return;
+        }
+
+
+        const record = {
+
+            studentId: student.id,
+
+            studentName: student.name,
+
+            date:
+                document.getElementById("date").value,
+
+            surah:
+                document.getElementById("surah").value,
+
+            ayahFrom:
+                Number(
+                    document.getElementById("ayahFrom").value
+                ),
+
+            ayahTo:
+                Number(
+                    document.getElementById("ayahTo").value
+                ),
+
+            juz:
+                Number(
+                    document.getElementById("juz").value
+                ),
+
+            pageFrom:
+                Number(
+                    document.getElementById("pageFrom").value
+                ) || null,
+
+            pageTo:
+                Number(
+                    document.getElementById("pageTo").value
+                ) || null,
+
+            grade:
+                document.getElementById("grade").value,
+
+            tajweedMistakes:
+                document.getElementById(
+                    "tajweedMistakes"
+                ).value.trim(),
+
+            mutashabihat:
+                document.getElementById(
+                    "mutashabihat"
+                ).value.trim(),
+
+            teacherRemarks:
+                document.getElementById(
+                    "teacherRemarks"
+                ).value.trim()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch("/api/daily-sabaq", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(record)
+
+                });
+
+
+            if (!response.ok) {
+                throw new Error("API unavailable");
+            }
+
+
+            const saved =
+                await response.json();
+
+            sabaqRecords.unshift(saved);
+
+            showNotification(
+                "Daily Sabaq saved successfully."
+            );
+
+        } catch (error) {
+
+            record.id =
+                Date.now();
+
+            sabaqRecords.unshift(record);
+
+            localStorage.setItem(
+                "markaz_daily_sabaq",
+                JSON.stringify(sabaqRecords)
+            );
+
+            showNotification(
+                "Sabaq saved locally."
+            );
+
+        }
+
+
+        renderRecords();
+
+        updateStatistics();
+
+        resetForm();
+
+    }
+
+
+    /* ================================
+       RENDER RECORDS
+    ================================= */
+
+    function renderRecords() {
+
+        const table =
+            document.getElementById("recordsTable");
+
+        const selectedDate =
+            document.getElementById("date").value;
+
+        const records =
+            sabaqRecords.filter(
+                record =>
+                    record.date === selectedDate
+            );
+
+
+        if (records.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty">
+                        No Sabaq records for this date.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        table.innerHTML = "";
+
+
+        records.forEach(function (record) {
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHtml(
+                        record.studentName || "Unknown"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        record.surah || "-"
+                    )}
+                </td>
+
+                <td>
+                    ${record.ayahFrom || "-"}
+                    –
+                    ${record.ayahTo || "-"}
+                </td>
+
+                <td>
+                    ${record.juz || "-"}
+                </td>
+
+                <td>
+                    ${gradeBadge(record.grade)}
+                </td>
+
+                <td>
+                    <button
+                        class="delete-btn"
+                        onclick="deleteRecord(${record.id})"
+                    >
+                        Delete
+                    </button>
+                </td>
+
+            `;
+
+            table.appendChild(row);
+
+        });
+
+    }
+
+
+    /* ================================
+       GRADE BADGE
+    ================================= */
+
+    function gradeBadge(grade) {
+
+        let className =
+            "grade";
+
+        if (grade === "Mumtaz") {
+
+            className +=
+                " grade-mumtaz";
+
+        } else if (grade === "Jayyid Jiddan") {
+
+            className +=
+                " grade-jayyid-jiddan";
+
+        } else if (grade === "Jayyid") {
+
+            className +=
+                " grade-jayyid";
+
+        } else if (grade === "Daeef") {
+
+            className +=
+                " grade-daeef";
+
+        }
+
+        return `
+            <span class="${className}">
+                ${escapeHtml(grade || "-")}
+            </span>
+        `;
+
+    }
+
+
+    /* ================================
+       DELETE
+    ================================= */
+
+    async function deleteRecord(id) {
+
+        if (!confirm(
+            "Are you sure you want to delete this Sabaq record?"
+        )) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/daily-sabaq/" + id,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+            if (!response.ok) {
+                throw new Error("API unavailable");
+            }
+
+        } catch (error) {
+
+            sabaqRecords =
+                sabaqRecords.filter(
+                    record =>
+                        String(record.id) !== String(id)
+                );
+
+            localStorage.setItem(
+                "markaz_daily_sabaq",
+                JSON.stringify(sabaqRecords)
+            );
+
+        }
+
+
+        sabaqRecords =
+            sabaqRecords.filter(
+                record =>
+                    String(record.id) !== String(id)
+            );
+
+
+        renderRecords();
+
+        updateStatistics();
+
+        showNotification(
+            "Sabaq record deleted."
+        );
+
+    }
+
+
+    /* ================================
+       STATISTICS
+    ================================= */
+
+    function updateStatistics() {
+
+        const today =
+            document.getElementById("date").value;
+
+        const todayRecords =
+            sabaqRecords.filter(
+                record =>
+                    record.date === today
+            );
+
+
+        document.getElementById(
+            "todayCount"
+        ).textContent =
+            todayRecords.length;
+
+
+        const uniqueStudents =
+            new Set(
+                todayRecords.map(
+                    record => record.studentId
+                )
+            );
+
+
+        document.getElementById(
+            "studentCount"
+        ).textContent =
+            uniqueStudents.size;
+
+
+        const excellent =
+            todayRecords.filter(
+                record =>
+                    record.grade === "Mumtaz"
+            ).length;
+
+
+        document.getElementById(
+            "excellentCount"
+        ).textContent =
+            excellent;
+
+
+        document.getElementById(
+            "totalCount"
+        ).textContent =
+            sabaqRecords.length;
+
+    }
+
+
+    /* ================================
+       RESET FORM
+    ================================= */
+
+    function resetForm() {
+
+        document
+            .getElementById("sabaqForm")
+            .reset();
+
+        setToday();
+
+    }
+
+
+    /* ================================
+       NOTIFICATION
+    ================================= */
+
+    function showNotification(
+        message,
+        error = false
+    ) {
+
+        const notification =
+            document.getElementById(
+                "notification"
+            );
+
+        notification.textContent =
+            message;
+
+        notification.className =
+            "notification" +
+            (error ? " error" : "");
+
+        notification.style.display =
+            "block";
+
+
+        setTimeout(function () {
+
+            notification.style.display =
+                "none";
+
+        }, 3000);
+
+    }
+
+
+    /* ================================
+       HTML SECURITY
+    ================================= */
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* ================================
+       DATE CHANGE
+    ================================= */
+
+    document
+        .getElementById("date")
+        .addEventListener(
+            "change",
+            function () {
+
+                renderRecords();
+
+                updateStatistics();
+
+            }
+        );
+
+</script>
+
+</body>
+</html>

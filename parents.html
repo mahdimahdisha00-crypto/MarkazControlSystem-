@@ -1,0 +1,2673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Markaz Control System - Parent Communication</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #5b21b6, #7c3aed);
+            color: white;
+            padding: 22px 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.15);
+        }
+
+        .header-content {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            opacity: .9;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1250px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* TOP */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #5b21b6;
+            text-decoration: none;
+            border: 1px solid #d5dce5;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #f5f3ff;
+        }
+
+        /* SEARCH */
+        .search-card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.07);
+            margin-bottom: 20px;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124,58,237,.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* SUMMARY */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 13px;
+            box-shadow: 0 3px 14px rgba(0,0,0,.07);
+        }
+
+        .summary-icon {
+            font-size: 25px;
+        }
+
+        .summary-card h3 {
+            margin: 10px 0 5px;
+            font-size: 27px;
+        }
+
+        .summary-card p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        /* LAYOUT */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.07);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #5b21b6;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #334155;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6d28d9;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-green {
+            background: #15803d;
+            color: white;
+        }
+
+        .btn-red {
+            background: #dc2626;
+            color: white;
+        }
+
+        /* PARENT PROFILE */
+        .profile {
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .profile-name {
+            font-size: 21px;
+            font-weight: bold;
+            color: #5b21b6;
+            margin-bottom: 12px;
+        }
+
+        .profile-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9d5ff;
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-item strong {
+            display: inline-block;
+            width: 115px;
+            color: #475569;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .tab {
+            border: none;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab.active {
+            background: #7c3aed;
+            color: white;
+        }
+
+        /* UPDATE CARDS */
+        .update-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fff;
+        }
+
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .update-title {
+            font-weight: bold;
+            color: #334155;
+        }
+
+        .update-date {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .update-content {
+            margin-top: 10px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 11px 9px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .sent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .attendance {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .hifz {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .warning {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 35px;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #5b21b6;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 9px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0,0,0,.2);
+        }
+
+        .notification.error {
+            background: #991b1b;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 1000px) {
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media(max-width: 650px) {
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-row,
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-content">
+
+        <h1>👨‍👩‍👧 Parent Communication</h1>
+
+        <p>
+            Parent information, student updates,
+            attendance and Hifz communication
+        </p>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+    <div class="top-bar">
+
+        <a
+            href="dashboard.html"
+            class="back-btn"
+        >
+            ← Dashboard
+        </a>
+
+        <strong id="currentDate"></strong>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <section class="search-card">
+
+        <div class="search-row">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔎 Search parent or student..."
+                oninput="searchParents()"
+            >
+
+            <button
+                class="btn btn-primary"
+                onclick="clearSearch()"
+            >
+                Clear
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- SUMMARY -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                👨‍👩‍👧
+            </div>
+
+            <h3 id="parentCount">0</h3>
+
+            <p>Parents</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                👨‍🎓
+            </div>
+
+            <h3 id="linkedStudents">0</h3>
+
+            <p>Linked Students</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                📢
+            </div>
+
+            <h3 id="notificationCount">0</h3>
+
+            <p>Updates</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                💬
+            </div>
+
+            <h3 id="messageCount">0</h3>
+
+            <p>Messages</p>
+
+        </div>
+
+    </section>
+
+
+    <div class="main-grid">
+
+        <!-- LEFT -->
+
+        <div>
+
+            <!-- PARENT INFORMATION -->
+
+            <section class="card">
+
+                <h2>👨‍👩‍👧 Parent Information</h2>
+
+                <form id="parentForm">
+
+                    <div class="form-group">
+
+                        <label>
+                            Parent / Guardian Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="parentName"
+                            placeholder="Enter parent name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Student
+                        </label>
+
+                        <select
+                            id="studentId"
+                            required
+                        >
+
+                            <option value="">
+                                Select Student
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Relationship
+                        </label>
+
+                        <select id="relationship">
+
+                            <option>Father</option>
+                            <option>Mother</option>
+                            <option>Guardian</option>
+                            <option>Brother</option>
+                            <option>Sister</option>
+                            <option>Other</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="09XXXXXXXX"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            WhatsApp Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="whatsapp"
+                            placeholder="09XXXXXXXX"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="parent@example.com"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Address
+                        </label>
+
+                        <input
+                            type="text"
+                            id="address"
+                            placeholder="Address"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Preferred Contact
+                        </label>
+
+                        <select id="preferredContact">
+
+                            <option>Phone</option>
+                            <option>WhatsApp</option>
+                            <option>Email</option>
+                            <option>SMS</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            💾 Save Parent
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="resetParentForm()"
+                        >
+                            Clear
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- SELECTED PROFILE -->
+
+            <section class="card">
+
+                <h2>👤 Selected Parent</h2>
+
+                <div
+                    id="parentProfile"
+                    class="profile"
+                >
+
+                    <div class="empty">
+                        Select a parent to view details.
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div>
+
+            <section class="card">
+
+                <div class="tabs">
+
+                    <button
+                        class="tab active"
+                        onclick="showTab('updates', this)"
+                    >
+                        📢 Student Updates
+                    </button>
+
+                    <button
+                        class="tab"
+                        onclick="showTab('attendance', this)"
+                    >
+                        📅 Attendance
+                    </button>
+
+                    <button
+                        class="tab"
+                        onclick="showTab('hifz', this)"
+                    >
+                        📖 Hifz Progress
+                    </button>
+
+                    <button
+                        class="tab"
+                        onclick="showTab('messages', this)"
+                    >
+                        💬 History
+                    </button>
+
+                </div>
+
+
+                <div id="tabContent"></div>
+
+            </section>
+
+
+            <!-- SEND MESSAGE -->
+
+            <section class="card">
+
+                <h2>💬 Send Parent Update</h2>
+
+                <form id="messageForm">
+
+                    <div class="row">
+
+                        <div class="form-group">
+
+                            <label>
+                                Parent
+                            </label>
+
+                            <select id="messageParent">
+                                <option value="">
+                                    Select Parent
+                                </option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Message Type
+                            </label>
+
+                            <select id="messageType">
+
+                                <option value="General">
+                                    General
+                                </option>
+
+                                <option value="Attendance">
+                                    Attendance
+                                </option>
+
+                                <option value="Hifz">
+                                    Hifz Progress
+                                </option>
+
+                                <option value="Sabaq">
+                                    Daily Sabaq
+                                </option>
+
+                                <option value="Exam">
+                                    Exam
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Message
+                        </label>
+
+                        <textarea
+                            id="message"
+                            placeholder="Write a message for the parent..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            📤 Save Communication
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- PARENT LIST -->
+
+            <section class="card">
+
+                <h2>👨‍👩‍👧 Parent List</h2>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Parent</th>
+                                <th>Student</th>
+                                <th>Relationship</th>
+                                <th>Phone</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="parentTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<div
+    id="notification"
+    class="notification"
+></div>
+
+
+<script>
+
+    /* =====================================
+       DATA
+    ===================================== */
+
+    let students = [];
+    let parents = [];
+    let communications = [];
+    let selectedParent = null;
+
+
+    /* =====================================
+       START
+    ===================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            setCurrentDate();
+
+            loadData();
+
+            document
+                .getElementById("parentForm")
+                .addEventListener(
+                    "submit",
+                    saveParent
+                );
+
+            document
+                .getElementById("messageForm")
+                .addEventListener(
+                    "submit",
+                    saveMessage
+                );
+
+        }
+    );
+
+
+    /* =====================================
+       DATE
+    ===================================== */
+
+    function setCurrentDate() {
+
+        const date =
+            new Date();
+
+        document.getElementById(
+            "currentDate"
+        ).textContent =
+            date.toLocaleDateString(
+                "en-US",
+                {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                }
+            );
+
+    }
+
+
+    /* =====================================
+       LOAD DATA
+    ===================================== */
+
+    async function loadData() {
+
+        await loadStudents();
+
+        await loadParents();
+
+        await loadCommunications();
+
+        populateStudentSelect();
+
+        populateParentSelect();
+
+        renderParents();
+
+        updateSummary();
+
+        showTab(
+            "updates",
+            document.querySelector(".tab")
+        );
+
+    }
+
+
+    /* =====================================
+       STUDENTS
+    ===================================== */
+
+    async function loadStudents() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/students"
+                );
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            students =
+                await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem(
+                    "markaz_students"
+                );
+
+            students =
+                local
+                    ? JSON.parse(local)
+                    : [];
+
+        }
+
+    }
+
+
+    function populateStudentSelect() {
+
+        const select =
+            document.getElementById(
+                "studentId"
+            );
+
+        select.innerHTML =
+            `
+            <option value="">
+                Select Student
+            </option>
+            `;
+
+
+        students.forEach(
+            function(student) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    student.id;
+
+                option.textContent =
+                    student.name;
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       PARENTS
+    ===================================== */
+
+    async function loadParents() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/parents"
+                );
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            parents =
+                await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem(
+                    "markaz_parents"
+                );
+
+            parents =
+                local
+                    ? JSON.parse(local)
+                    : [];
+
+        }
+
+    }
+
+
+    function populateParentSelect() {
+
+        const select =
+            document.getElementById(
+                "messageParent"
+            );
+
+        select.innerHTML =
+            `
+            <option value="">
+                Select Parent
+            </option>
+            `;
+
+
+        parents.forEach(
+            function(parent) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    parent.id;
+
+                option.textContent =
+                    parent.name +
+                    " — " +
+                    (
+                        parent.studentName ||
+                        getStudentName(
+                            parent.studentId
+                        )
+                    );
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       SAVE PARENT
+    ===================================== */
+
+    async function saveParent(event) {
+
+        event.preventDefault();
+
+
+        const studentId =
+            document.getElementById(
+                "studentId"
+            ).value;
+
+
+        const student =
+            students.find(
+                s =>
+                    String(s.id) ===
+                    String(studentId)
+            );
+
+
+        if (!student) {
+
+            showNotification(
+                "Please select a student.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        const parent = {
+
+            name:
+                document.getElementById(
+                    "parentName"
+                ).value.trim(),
+
+            studentId:
+                student.id,
+
+            studentName:
+                student.name,
+
+            relationship:
+                document.getElementById(
+                    "relationship"
+                ).value,
+
+            phone:
+                document.getElementById(
+                    "phone"
+                ).value.trim(),
+
+            whatsapp:
+                document.getElementById(
+                    "whatsapp"
+                ).value.trim(),
+
+            email:
+                document.getElementById(
+                    "email"
+                ).value.trim(),
+
+            address:
+                document.getElementById(
+                    "address"
+                ).value.trim(),
+
+            preferredContact:
+                document.getElementById(
+                    "preferredContact"
+                ).value,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/parents",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(parent)
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+
+            const saved =
+                await response.json();
+
+            parents.unshift(saved);
+
+            showNotification(
+                "Parent saved successfully."
+            );
+
+        } catch (error) {
+
+            parent.id =
+                Date.now();
+
+            parents.unshift(parent);
+
+            saveLocalParents();
+
+            showNotification(
+                "Parent saved locally."
+            );
+
+        }
+
+
+        populateParentSelect();
+
+        renderParents();
+
+        updateSummary();
+
+        resetParentForm();
+
+    }
+
+
+    /* =====================================
+       RENDER PARENTS
+    ===================================== */
+
+    function renderParents(
+        list = parents
+    ) {
+
+        const table =
+            document.getElementById(
+                "parentTable"
+            );
+
+
+        if (!list.length) {
+
+            table.innerHTML =
+                `
+                <tr>
+                    <td
+                        colspan="5"
+                        class="empty"
+                    >
+                        No parents found.
+                    </td>
+                </tr>
+                `;
+
+            return;
+
+        }
+
+
+        table.innerHTML = "";
+
+
+        list.forEach(
+            function(parent) {
+
+                const studentName =
+                    parent.studentName ||
+                    getStudentName(
+                        parent.studentId
+                    );
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(
+                            parent.name || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            studentName || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            parent.relationship || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            parent.phone || "-"
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="selectParent(${parent.id})"
+                        >
+                            View
+                        </button>
+
+                        <button
+                            class="btn btn-red"
+                            onclick="deleteParent(${parent.id})"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                table.appendChild(row);
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       SELECT PARENT
+    ===================================== */
+
+    function selectParent(id) {
+
+        selectedParent =
+            parents.find(
+                parent =>
+                    String(parent.id) ===
+                    String(id)
+            );
+
+
+        if (!selectedParent) {
+            return;
+        }
+
+
+        renderParentProfile();
+
+        showTab(
+            "updates",
+            document.querySelector(".tab")
+        );
+
+    }
+
+
+    function renderParentProfile() {
+
+        if (!selectedParent) {
+
+            document.getElementById(
+                "parentProfile"
+            ).innerHTML =
+                `
+                <div class="empty">
+                    Select a parent to view details.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        const studentName =
+            selectedParent.studentName ||
+            getStudentName(
+                selectedParent.studentId
+            );
+
+
+        document.getElementById(
+            "parentProfile"
+        ).innerHTML = `
+
+            <div class="profile-name">
+                👤 ${escapeHtml(
+                    selectedParent.name
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>Student:</strong>
+                ${escapeHtml(
+                    studentName || "-"
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>Relationship:</strong>
+                ${escapeHtml(
+                    selectedParent.relationship || "-"
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>Phone:</strong>
+                ${escapeHtml(
+                    selectedParent.phone || "-"
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>WhatsApp:</strong>
+                ${escapeHtml(
+                    selectedParent.whatsapp || "-"
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>Email:</strong>
+                ${escapeHtml(
+                    selectedParent.email || "-"
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>Address:</strong>
+                ${escapeHtml(
+                    selectedParent.address || "-"
+                )}
+            </div>
+
+            <div class="profile-item">
+                <strong>Contact:</strong>
+                ${escapeHtml(
+                    selectedParent.preferredContact || "-"
+                )}
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================
+       DELETE PARENT
+    ===================================== */
+
+    async function deleteParent(id) {
+
+        if (!confirm(
+            "Delete this parent record?"
+        )) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/parents/" + id,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+        } catch (error) {
+
+            saveLocalParents();
+
+        }
+
+
+        parents =
+            parents.filter(
+                parent =>
+                    String(parent.id) !==
+                    String(id)
+            );
+
+
+        saveLocalParents();
+
+        renderParents();
+
+        populateParentSelect();
+
+        updateSummary();
+
+        showNotification(
+            "Parent record deleted."
+        );
+
+    }
+
+
+    /* =====================================
+       COMMUNICATIONS
+    ===================================== */
+
+    async function loadCommunications() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/parent-communications"
+                );
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            communications =
+                await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem(
+                    "markaz_parent_communications"
+                );
+
+            communications =
+                local
+                    ? JSON.parse(local)
+                    : [];
+
+        }
+
+    }
+
+
+    async function saveMessage(event) {
+
+        event.preventDefault();
+
+
+        const parentId =
+            document.getElementById(
+                "messageParent"
+            ).value;
+
+
+        const parent =
+            parents.find(
+                p =>
+                    String(p.id) ===
+                    String(parentId)
+            );
+
+
+        if (!parent) {
+
+            showNotification(
+                "Please select a parent.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        const communication = {
+
+            parentId:
+                parent.id,
+
+            parentName:
+                parent.name,
+
+            studentId:
+                parent.studentId,
+
+            studentName:
+                parent.studentName ||
+                getStudentName(
+                    parent.studentId
+                ),
+
+            type:
+                document.getElementById(
+                    "messageType"
+                ).value,
+
+            message:
+                document.getElementById(
+                    "message"
+                ).value.trim(),
+
+            date:
+                new Date().toISOString(),
+
+            status:
+                "Sent"
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/parent-communications",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                communication
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+
+            const saved =
+                await response.json();
+
+            communications.unshift(saved);
+
+            showNotification(
+                "Communication saved."
+            );
+
+        } catch (error) {
+
+            communication.id =
+                Date.now();
+
+            communications.unshift(
+                communication
+            );
+
+            localStorage.setItem(
+                "markaz_parent_communications",
+                JSON.stringify(
+                    communications
+                )
+            );
+
+            showNotification(
+                "Communication saved locally."
+            );
+
+        }
+
+
+        document
+            .getElementById("messageForm")
+            .reset();
+
+        updateSummary();
+
+        showTab(
+            "messages",
+            document.querySelectorAll(".tab")[3]
+        );
+
+    }
+
+
+    /* =====================================
+       TABS
+    ===================================== */
+
+    function showTab(
+        type,
+        button
+    ) {
+
+        document
+            .querySelectorAll(".tab")
+            .forEach(
+                tab =>
+                    tab.classList.remove(
+                        "active"
+                    )
+            );
+
+
+        if (button) {
+            button.classList.add(
+                "active"
+            );
+        }
+
+
+        if (type === "updates") {
+
+            renderUpdates();
+
+        } else if (
+            type === "attendance"
+        ) {
+
+            renderAttendance();
+
+        } else if (
+            type === "hifz"
+        ) {
+
+            renderHifz();
+
+        } else if (
+            type === "messages"
+        ) {
+
+            renderMessages();
+
+        }
+
+    }
+
+
+    /* =====================================
+       STUDENT UPDATES
+    ===================================== */
+
+    function renderUpdates() {
+
+        const area =
+            document.getElementById(
+                "tabContent"
+            );
+
+
+        if (!selectedParent) {
+
+            area.innerHTML =
+                `
+                <div class="empty">
+                    Select a parent from the
+                    Parent List to view student updates.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        const studentId =
+            selectedParent.studentId;
+
+
+        const records =
+            communications.filter(
+                record =>
+                    String(
+                        record.studentId
+                    ) === String(
+                        studentId
+                    )
+            );
+
+
+        if (!records.length) {
+
+            area.innerHTML =
+                `
+                <div class="empty">
+                    No student updates available.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        area.innerHTML =
+            records
+                .slice(0, 10)
+                .map(
+                    function(record) {
+
+                        return `
+
+                            <div class="update-card">
+
+                                <div class="update-header">
+
+                                    <div class="update-title">
+                                        📢 ${escapeHtml(
+                                            record.type ||
+                                            "Update"
+                                        )}
+                                    </div>
+
+                                    <div class="update-date">
+                                        ${formatDate(
+                                            record.date
+                                        )}
+                                    </div>
+
+                                </div>
+
+                                <div class="update-content">
+                                    ${escapeHtml(
+                                        record.message || ""
+                                    )}
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    /* =====================================
+       ATTENDANCE
+    ===================================== */
+
+    function renderAttendance() {
+
+        const area =
+            document.getElementById(
+                "tabContent"
+            );
+
+
+        if (!selectedParent) {
+
+            area.innerHTML =
+                `
+                <div class="empty">
+                    Select a parent first.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        const studentId =
+            selectedParent.studentId;
+
+
+        getAttendance()
+            .then(
+                function(records) {
+
+                    const filtered =
+                        records.filter(
+                            record =>
+                                String(
+                                    record.studentId
+                                ) === String(
+                                    studentId
+                                )
+                        );
+
+
+                    if (!filtered.length) {
+
+                        area.innerHTML =
+                            `
+                            <div class="empty">
+                                No attendance records found.
+                            </div>
+                            `;
+
+                        return;
+
+                    }
+
+
+                    area.innerHTML = `
+
+                        <div class="table-container">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    ${filtered
+                                        .slice(0, 20)
+                                        .map(
+                                            function(record) {
+
+                                                return `
+
+                                                    <tr>
+
+                                                        <td>
+                                                            ${record.date || "-"}
+                                                        </td>
+
+                                                        <td>
+                                                            <span class="badge attendance">
+                                                                ${escapeHtml(
+                                                                    record.status || "-"
+                                                                )}
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+
+                                                `;
+
+                                            }
+                                        )
+                                        .join("")}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+    }
+
+
+    async function getAttendance() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/attendance"
+                );
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            return await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem(
+                    "markaz_attendance"
+                );
+
+            return local
+                ? JSON.parse(local)
+                : [];
+
+        }
+
+    }
+
+
+    /* =====================================
+       HIFZ
+    ===================================== */
+
+    function renderHifz() {
+
+        const area =
+            document.getElementById(
+                "tabContent"
+            );
+
+
+        if (!selectedParent) {
+
+            area.innerHTML =
+                `
+                <div class="empty">
+                    Select a parent first.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        getHifz()
+            .then(
+                function(records) {
+
+                    const filtered =
+                        records.filter(
+                            record =>
+                                String(
+                                    record.studentId
+                                ) === String(
+                                    selectedParent.studentId
+                                )
+                        );
+
+
+                    if (!filtered.length) {
+
+                        area.innerHTML =
+                            `
+                            <div class="empty">
+                                No Hifz progress records found.
+                            </div>
+                            `;
+
+                        return;
+
+                    }
+
+
+                    area.innerHTML = `
+
+                        <div class="table-container">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Surah</th>
+                                        <th>Ayah</th>
+                                        <th>Juz</th>
+                                        <th>Grade</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    ${filtered
+                                        .slice(0, 20)
+                                        .map(
+                                            function(record) {
+
+                                                return `
+
+                                                    <tr>
+
+                                                        <td>
+                                                            ${record.logDate ||
+                                                             record.date ||
+                                                             "-"}
+                                                        </td>
+
+                                                        <td>
+                                                            ${escapeHtml(
+                                                                record.surah || "-"
+                                                            )}
+                                                        </td>
+
+                                                        <td>
+                                                            ${record.ayahFrom || "-"}
+                                                            –
+                                                            ${record.ayahTo || "-"}
+                                                        </td>
+
+                                                        <td>
+                                                            ${record.juz || "-"}
+                                                        </td>
+
+                                                        <td>
+                                                            ${gradeBadge(
+                                                                record.grade
+                                                            )}
+                                                        </td>
+
+                                                    </tr>
+
+                                                `;
+
+                                            }
+                                        )
+                                        .join("")}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+    }
+
+
+    async function getHifz() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/hifz"
+                );
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            return await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem(
+                    "markaz_hifz"
+                );
+
+            return local
+                ? JSON.parse(local)
+                : [];
+
+        }
+
+    }
+
+
+    /* =====================================
+       COMMUNICATION HISTORY
+    ===================================== */
+
+    function renderMessages() {
+
+        const area =
+            document.getElementById(
+                "tabContent"
+            );
+
+
+        let records =
+            communications;
+
+
+        if (selectedParent) {
+
+            records =
+                communications.filter(
+                    record =>
+                        String(
+                            record.parentId
+                        ) === String(
+                            selectedParent.id
+                        )
+                );
+
+        }
+
+
+        if (!records.length) {
+
+            area.innerHTML =
+                `
+                <div class="empty">
+                    No communication history found.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        area.innerHTML = `
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Parent</th>
+                            <th>Student</th>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${records
+                            .slice(0, 50)
+                            .map(
+                                function(record) {
+
+                                    return `
+
+                                        <tr>
+
+                                            <td>
+                                                ${formatDate(
+                                                    record.date
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    record.parentName || "-"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    record.studentName || "-"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                <span class="badge hifz">
+                                                    ${escapeHtml(
+                                                        record.type || "-"
+                                                    )}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    record.message || "-"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                <span class="badge sent">
+                                                    ${escapeHtml(
+                                                        record.status || "Saved"
+                                                    )}
+                                                </span>
+                                            </td>
+
+                                        </tr>
+
+                                    `;
+
+                                }
+                            )
+                            .join("")}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================
+       SEARCH
+    ===================================== */
+
+    function searchParents() {
+
+        const query =
+            document.getElementById(
+                "searchInput"
+            ).value
+            .toLowerCase()
+            .trim();
+
+
+        if (!query) {
+
+            renderParents();
+
+            return;
+
+        }
+
+
+        const results =
+            parents.filter(
+                function(parent) {
+
+                    const studentName =
+                        parent.studentName ||
+                        getStudentName(
+                            parent.studentId
+                        );
+
+
+                    return (
+                        String(
+                            parent.name || ""
+                        )
+                        .toLowerCase()
+                        .includes(query)
+                        ||
+                        String(
+                            parent.phone || ""
+                        )
+                        .toLowerCase()
+                        .includes(query)
+                        ||
+                        String(
+                            studentName || ""
+                        )
+                        .toLowerCase()
+                        .includes(query)
+                    );
+
+                }
+            );
+
+
+        renderParents(results);
+
+    }
+
+
+    function clearSearch() {
+
+        document.getElementById(
+            "searchInput"
+        ).value = "";
+
+        renderParents();
+
+    }
+
+
+    /* =====================================
+       SUMMARY
+    ===================================== */
+
+    function updateSummary() {
+
+        document.getElementById(
+            "parentCount"
+        ).textContent =
+            parents.length;
+
+
+        const uniqueStudents =
+            new Set(
+                parents.map(
+                    p => p.studentId
+                )
+            );
+
+
+        document.getElementById(
+            "linkedStudents"
+        ).textContent =
+            uniqueStudents.size;
+
+
+        document.getElementById(
+            "notificationCount"
+        ).textContent =
+            communications.length;
+
+
+        document.getElementById(
+            "messageCount"
+        ).textContent =
+            communications.length;
+
+    }
+
+
+    /* =====================================
+       RESET
+    ===================================== */
+
+    function resetParentForm() {
+
+        document
+            .getElementById(
+                "parentForm"
+            )
+            .reset();
+
+    }
+
+
+    /* =====================================
+       LOCAL STORAGE
+    ===================================== */
+
+    function saveLocalParents() {
+
+        localStorage.setItem(
+            "markaz_parents",
+            JSON.stringify(parents)
+        );
+
+    }
+
+
+    /* =====================================
+       HELPERS
+    ===================================== */
+
+    function getStudentName(id) {
+
+        const student =
+            students.find(
+                s =>
+                    String(s.id) ===
+                    String(id)
+            );
+
+        return student
+            ? student.name
+            : "Unknown";
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
+        }
+
+        const date =
+            new Date(value);
+
+        if (isNaN(date.getTime())) {
+            return value;
+        }
+
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            }
+        );
+
+    }
+
+
+    function gradeBadge(grade) {
+
+        if (!grade) {
+            return "-";
+        }
+
+
+        let cls =
+            "hifz";
+
+
+        if (
+            grade === "Mumtaz" ||
+            grade === "Excellent"
+        ) {
+
+            cls =
+                "sent";
+
+        } else if (
+            grade === "Daeef" ||
+            grade === "Needs Improvement"
+        ) {
+
+            cls =
+                "warning";
+
+        }
+
+
+        return `
+            <span class="badge ${cls}">
+                ${escapeHtml(grade)}
+            </span>
+        `;
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    function showNotification(
+        message,
+        error = false
+    ) {
+
+        const notification =
+            document.getElementById(
+                "notification"
+            );
+
+
+        notification.textContent =
+            message;
+
+
+        notification.className =
+            "notification" +
+            (
+                error
+                    ? " error"
+                    : ""
+            );
+
+
+        notification.style.display =
+            "block";
+
+
+        setTimeout(
+            function() {
+
+                notification.style.display =
+                    "none";
+
+            },
+            3000
+        );
+
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Markaz Control System - Reports & Analytics</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #123b70, #1769aa);
+            color: white;
+            padding: 22px 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            opacity: .9;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1250px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* TOP */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #123b70;
+            text-decoration: none;
+            border: 1px solid #d5dce5;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        /* FILTER */
+        .filter-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.07);
+            margin-bottom: 22px;
+        }
+
+        .filter-card h2 {
+            margin-top: 0;
+            color: #123b70;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            align-items: end;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #334155;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #1769aa;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1769aa;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #123b70;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-green {
+            background: #15803d;
+            color: white;
+        }
+
+        /* SUMMARY */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 13px;
+            box-shadow: 0 3px 14px rgba(0,0,0,.07);
+        }
+
+        .summary-icon {
+            font-size: 25px;
+        }
+
+        .summary-card h3 {
+            margin: 10px 0 5px;
+            font-size: 27px;
+        }
+
+        .summary-card p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        /* REPORT TABS */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            border: none;
+            background: white;
+            padding: 11px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #475569;
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+        }
+
+        .tab.active {
+            background: #1769aa;
+            color: white;
+        }
+
+        /* REPORT CARD */
+        .report-card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.07);
+            margin-bottom: 20px;
+        }
+
+        .report-card h2 {
+            margin-top: 0;
+            color: #123b70;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* STATUS */
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .present {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .absent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .late {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .good {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .needs {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* TWO COLUMN */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* PROGRESS */
+        .progress-box {
+            margin-bottom: 18px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #1769aa;
+            border-radius: 20px;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #64748b;
+        }
+
+        /* PRINT */
+        @media print {
+
+            .header {
+                color: black;
+                background: white;
+                box-shadow: none;
+                border-bottom: 2px solid #222;
+            }
+
+            .top-bar,
+            .filter-card,
+            .tabs,
+            .btn {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .report-card,
+            .summary-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 1000px) {
+
+            .filter-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media(max-width: 700px) {
+
+            .filter-grid,
+            .summary-grid,
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .report-card {
+                padding: 18px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-content">
+
+        <h1>📊 Reports & Analytics</h1>
+
+        <p>
+            Markaz performance, student progress,
+            attendance and financial reporting
+        </p>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+    <!-- TOP BAR -->
+
+    <div class="top-bar">
+
+        <a href="dashboard.html" class="back-btn">
+            ← Dashboard
+        </a>
+
+        <div>
+            <strong id="reportDate"></strong>
+        </div>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <section class="filter-card">
+
+        <h2>🔎 Report Filters</h2>
+
+        <div class="filter-grid">
+
+            <div>
+
+                <label>Report Type</label>
+
+                <select id="reportType">
+
+                    <option value="monthly">
+                        Monthly Summary
+                    </option>
+
+                    <option value="students">
+                        Student Reports
+                    </option>
+
+                    <option value="hifz">
+                        Hifz Reports
+                    </option>
+
+                    <option value="attendance">
+                        Attendance Reports
+                    </option>
+
+                    <option value="teachers">
+                        Teacher Reports
+                    </option>
+
+                    <option value="financial">
+                        Financial Reports
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Student</label>
+
+                <select id="studentFilter">
+
+                    <option value="">
+                        All Students
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Teacher</label>
+
+                <select id="teacherFilter">
+
+                    <option value="">
+                        All Teachers
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>From</label>
+
+                <input
+                    type="date"
+                    id="dateFrom"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>To</label>
+
+                <input
+                    type="date"
+                    id="dateTo"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+
+            <button
+                class="btn btn-primary"
+                onclick="generateReport()"
+            >
+                📊 Generate Report
+            </button>
+
+            <button
+                class="btn btn-green"
+                onclick="window.print()"
+            >
+                🖨 Print Report
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="resetFilters()"
+            >
+                Clear Filters
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-icon">👨‍🎓</div>
+
+            <h3 id="totalStudents">0</h3>
+
+            <p>Total Students</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">📝</div>
+
+            <h3 id="totalSabaq">0</h3>
+
+            <p>Sabaq Records</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">📅</div>
+
+            <h3 id="attendanceCount">0</h3>
+
+            <p>Attendance Records</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">💰</div>
+
+            <h3 id="feesCollected">Br 0</h3>
+
+            <p>Fees Collected</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- TABS -->
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            onclick="showReport('monthly', this)"
+        >
+            📅 Monthly Summary
+        </button>
+
+        <button
+            class="tab"
+            onclick="showReport('students', this)"
+        >
+            👨‍🎓 Students
+        </button>
+
+        <button
+            class="tab"
+            onclick="showReport('hifz', this)"
+        >
+            📖 Hifz
+        </button>
+
+        <button
+            class="tab"
+            onclick="showReport('attendance', this)"
+        >
+            📋 Attendance
+        </button>
+
+        <button
+            class="tab"
+            onclick="showReport('teachers', this)"
+        >
+            👨‍🏫 Teachers
+        </button>
+
+        <button
+            class="tab"
+            onclick="showReport('financial', this)"
+        >
+            💰 Financial
+        </button>
+
+    </div>
+
+
+    <!-- REPORT AREA -->
+
+    <section id="reportArea">
+
+        <!-- MONTHLY REPORT -->
+
+        <div class="report-card">
+
+            <div class="report-header">
+
+                <div>
+
+                    <h2>📅 Monthly Summary</h2>
+
+                    <p>
+                        Overview of Markaz activities
+                        for the selected period.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="two-column">
+
+                <div>
+
+                    <div class="progress-box">
+
+                        <div class="progress-label">
+
+                            <span>Attendance</span>
+
+                            <span id="attendancePercent">
+                                0%
+                            </span>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar"
+                                id="attendanceBar"
+                                style="width:0%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-box">
+
+                        <div class="progress-label">
+
+                            <span>Hifz Activity</span>
+
+                            <span id="hifzPercent">
+                                0%
+                            </span>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar"
+                                id="hifzBar"
+                                style="width:0%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="progress-box">
+
+                        <div class="progress-label">
+
+                            <span>Fee Collection</span>
+
+                            <span id="feePercent">
+                                0%
+                            </span>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar"
+                                id="feeBar"
+                                style="width:0%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-box">
+
+                        <div class="progress-label">
+
+                            <span>Student Activity</span>
+
+                            <span id="studentPercent">
+                                0%
+                            </span>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar"
+                                id="studentBar"
+                                style="width:0%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DATA TABLE -->
+
+        <div class="report-card">
+
+            <div class="report-header">
+
+                <h2 id="tableTitle">
+                    📊 Report Details
+                </h2>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead id="tableHead"></thead>
+
+                    <tbody id="tableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    /* =========================================
+       DATA
+    ========================================= */
+
+    let students = [];
+    let teachers = [];
+    let hifzRecords = [];
+    let sabaqRecords = [];
+    let attendanceRecords = [];
+    let fees = [];
+
+
+    /* =========================================
+       INITIALIZATION
+    ========================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            setDates();
+
+            loadAllData();
+
+            document
+                .getElementById("reportType")
+                .addEventListener(
+                    "change",
+                    generateReport
+                );
+
+        }
+    );
+
+
+    /* =========================================
+       DATES
+    ========================================= */
+
+    function setDates() {
+
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+        const firstDay =
+            year + "-" + month + "-01";
+
+        const today =
+            now.toISOString()
+                .split("T")[0];
+
+
+        document.getElementById(
+            "dateFrom"
+        ).value = firstDay;
+
+
+        document.getElementById(
+            "dateTo"
+        ).value = today;
+
+
+        document.getElementById(
+            "reportDate"
+        ).textContent =
+            now.toLocaleDateString(
+                "en-US",
+                {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                }
+            );
+
+    }
+
+
+    /* =========================================
+       LOAD ALL DATA
+    ========================================= */
+
+    async function loadAllData() {
+
+        await Promise.all([
+            loadStudents(),
+            loadTeachers(),
+            loadHifz(),
+            loadSabaq(),
+            loadAttendance(),
+            loadFees()
+        ]);
+
+        populateFilters();
+
+        updateSummary();
+
+        generateReport();
+
+    }
+
+
+    /* =========================================
+       GENERIC API LOADER
+    ========================================= */
+
+    async function getData(
+        endpoint,
+        localKey
+    ) {
+
+        try {
+
+            const response =
+                await fetch(endpoint);
+
+            if (!response.ok) {
+                throw new Error("API error");
+            }
+
+            return await response.json();
+
+        } catch (error) {
+
+            const local =
+                localStorage.getItem(localKey);
+
+            return local
+                ? JSON.parse(local)
+                : [];
+
+        }
+
+    }
+
+
+    /* =========================================
+       STUDENTS
+    ========================================= */
+
+    async function loadStudents() {
+
+        students =
+            await getData(
+                "/api/students",
+                "markaz_students"
+            );
+
+    }
+
+
+    /* =========================================
+       TEACHERS
+    ========================================= */
+
+    async function loadTeachers() {
+
+        teachers =
+            await getData(
+                "/api/teachers",
+                "markaz_teachers"
+            );
+
+    }
+
+
+    /* =========================================
+       HIFZ
+    ========================================= */
+
+    async function loadHifz() {
+
+        hifzRecords =
+            await getData(
+                "/api/hifz",
+                "markaz_hifz"
+            );
+
+    }
+
+
+    /* =========================================
+       SABAQ
+    ========================================= */
+
+    async function loadSabaq() {
+
+        sabaqRecords =
+            await getData(
+                "/api/daily-sabaq",
+                "markaz_daily_sabaq"
+            );
+
+    }
+
+
+    /* =========================================
+       ATTENDANCE
+    ========================================= */
+
+    async function loadAttendance() {
+
+        attendanceRecords =
+            await getData(
+                "/api/attendance",
+                "markaz_attendance"
+            );
+
+    }
+
+
+    /* =========================================
+       FEES
+    ========================================= */
+
+    async function loadFees() {
+
+        fees =
+            await getData(
+                "/api/fees",
+                "markaz_fees"
+            );
+
+    }
+
+
+    /* =========================================
+       FILTER DROPDOWNS
+    ========================================= */
+
+    function populateFilters() {
+
+        const studentSelect =
+            document.getElementById(
+                "studentFilter"
+            );
+
+        students.forEach(
+            function (student) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    student.id;
+
+                option.textContent =
+                    student.name;
+
+                studentSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        const teacherSelect =
+            document.getElementById(
+                "teacherFilter"
+            );
+
+        teachers.forEach(
+            function (teacher) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    teacher.id;
+
+                option.textContent =
+                    teacher.name;
+
+                teacherSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       SUMMARY
+    ========================================= */
+
+    function updateSummary() {
+
+        document.getElementById(
+            "totalStudents"
+        ).textContent =
+            students.length;
+
+
+        document.getElementById(
+            "totalSabaq"
+        ).textContent =
+            sabaqRecords.length;
+
+
+        document.getElementById(
+            "attendanceCount"
+        ).textContent =
+            attendanceRecords.length;
+
+
+        let collected = 0;
+
+        fees.forEach(
+            function (fee) {
+
+                collected +=
+                    Number(
+                        fee.paidAmount ||
+                        fee.paid_amount ||
+                        0
+                    );
+
+            }
+        );
+
+
+        document.getElementById(
+            "feesCollected"
+        ).textContent =
+            "Br " +
+            collected.toLocaleString();
+
+    }
+
+
+    /* =========================================
+       GENERATE REPORT
+    ========================================= */
+
+    function generateReport() {
+
+        const type =
+            document.getElementById(
+                "reportType"
+            ).value;
+
+
+        if (type === "students") {
+
+            studentReport();
+
+        } else if (type === "hifz") {
+
+            hifzReport();
+
+        } else if (type === "attendance") {
+
+            attendanceReport();
+
+        } else if (type === "teachers") {
+
+            teacherReport();
+
+        } else if (type === "financial") {
+
+            financialReport();
+
+        } else {
+
+            monthlyReport();
+
+        }
+
+    }
+
+
+    /* =========================================
+       MONTHLY REPORT
+    ========================================= */
+
+    function monthlyReport() {
+
+        setTitle(
+            "📅 Monthly Summary"
+        );
+
+
+        const filteredSabaq =
+            filterByDate(
+                sabaqRecords
+            );
+
+
+        const filteredAttendance =
+            filterByDate(
+                attendanceRecords
+            );
+
+
+        const filteredFees =
+            filterByDate(
+                fees
+            );
+
+
+        const present =
+            filteredAttendance.filter(
+                r =>
+                    String(
+                        r.status
+                    ).toLowerCase()
+                    === "present"
+            ).length;
+
+
+        const attendancePercent =
+            filteredAttendance.length
+                ? Math.round(
+                    present /
+                    filteredAttendance.length *
+                    100
+                )
+                : 0;
+
+
+        const feeCollected =
+            sumFees(
+                filteredFees
+            );
+
+
+        const feeExpected =
+            filteredFees.reduce(
+                function(sum, fee) {
+
+                    return sum +
+                        Number(
+                            fee.monthlyFee ||
+                            fee.monthly_fee ||
+                            0
+                        );
+
+                },
+                0
+            );
+
+
+        const feePercent =
+            feeExpected
+                ? Math.min(
+                    100,
+                    Math.round(
+                        feeCollected /
+                        feeExpected *
+                        100
+                    )
+                )
+                : 0;
+
+
+        setProgress(
+            "attendance",
+            attendancePercent
+        );
+
+
+        setProgress(
+            "hifz",
+            Math.min(
+                100,
+                filteredSabaq.length
+                    ? Math.round(
+                        filteredSabaq.length /
+                        Math.max(
+                            students.length,
+                            1
+                        ) *
+                        10
+                    )
+                    : 0
+            )
+        );
+
+
+        setProgress(
+            "fee",
+            feePercent
+        );
+
+
+        setProgress(
+            "student",
+            students.length
+                ? Math.min(
+                    100,
+                    Math.round(
+                        new Set(
+                            filteredSabaq.map(
+                                r => r.studentId
+                            )
+                        ).size /
+                        students.length *
+                        100
+                    )
+                )
+                : 0
+        );
+
+
+        document.getElementById(
+            "tableHead"
+        ).innerHTML = `
+            <tr>
+                <th>Category</th>
+                <th>Total</th>
+                <th>Status</th>
+            </tr>
+        `;
+
+
+        document.getElementById(
+            "tableBody"
+        ).innerHTML = `
+
+            <tr>
+                <td>Students</td>
+                <td>${students.length}</td>
+                <td>
+                    <span class="badge present">
+                        Active Data
+                    </span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Sabaq Records</td>
+                <td>${filteredSabaq.length}</td>
+                <td>
+                    <span class="badge excellent">
+                        Recorded
+                    </span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Attendance</td>
+                <td>${filteredAttendance.length}</td>
+                <td>
+                    ${attendancePercent}%
+                </td>
+            </tr>
+
+            <tr>
+                <td>Fees Collected</td>
+                <td>
+                    Br ${feeCollected.toLocaleString()}
+                </td>
+                <td>
+                    ${feePercent}%
+                </td>
+            </tr>
+
+        `;
+
+    }
+
+
+    /* =========================================
+       STUDENT REPORT
+    ========================================= */
+
+    function studentReport() {
+
+        setTitle(
+            "👨‍🎓 Student Reports"
+        );
+
+
+        document.getElementById(
+            "tableHead"
+        ).innerHTML = `
+
+            <tr>
+                <th>Student</th>
+                <th>Age</th>
+                <th>Teacher</th>
+                <th>Hifz Records</th>
+                <th>Sabaq</th>
+                <th>Attendance</th>
+            </tr>
+
+        `;
+
+
+        let html = "";
+
+
+        students.forEach(
+            function(student) {
+
+                const hifz =
+                    hifzRecords.filter(
+                        r =>
+                            String(
+                                r.studentId
+                            ) === String(
+                                student.id
+                            )
+                    ).length;
+
+
+                const sabaq =
+                    sabaqRecords.filter(
+                        r =>
+                            String(
+                                r.studentId
+                            ) === String(
+                                student.id
+                            )
+                    ).length;
+
+
+                const attendance =
+                    attendanceRecords.filter(
+                        r =>
+                            String(
+                                r.studentId
+                            ) === String(
+                                student.id
+                            )
+                    ).length;
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                student.name || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${student.age || "-"}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                student.teacher || "-"
+                            )}
+                        </td>
+
+                        <td>${hifz}</td>
+
+                        <td>${sabaq}</td>
+
+                        <td>${attendance}</td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        document.getElementById(
+            "tableBody"
+        ).innerHTML =
+            html ||
+            emptyRow(6);
+
+    }
+
+
+    /* =========================================
+       HIFZ REPORT
+    ========================================= */
+
+    function hifzReport() {
+
+        setTitle(
+            "📖 Hifz Reports"
+        );
+
+
+        const records =
+            filterByDate(
+                hifzRecords
+            );
+
+
+        document.getElementById(
+            "tableHead"
+        ).innerHTML = `
+
+            <tr>
+                <th>Student</th>
+                <th>Surah</th>
+                <th>Ayah</th>
+                <th>Juz</th>
+                <th>Grade</th>
+                <th>Date</th>
+            </tr>
+
+        `;
+
+
+        let html = "";
+
+
+        records.forEach(
+            function(record) {
+
+                const student =
+                    findStudent(
+                        record.studentId
+                    );
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                student?.name ||
+                                record.studentName ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                record.surah || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${record.ayahFrom || "-"}
+                            –
+                            ${record.ayahTo || "-"}
+                        </td>
+
+                        <td>
+                            ${record.juz || "-"}
+                        </td>
+
+                        <td>
+                            ${gradeBadge(
+                                record.grade
+                            )}
+                        </td>
+
+                        <td>
+                            ${record.logDate ||
+                             record.date ||
+                             "-"}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        document.getElementById(
+            "tableBody"
+        ).innerHTML =
+            html ||
+            emptyRow(6);
+
+    }
+
+
+    /* =========================================
+       ATTENDANCE REPORT
+    ========================================= */
+
+    function attendanceReport() {
+
+        setTitle(
+            "📋 Attendance Reports"
+        );
+
+
+        const records =
+            filterByDate(
+                attendanceRecords
+            );
+
+
+        document.getElementById(
+            "tableHead"
+        ).innerHTML = `
+
+            <tr>
+                <th>Student</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+
+        `;
+
+
+        let html = "";
+
+
+        records.forEach(
+            function(record) {
+
+                const student =
+                    findStudent(
+                        record.studentId
+                    );
+
+
+                const status =
+                    String(
+                        record.status || "-"
+                    ).toLowerCase();
+
+
+                let badgeClass =
+                    "present";
+
+
+                if (
+                    status === "absent"
+                ) {
+
+                    badgeClass =
+                        "absent";
+
+                } else if (
+                    status === "late"
+                ) {
+
+                    badgeClass =
+                        "late";
+
+                }
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                student?.name ||
+                                record.studentName ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${record.date || "-"}
+                        </td>
+
+                        <td>
+                            <span class="badge ${badgeClass}">
+                                ${escapeHtml(
+                                    record.status || "-"
+                                )}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        document.getElementById(
+            "tableBody"
+        ).innerHTML =
+            html ||
+            emptyRow(3);
+
+    }
+
+
+    /* =========================================
+       TEACHER REPORT
+    ========================================= */
+
+    function teacherReport() {
+
+        setTitle(
+            "👨‍🏫 Teacher Reports"
+        );
+
+
+        document.getElementById(
+            "tableHead"
+        ).innerHTML = `
+
+            <tr>
+                <th>Teacher</th>
+                <th>Students</th>
+                <th>Sabaq Entries</th>
+                <th>Hifz Records</th>
+            </tr>
+
+        `;
+
+
+        let html = "";
+
+
+        teachers.forEach(
+            function(teacher) {
+
+                const teacherStudents =
+                    students.filter(
+                        s =>
+                            String(
+                                s.teacherId
+                            ) === String(
+                                teacher.id
+                            ) ||
+                            String(
+                                s.teacher
+                            ) === String(
+                                teacher.name
+                            )
+                    ).length;
+
+
+                const sabaq =
+                    sabaqRecords.filter(
+                        r =>
+                            String(
+                                r.teacherId
+                            ) === String(
+                                teacher.id
+                            )
+                    ).length;
+
+
+                const hifz =
+                    hifzRecords.filter(
+                        r =>
+                            String(
+                                r.teacherId
+                            ) === String(
+                                teacher.id
+                            )
+                    ).length;
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                teacher.name || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${teacherStudents}
+                        </td>
+
+                        <td>
+                            ${sabaq}
+                        </td>
+
+                        <td>
+                            ${hifz}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        document.getElementById(
+            "tableBody"
+        ).innerHTML =
+            html ||
+            emptyRow(4);
+
+    }
+
+
+    /* =========================================
+       FINANCIAL REPORT
+    ========================================= */
+
+    function financialReport() {
+
+        setTitle(
+            "💰 Financial Reports"
+        );
+
+
+        const records =
+            filterByDate(
+                fees
+            );
+
+
+        const expected =
+            records.reduce(
+                function(sum, fee) {
+
+                    return sum +
+                        Number(
+                            fee.monthlyFee ||
+                            fee.monthly_fee ||
+                            0
+                        );
+
+                },
+                0
+            );
+
+
+        const collected =
+            sumFees(records);
+
+
+        const outstanding =
+            Math.max(
+                0,
+                expected - collected
+            );
+
+
+        document.getElementById(
+            "tableHead"
+        ).innerHTML = `
+
+            <tr>
+                <th>Financial Item</th>
+                <th>Amount</th>
+            </tr>
+
+        `;
+
+
+        document.getElementById(
+            "tableBody"
+        ).innerHTML = `
+
+            <tr>
+                <td>Expected Fees</td>
+                <td>
+                    Br ${expected.toLocaleString()}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Collected Fees</td>
+                <td>
+                    Br ${collected.toLocaleString()}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Outstanding</td>
+                <td>
+                    Br ${outstanding.toLocaleString()}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Payment Records</td>
+                <td>
+                    ${records.length}
+                </td>
+            </tr>
+
+        `;
+
+    }
+
+
+    /* =========================================
+       TABS
+    ========================================= */
+
+    function showReport(
+        type,
+        button
+    ) {
+
+        document.getElementById(
+            "reportType"
+        ).value = type;
+
+
+        document
+            .querySelectorAll(".tab")
+            .forEach(
+                tab =>
+                    tab.classList.remove(
+                        "active"
+                    )
+            );
+
+
+        if (button) {
+
+            button.classList.add(
+                "active"
+            );
+
+        }
+
+
+        generateReport();
+
+    }
+
+
+    /* =========================================
+       HELPERS
+    ========================================= */
+
+    function setTitle(title) {
+
+        document.getElementById(
+            "tableTitle"
+        ).textContent =
+            title;
+
+    }
+
+
+    function findStudent(id) {
+
+        return students.find(
+            student =>
+                String(
+                    student.id
+                ) === String(id)
+        );
+
+    }
+
+
+    function sumFees(records) {
+
+        return records.reduce(
+            function(sum, fee) {
+
+                return sum +
+                    Number(
+                        fee.paidAmount ||
+                        fee.paid_amount ||
+                        0
+                    );
+
+            },
+            0
+        );
+
+    }
+
+
+    function filterByDate(records) {
+
+        const from =
+            document.getElementById(
+                "dateFrom"
+            ).value;
+
+
+        const to =
+            document.getElementById(
+                "dateTo"
+            ).value;
+
+
+        const studentId =
+            document.getElementById(
+                "studentFilter"
+            ).value;
+
+
+        return records.filter(
+            function(record) {
+
+                const date =
+                    record.date ||
+                    record.logDate ||
+                    record.paymentDate ||
+                    record.payment_date ||
+                    "";
+
+
+                const dateOK =
+                    (!from || date >= from) &&
+                    (!to || date <= to);
+
+
+                const studentOK =
+                    !studentId ||
+                    String(
+                        record.studentId
+                    ) === String(
+                        studentId
+                    );
+
+
+                return dateOK &&
+                       studentOK;
+
+            }
+        );
+
+    }
+
+
+    function setProgress(
+        type,
+        value
+    ) {
+
+        value =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    value
+                )
+            );
+
+
+        document.getElementById(
+            type + "Percent"
+        ).textContent =
+            value + "%";
+
+
+        document.getElementById(
+            type + "Bar"
+        ).style.width =
+            value + "%";
+
+    }
+
+
+    function gradeBadge(grade) {
+
+        if (!grade) {
+            return "-";
+        }
+
+
+        let cls =
+            "good";
+
+
+        if (
+            grade === "Mumtaz" ||
+            grade === "Excellent"
+        ) {
+
+            cls =
+                "excellent";
+
+        } else if (
+            grade === "Daeef" ||
+            grade === "Needs Improvement"
+        ) {
+
+            cls =
+                "needs";
+
+        }
+
+
+        return `
+            <span class="badge ${cls}">
+                ${escapeHtml(grade)}
+            </span>
+        `;
+
+    }
+
+
+    function emptyRow(
+        columns
+    ) {
+
+        return `
+            <tr>
+                <td
+                    colspan="${columns}"
+                    class="empty"
+                >
+                    No records found
+                    for the selected filters.
+                </td>
+            </tr>
+        `;
+
+    }
+
+
+    function resetFilters() {
+
+        document.getElementById(
+            "studentFilter"
+        ).value = "";
+
+
+        document.getElementById(
+            "teacherFilter"
+        ).value = "";
+
+
+        setDates();
+
+        generateReport();
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add Student - Markaz Control System</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fb;
+padding:20px;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 4px 15px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#2563eb;
+margin-bottom:25px;
+}
+
+.section{
+margin-bottom:25px;
+padding-bottom:15px;
+border-bottom:1px solid #eee;
+}
+
+.section h2{
+color:#2563eb;
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin-top:12px;
+font-weight:bold;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:12px;
+margin-top:5px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+textarea{
+resize:none;
+}
+
+.photo-box{
+text-align:center;
+margin-bottom:20px;
+}
+
+.photo-preview{
+width:120px;
+height:120px;
+margin:auto;
+border-radius:50%;
+background:#e5e7eb;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:50px;
+margin-bottom:10px;
+}
+
+button{
+width:100%;
+padding:15px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+margin-top:20px;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.message{
+text-align:center;
+margin-top:15px;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>👨‍🎓 Add New Student</h1>
+
+<div class="photo-box">
+
+<div class="photo-preview">
+👨‍🎓
+</div>
+
+<label>Student Photo</label>
+<input type="file" accept="image/*">
+
+</div>
+
+<div class="section">
+
+<h2>👤 Personal Information</h2>
+
+<label>Full Name</label>
+<input type="text" id="name">
+
+<label>Gender</label>
+<select id="gender">
+<option value="">Select Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<label>Date of Birth</label>
+<input type="date" id="dob">
+
+</div>
+
+<div class="section">
+
+<h2>📖 Academic Information</h2>
+
+<label>Current Juz</label>
+<input type="number" id="currentJuz">
+
+<label>Assigned Teacher</label>
+<input type="text" id="teacher">
+
+</div>
+
+<div class="section">
+
+<h2>👨 Parent Information</h2>
+
+<label>Parent Name</label>
+<input type="text" id="parentName">
+
+<label>Parent Phone</label>
+<input type="text" id="parentPhone">
+
+<label>Address</label>
+<textarea id="address" rows="3"></textarea>
+
+</div>
+
+<div class="section">
+
+<h2>⚙️ Enrollment</h2>
+
+<label>Enrollment Date</label>
+<input type="date" id="enrollmentDate" readonly>
+
+<label>Status</label>
+<select id="status">
+<option>Active</option>
+<option>Inactive</option>
+<option>Graduated</option>
+<option>Transferred</option>
+</select>
+
+</div>
+
+<button onclick="saveStudent()">
+💾 Save Student
+</button>
+
+<div class="message" id="message"></div>
+
+</div>
+
+<script>
+
+// Auto Enrollment Date
+
+const today = new Date();
+
+const year = today.getFullYear();
+
+const month = String(
+today.getMonth()+1
+).padStart(2,"0");
+
+const day = String(
+today.getDate()
+).padStart(2,"0");
+
+document.getElementById(
+"enrollmentDate"
+).value =
+`${year}-${month}-${day}`;
+
+// Save Student
+
+async function saveStudent(){
+
+const student = {
+
+name:
+document.getElementById("name").value,
+
+gender:
+document.getElementById("gender").value,
+
+dob:
+document.getElementById("dob").value,
+
+currentJuz:
+document.getElementById("currentJuz").value,
+
+teacher:
+document.getElementById("teacher").value,
+
+parentName:
+document.getElementById("parentName").value,
+
+parentPhone:
+document.getElementById("parentPhone").value,
+
+address:
+document.getElementById("address").value,
+
+enrollmentDate:
+document.getElementById("enrollmentDate").value,
+
+status:
+document.getElementById("status").value
+
+};
+
+try{
+
+const response = await fetch(
+"http://localhost:5000/api/students",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(student)
+}
+);
+
+const data = await response.json();
+
+document.getElementById("message").innerHTML =
+"✅ Student Saved Successfully";
+
+}catch(error){
+
+document.getElementById("message").innerHTML =
+"❌ Failed To Save Student";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

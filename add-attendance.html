@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Entry</title>
+</head>
+<body>
+
+<h2>Attendance Entry</h2>
+
+<input id="studentId" placeholder="Student ID"><br><br>
+
+<input id="date" placeholder="2026-09-27"><br><br>
+
+<select id="status">
+<option>Present</option>
+<option>Absent</option>
+<option>Late</option>
+</select><br><br>
+
+<button onclick="saveAttendance()">
+Save Attendance
+</button>
+
+<p id="result"></p>
+
+<script>
+
+async function saveAttendance(){
+
+const response = await fetch(
+"http://localhost:5000/api/attendance",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+studentId:document.getElementById("studentId").value,
+date:document.getElementById("date").value,
+status:document.getElementById("status").value
+})
+}
+);
+
+const data = await response.json();
+
+document.getElementById("result").innerHTML =
+data.message;
+
+}
+
+</script>
+
+</body>
+</html>

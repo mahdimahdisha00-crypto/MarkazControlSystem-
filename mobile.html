@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markaz Mobile</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+}
+
+.header{
+    background:#2563eb;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+.menu{
+    padding:15px;
+}
+
+.menu button{
+    width:100%;
+    padding:18px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+}
+
+.stats{
+    padding:15px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Markaz Control System</h2>
+    <p>Mobile Dashboard</p>
+</div>
+
+<div class="stats">
+
+    <div class="card">
+        <h3>Total Students</h3>
+        <h1 id="students">0</h1>
+    </div>
+
+    <div class="card">
+        <h3>Total Teachers</h3>
+        <h1 id="teachers">0</h1>
+    </div>
+
+</div>
+
+<div class="menu">
+
+<button onclick="location.href='students.html'">
+Students
+</button>
+
+<button onclick="location.href='teachers.html'">
+Teachers
+</button>
+
+<button onclick="location.href='attendance.html'">
+Attendance
+</button>
+
+<button onclick="location.href='hifz.html'">
+Hifz Records
+</button>
+
+<button onclick="location.href='fees.html'">
+Fee Management
+</button>
+
+<button onclick="location.href='reports.html'">
+Reports
+</button>
+
+<button onclick="location.href='settings.html'">
+Settings
+</button>
+
+</div>
+
+</body>
+</html>

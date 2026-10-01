@@ -1,0 +1,2463 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Markaz Control System - Attendance Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #075985, #0f766e);
+            color: white;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .header h1 {
+            margin: 0 0 6px;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* MAIN */
+        .container {
+            max-width: 1400px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        /* STATISTICS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            border-left: 5px solid #0f766e;
+        }
+
+        .stat-title {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            border: none;
+            background: white;
+            padding: 13px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #475569;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .tab-btn.active {
+            background: #0f766e;
+            color: white;
+        }
+
+        /* PANELS */
+        .panel {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            color: #0f172a;
+        }
+
+        /* FILTERS */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0f766e;
+        }
+
+        /* BUTTONS */
+        .btn {
+            border: none;
+            padding: 11px 17px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #0f766e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #115e59;
+        }
+
+        .btn-blue {
+            background: #075985;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #d97706;
+            color: white;
+        }
+
+        .btn-light {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* TABLE */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 13px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* STATUS */
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .present {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .absent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .late {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .excused {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* ATTENDANCE BUTTONS */
+        .attendance-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .attendance-btn {
+            border: 1px solid #cbd5e1;
+            background: white;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .attendance-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .attendance-btn.selected-present {
+            background: #16a34a;
+            color: white;
+            border-color: #16a34a;
+        }
+
+        .attendance-btn.selected-absent {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+
+        .attendance-btn.selected-late {
+            background: #d97706;
+            color: white;
+            border-color: #d97706;
+        }
+
+        .attendance-btn.selected-excused {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        /* SUMMARY CARDS */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            padding: 18px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .summary-card h3 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .summary-card strong {
+            font-size: 27px;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.55);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close {
+            border: none;
+            background: #f1f5f9;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #64748b;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: #0f172a;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1000px) {
+            .stats,
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .stats,
+            .summary-grid,
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .panel {
+                padding: 15px;
+            }
+        }
+
+        @media print {
+            .header,
+            .tabs,
+            .filters,
+            .actions,
+            button {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .panel {
+                box-shadow: none;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-content">
+
+        <div>
+            <h1>📋 Attendance Management</h1>
+            <p>Manage student and teacher attendance for your Markaz</p>
+        </div>
+
+        <button class="back-btn" onclick="location.href='dashboard.html'">
+            ← Dashboard
+        </button>
+
+    </div>
+</header>
+
+
+<main class="container">
+
+    <!-- STATISTICS -->
+    <section class="stats">
+
+        <div class="stat-card">
+            <div class="stat-title">Today's Student Attendance</div>
+            <div class="stat-number" id="studentAttendanceRate">0%</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Today's Teacher Attendance</div>
+            <div class="stat-number" id="teacherAttendanceRate">0%</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Students Present</div>
+            <div class="stat-number" id="studentsPresent">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Teachers Present</div>
+            <div class="stat-number" id="teachersPresent">0</div>
+        </div>
+
+    </section>
+
+
+    <!-- TABS -->
+    <div class="tabs">
+
+        <button class="tab-btn active" onclick="showTab('studentTab', this)">
+            👨‍🎓 Student Attendance
+        </button>
+
+        <button class="tab-btn" onclick="showTab('teacherTab', this)">
+            👨‍🏫 Teacher Attendance
+        </button>
+
+        <button class="tab-btn" onclick="showTab('recordsTab', this)">
+            📋 Attendance Records
+        </button>
+
+        <button class="tab-btn" onclick="showTab('summaryTab', this)">
+            📊 Daily / Monthly Summary
+        </button>
+
+    </div>
+
+
+    <!-- ================= STUDENT ATTENDANCE ================= -->
+
+    <section id="studentTab" class="panel active">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>👨‍🎓 Student Attendance Entry</h2>
+                <p style="color:#64748b;">
+                    Record daily attendance for students.
+                </p>
+            </div>
+
+            <div class="actions">
+
+                <button class="btn btn-primary" onclick="markAllStudents('Present')">
+                    ✓ Mark All Present
+                </button>
+
+                <button class="btn btn-light" onclick="saveStudentAttendance()">
+                    💾 Save Attendance
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="filters">
+
+            <input
+                type="date"
+                id="studentDate"
+                onchange="loadStudentAttendance()"
+            >
+
+            <input
+                type="text"
+                id="studentSearch"
+                placeholder="Search student..."
+                oninput="loadStudentAttendance()"
+            >
+
+            <select id="studentLevel" onchange="loadStudentAttendance()">
+                <option value="">All Levels</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Hifz">Hifz</option>
+                <option value="Ijazah">Ijazah</option>
+            </select>
+
+            <select id="studentTeacher" onchange="loadStudentAttendance()">
+                <option value="">All Teachers</option>
+            </select>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Student</th>
+                        <th>ID</th>
+                        <th>Level</th>
+                        <th>Teacher</th>
+                        <th>Attendance Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="studentAttendanceTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= TEACHER ATTENDANCE ================= -->
+
+    <section id="teacherTab" class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>👨‍🏫 Teacher Attendance Entry</h2>
+                <p style="color:#64748b;">
+                    Record daily attendance for teachers and staff.
+                </p>
+            </div>
+
+            <div class="actions">
+
+                <button class="btn btn-primary" onclick="markAllTeachers('Present')">
+                    ✓ Mark All Present
+                </button>
+
+                <button class="btn btn-light" onclick="saveTeacherAttendance()">
+                    💾 Save Attendance
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="filters">
+
+            <input
+                type="date"
+                id="teacherDate"
+                onchange="loadTeacherAttendance()"
+            >
+
+            <input
+                type="text"
+                id="teacherSearch"
+                placeholder="Search teacher..."
+                oninput="loadTeacherAttendance()"
+            >
+
+            <select id="teacherStatusFilter" onchange="loadTeacherAttendance()">
+                <option value="">All Teachers</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+
+            <div></div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Teacher</th>
+                        <th>Teacher ID</th>
+                        <th>Specialization</th>
+                        <th>Status</th>
+                        <th>Attendance</th>
+                    </tr>
+                </thead>
+
+                <tbody id="teacherAttendanceTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RECORDS ================= -->
+
+    <section id="recordsTab" class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>📋 Attendance Records</h2>
+                <p style="color:#64748b;">
+                    View, search and manage saved attendance records.
+                </p>
+            </div>
+
+            <button class="btn btn-blue" onclick="window.print()">
+                🖨 Print Records
+            </button>
+
+        </div>
+
+
+        <div class="filters">
+
+            <input
+                type="date"
+                id="recordDate"
+                onchange="loadRecords()"
+            >
+
+            <select id="recordType" onchange="loadRecords()">
+                <option value="">All Types</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+            </select>
+
+            <select id="recordStatus" onchange="loadRecords()">
+                <option value="">All Statuses</option>
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+                <option value="Late">Late</option>
+                <option value="Excused">Excused</option>
+            </select>
+
+            <input
+                type="text"
+                id="recordSearch"
+                placeholder="Search name..."
+                oninput="loadRecords()"
+            >
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>ID</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+
+                <tbody id="recordsTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <section id="summaryTab" class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>📊 Attendance Summary</h2>
+                <p style="color:#64748b;">
+                    Daily and monthly attendance statistics.
+                </p>
+            </div>
+
+            <button class="btn btn-blue" onclick="window.print()">
+                🖨 Print Summary
+            </button>
+
+        </div>
+
+
+        <div class="filters">
+
+            <input
+                type="date"
+                id="summaryDate"
+                onchange="generateSummary()"
+            >
+
+            <input
+                type="month"
+                id="summaryMonth"
+                onchange="generateSummary()"
+            >
+
+            <select id="summaryType" onchange="generateSummary()">
+                <option value="All">Students & Teachers</option>
+                <option value="Student">Students Only</option>
+                <option value="Teacher">Teachers Only</option>
+            </select>
+
+            <div></div>
+
+        </div>
+
+
+        <h3>📅 Selected Day</h3>
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <h3>Present</h3>
+                <strong id="dailyPresent">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Absent</h3>
+                <strong id="dailyAbsent">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Late</h3>
+                <strong id="dailyLate">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Excused</h3>
+                <strong id="dailyExcused">0</strong>
+            </div>
+
+        </div>
+
+
+        <h3>📆 Selected Month</h3>
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <h3>Present</h3>
+                <strong id="monthlyPresent">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Absent</h3>
+                <strong id="monthlyAbsent">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Late</h3>
+                <strong id="monthlyLate">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Excused</h3>
+                <strong id="monthlyExcused">0</strong>
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Number of Records</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+
+                <tbody id="summaryTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================= NOTES MODAL ================= -->
+
+<div class="modal" id="notesModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Attendance Notes</h2>
+
+            <button class="close" onclick="closeNotesModal()">
+                ×
+            </button>
+        </div>
+
+        <div class="form-group">
+
+            <label>Notes</label>
+
+            <textarea
+                id="attendanceNotes"
+                rows="5"
+                placeholder="Optional attendance note..."
+            ></textarea>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button
+                class="btn btn-light"
+                onclick="closeNotesModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="saveNotes()"
+            >
+                Save Note
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+    /* =====================================================
+       MARKAZ CONTROL SYSTEM
+       ATTENDANCE MANAGEMENT
+       ===================================================== */
+
+    const ATTENDANCE_KEY = "markaz_attendance";
+    const STUDENTS_KEY = "markaz_students";
+    const TEACHERS_KEY = "markaz_teachers";
+
+
+    let students = [];
+    let teachers = [];
+    let attendance = [];
+
+    let pendingNote = null;
+
+
+    /* =====================================================
+       STARTUP
+       ===================================================== */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        setToday();
+
+        loadData();
+
+        loadTeacherFilter();
+
+        loadStudentAttendance();
+
+        loadTeacherAttendance();
+
+        loadRecords();
+
+        generateSummary();
+
+        updateDashboardStats();
+
+    });
+
+
+    /* =====================================================
+       DATE
+       ===================================================== */
+
+    function getToday() {
+
+        const date = new Date();
+
+        const year = date.getFullYear();
+
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    function setToday() {
+
+        const today = getToday();
+
+        document.getElementById("studentDate").value = today;
+
+        document.getElementById("teacherDate").value = today;
+
+        document.getElementById("recordDate").value = today;
+
+        document.getElementById("summaryDate").value = today;
+
+        document.getElementById("summaryMonth").value =
+            today.substring(0, 7);
+
+    }
+
+
+    /* =====================================================
+       LOAD DATA
+       ===================================================== */
+
+    function loadData() {
+
+        try {
+
+            students =
+                JSON.parse(localStorage.getItem(STUDENTS_KEY)) || [];
+
+        } catch (error) {
+
+            students = [];
+
+        }
+
+
+        try {
+
+            teachers =
+                JSON.parse(localStorage.getItem(TEACHERS_KEY)) || [];
+
+        } catch (error) {
+
+            teachers = [];
+
+        }
+
+
+        try {
+
+            attendance =
+                JSON.parse(localStorage.getItem(ATTENDANCE_KEY)) || [];
+
+        } catch (error) {
+
+            attendance = [];
+
+        }
+
+    }
+
+
+    function saveAttendanceData() {
+
+        localStorage.setItem(
+            ATTENDANCE_KEY,
+            JSON.stringify(attendance)
+        );
+
+    }
+
+
+    /* =====================================================
+       TEACHER FILTER
+       ===================================================== */
+
+    function loadTeacherFilter() {
+
+        const select =
+            document.getElementById("studentTeacher");
+
+        select.innerHTML =
+            '<option value="">All Teachers</option>';
+
+
+        teachers.forEach(function (teacher) {
+
+            const option = document.createElement("option");
+
+            option.value = teacher.name || "";
+
+            option.textContent = teacher.name || "Unnamed Teacher";
+
+            select.appendChild(option);
+
+        });
+
+    }
+
+
+    /* =====================================================
+       STUDENT ATTENDANCE
+       ===================================================== */
+
+    function loadStudentAttendance() {
+
+        const tbody =
+            document.getElementById("studentAttendanceTable");
+
+        const date =
+            document.getElementById("studentDate").value;
+
+        const search =
+            document.getElementById("studentSearch").value
+            .toLowerCase();
+
+        const level =
+            document.getElementById("studentLevel").value;
+
+        const teacher =
+            document.getElementById("studentTeacher").value;
+
+
+        let filtered = students.filter(function (student) {
+
+            const name =
+                (student.name || "").toLowerCase();
+
+            const id =
+                (student.id || "").toLowerCase();
+
+            const studentLevel =
+                student.level || "";
+
+            const studentTeacher =
+                student.teacher || "";
+
+
+            const matchesSearch =
+                name.includes(search) ||
+                id.includes(search);
+
+            const matchesLevel =
+                !level ||
+                studentLevel === level;
+
+            const matchesTeacher =
+                !teacher ||
+                studentTeacher === teacher;
+
+
+            return (
+                matchesSearch &&
+                matchesLevel &&
+                matchesTeacher
+            );
+
+        });
+
+
+        if (filtered.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty">
+                            👨‍🎓 No students found.
+                            <br><br>
+                            Add students from Student Management.
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        tbody.innerHTML = filtered.map(function (student, index) {
+
+            const existing =
+                getAttendance(
+                    "Student",
+                    student.id,
+                    date
+                );
+
+
+            const status =
+                existing ? existing.status : "";
+
+
+            return `
+                <tr>
+
+                    <td>${index + 1}</td>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(student.name || "Unnamed")}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.id || "-")}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.level || "-")}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.teacher || "-")}
+                    </td>
+
+                    <td>
+
+                        <div class="attendance-buttons">
+
+                            ${attendanceButton(
+                                "Student",
+                                student.id,
+                                date,
+                                "Present",
+                                status
+                            )}
+
+                            ${attendanceButton(
+                                "Student",
+                                student.id,
+                                date,
+                                "Absent",
+                                status
+                            )}
+
+                            ${attendanceButton(
+                                "Student",
+                                student.id,
+                                date,
+                                "Late",
+                                status
+                            )}
+
+                            ${attendanceButton(
+                                "Student",
+                                student.id,
+                                date,
+                                "Excused",
+                                status
+                            )}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+    }
+
+
+    /* =====================================================
+       TEACHER ATTENDANCE
+       ===================================================== */
+
+    function loadTeacherAttendance() {
+
+        const tbody =
+            document.getElementById("teacherAttendanceTable");
+
+        const date =
+            document.getElementById("teacherDate").value;
+
+        const search =
+            document.getElementById("teacherSearch").value
+            .toLowerCase();
+
+        const statusFilter =
+            document.getElementById("teacherStatusFilter").value;
+
+
+        let filtered = teachers.filter(function (teacher) {
+
+            const name =
+                (teacher.name || "").toLowerCase();
+
+            const id =
+                (teacher.id || "").toLowerCase();
+
+            const teacherStatus =
+                teacher.status || "Active";
+
+
+            const matchesSearch =
+                name.includes(search) ||
+                id.includes(search);
+
+            const matchesStatus =
+                !statusFilter ||
+                teacherStatus === statusFilter;
+
+
+            return matchesSearch && matchesStatus;
+
+        });
+
+
+        if (filtered.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+
+                        <div class="empty">
+                            👨‍🏫 No teachers found.
+                            <br><br>
+                            Add teachers from Teacher & Halaqa Management.
+                        </div>
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        tbody.innerHTML = filtered.map(function (teacher, index) {
+
+            const existing =
+                getAttendance(
+                    "Teacher",
+                    teacher.id,
+                    date
+                );
+
+
+            const status =
+                existing ? existing.status : "";
+
+
+            return `
+                <tr>
+
+                    <td>${index + 1}</td>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(teacher.name || "Unnamed")}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(teacher.id || "-")}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            teacher.specialization || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            teacher.status || "Active"
+                        )}
+                    </td>
+
+                    <td>
+
+                        <div class="attendance-buttons">
+
+                            ${attendanceButton(
+                                "Teacher",
+                                teacher.id,
+                                date,
+                                "Present",
+                                status
+                            )}
+
+                            ${attendanceButton(
+                                "Teacher",
+                                teacher.id,
+                                date,
+                                "Absent",
+                                status
+                            )}
+
+                            ${attendanceButton(
+                                "Teacher",
+                                teacher.id,
+                                date,
+                                "Late",
+                                status
+                            )}
+
+                            ${attendanceButton(
+                                "Teacher",
+                                teacher.id,
+                                date,
+                                "Excused",
+                                status
+                            )}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+    }
+
+
+    /* =====================================================
+       ATTENDANCE BUTTON
+       ===================================================== */
+
+    function attendanceButton(
+        type,
+        personId,
+        date,
+        status,
+        currentStatus
+    ) {
+
+        let selectedClass = "";
+
+        if (currentStatus === status) {
+
+            selectedClass =
+                "selected-" + status.toLowerCase();
+
+        }
+
+
+        return `
+            <button
+                class="attendance-btn ${selectedClass}"
+                onclick="setAttendance(
+                    '${type}',
+                    '${escapeJS(personId)}',
+                    '${date}',
+                    '${status}'
+                )"
+            >
+                ${status}
+            </button>
+        `;
+
+    }
+
+
+    /* =====================================================
+       SET ATTENDANCE
+       ===================================================== */
+
+    function setAttendance(
+        type,
+        personId,
+        date,
+        status
+    ) {
+
+        const person =
+            type === "Student"
+                ? students.find(s => String(s.id) === String(personId))
+                : teachers.find(t => String(t.id) === String(personId));
+
+
+        if (!person) {
+
+            showToast("Person not found.");
+
+            return;
+
+        }
+
+
+        let existingIndex =
+            attendance.findIndex(function (record) {
+
+                return (
+                    record.type === type &&
+                    String(record.personId) === String(personId) &&
+                    record.date === date
+                );
+
+            });
+
+
+        const record = {
+
+            id:
+                existingIndex >= 0
+                    ? attendance[existingIndex].id
+                    : "ATT-" + Date.now(),
+
+            type: type,
+
+            personId: person.id,
+
+            name: person.name || "",
+
+            date: date,
+
+            status: status,
+
+            notes:
+                existingIndex >= 0
+                    ? attendance[existingIndex].notes || ""
+                    : "",
+
+            createdAt:
+                existingIndex >= 0
+                    ? attendance[existingIndex].createdAt
+                    : new Date().toISOString(),
+
+            updatedAt:
+                new Date().toISOString()
+
+        };
+
+
+        if (existingIndex >= 0) {
+
+            attendance[existingIndex] = record;
+
+        } else {
+
+            attendance.push(record);
+
+        }
+
+
+        saveAttendanceData();
+
+
+        if (type === "Student") {
+
+            loadStudentAttendance();
+
+        } else {
+
+            loadTeacherAttendance();
+
+        }
+
+
+        loadRecords();
+
+        generateSummary();
+
+        updateDashboardStats();
+
+        showToast(
+            `${person.name} marked ${status}.`
+        );
+
+    }
+
+
+    /* =====================================================
+       MARK ALL
+       ===================================================== */
+
+    function markAllStudents(status) {
+
+        const date =
+            document.getElementById("studentDate").value;
+
+        const search =
+            document.getElementById("studentSearch").value
+            .toLowerCase();
+
+        const level =
+            document.getElementById("studentLevel").value;
+
+        const teacher =
+            document.getElementById("studentTeacher").value;
+
+
+        const filtered =
+            students.filter(function (student) {
+
+                const name =
+                    (student.name || "").toLowerCase();
+
+                const id =
+                    (student.id || "").toLowerCase();
+
+                return (
+                    (name.includes(search) ||
+                    id.includes(search)) &&
+
+                    (!level ||
+                    student.level === level) &&
+
+                    (!teacher ||
+                    student.teacher === teacher)
+                );
+
+            });
+
+
+        filtered.forEach(function (student) {
+
+            setAttendanceSilent(
+                "Student",
+                student.id,
+                date,
+                status
+            );
+
+        });
+
+
+        saveAttendanceData();
+
+        loadStudentAttendance();
+
+        loadRecords();
+
+        generateSummary();
+
+        updateDashboardStats();
+
+        showToast(
+            `${filtered.length} students marked ${status}.`
+        );
+
+    }
+
+
+    function markAllTeachers(status) {
+
+        const date =
+            document.getElementById("teacherDate").value;
+
+
+        teachers.forEach(function (teacher) {
+
+            setAttendanceSilent(
+                "Teacher",
+                teacher.id,
+                date,
+                status
+            );
+
+        });
+
+
+        saveAttendanceData();
+
+        loadTeacherAttendance();
+
+        loadRecords();
+
+        generateSummary();
+
+        updateDashboardStats();
+
+        showToast(
+            `${teachers.length} teachers marked ${status}.`
+        );
+
+    }
+
+
+    function setAttendanceSilent(
+        type,
+        personId,
+        date,
+        status
+    ) {
+
+        const person =
+            type === "Student"
+                ? students.find(s => String(s.id) === String(personId))
+                : teachers.find(t => String(t.id) === String(personId));
+
+
+        if (!person) return;
+
+
+        const index =
+            attendance.findIndex(function (record) {
+
+                return (
+                    record.type === type &&
+                    String(record.personId) === String(personId) &&
+                    record.date === date
+                );
+
+            });
+
+
+        const record = {
+
+            id:
+                index >= 0
+                    ? attendance[index].id
+                    : "ATT-" + Date.now() + Math.random(),
+
+            type: type,
+
+            personId: person.id,
+
+            name: person.name || "",
+
+            date: date,
+
+            status: status,
+
+            notes:
+                index >= 0
+                    ? attendance[index].notes || ""
+                    : "",
+
+            createdAt:
+                index >= 0
+                    ? attendance[index].createdAt
+                    : new Date().toISOString(),
+
+            updatedAt:
+                new Date().toISOString()
+
+        };
+
+
+        if (index >= 0) {
+
+            attendance[index] = record;
+
+        } else {
+
+            attendance.push(record);
+
+        }
+
+    }
+
+
+    function saveStudentAttendance() {
+
+        saveAttendanceData();
+
+        showToast(
+            "Student attendance saved successfully."
+        );
+
+        updateDashboardStats();
+
+    }
+
+
+    function saveTeacherAttendance() {
+
+        saveAttendanceData();
+
+        showToast(
+            "Teacher attendance saved successfully."
+        );
+
+        updateDashboardStats();
+
+    }
+
+
+    /* =====================================================
+       GET ATTENDANCE
+       ===================================================== */
+
+    function getAttendance(
+        type,
+        personId,
+        date
+    ) {
+
+        return attendance.find(function (record) {
+
+            return (
+                record.type === type &&
+                String(record.personId) === String(personId) &&
+                record.date === date
+            );
+
+        });
+
+    }
+
+
+    /* =====================================================
+       RECORDS
+       ===================================================== */
+
+    function loadRecords() {
+
+        const tbody =
+            document.getElementById("recordsTable");
+
+
+        const date =
+            document.getElementById("recordDate").value;
+
+        const type =
+            document.getElementById("recordType").value;
+
+        const status =
+            document.getElementById("recordStatus").value;
+
+        const search =
+            document.getElementById("recordSearch").value
+            .toLowerCase();
+
+
+        let records =
+            [...attendance].sort(function (a, b) {
+
+                return b.date.localeCompare(a.date);
+
+            });
+
+
+        records =
+            records.filter(function (record) {
+
+                const matchesDate =
+                    !date ||
+                    record.date === date;
+
+                const matchesType =
+                    !type ||
+                    record.type === type;
+
+                const matchesStatus =
+                    !status ||
+                    record.status === status;
+
+                const matchesSearch =
+                    !search ||
+                    (record.name || "")
+                        .toLowerCase()
+                        .includes(search);
+
+
+                return (
+                    matchesDate &&
+                    matchesType &&
+                    matchesStatus &&
+                    matchesSearch
+                );
+
+            });
+
+
+        if (records.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+
+                        <div class="empty">
+                            📋 No attendance records found.
+                        </div>
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        tbody.innerHTML =
+            records.map(function (record) {
+
+                return `
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(record.date)}
+                        </td>
+
+                        <td>
+                            ${record.type === "Student"
+                                ? "👨‍🎓 Student"
+                                : "👨‍🏫 Teacher"}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHTML(record.name)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                record.personId || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            <span class="status ${record.status.toLowerCase()}">
+                                ${escapeHTML(record.status)}
+                            </span>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                record.notes || "-"
+                            )}
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+    }
+
+
+    /* =====================================================
+       SUMMARY
+       ===================================================== */
+
+    function generateSummary() {
+
+        const date =
+            document.getElementById("summaryDate").value;
+
+        const month =
+            document.getElementById("summaryMonth").value;
+
+        const type =
+            document.getElementById("summaryType").value;
+
+
+        const dailyRecords =
+            attendance.filter(function (record) {
+
+                return (
+                    record.date === date &&
+                    (
+                        type === "All" ||
+                        record.type === type
+                    )
+                );
+
+            });
+
+
+        const monthlyRecords =
+            attendance.filter(function (record) {
+
+                return (
+                    record.date.startsWith(month) &&
+                    (
+                        type === "All" ||
+                        record.type === type
+                    )
+                );
+
+            });
+
+
+        const daily =
+            countStatuses(dailyRecords);
+
+        const monthly =
+            countStatuses(monthlyRecords);
+
+
+        document.getElementById("dailyPresent").textContent =
+            daily.Present;
+
+        document.getElementById("dailyAbsent").textContent =
+            daily.Absent;
+
+        document.getElementById("dailyLate").textContent =
+            daily.Late;
+
+        document.getElementById("dailyExcused").textContent =
+            daily.Excused;
+
+
+        document.getElementById("monthlyPresent").textContent =
+            monthly.Present;
+
+        document.getElementById("monthlyAbsent").textContent =
+            monthly.Absent;
+
+        document.getElementById("monthlyLate").textContent =
+            monthly.Late;
+
+        document.getElementById("monthlyExcused").textContent =
+            monthly.Excused;
+
+
+        const total =
+            monthly.Present +
+            monthly.Absent +
+            monthly.Late +
+            monthly.Excused;
+
+
+        document.getElementById("summaryTable").innerHTML = `
+
+            ${summaryRow(
+                "Present",
+                monthly.Present,
+                total
+            )}
+
+            ${summaryRow(
+                "Absent",
+                monthly.Absent,
+                total
+            )}
+
+            ${summaryRow(
+                "Late",
+                monthly.Late,
+                total
+            )}
+
+            ${summaryRow(
+                "Excused",
+                monthly.Excused,
+                total
+            )}
+
+        `;
+
+    }
+
+
+    function countStatuses(records) {
+
+        const result = {
+
+            Present: 0,
+
+            Absent: 0,
+
+            Late: 0,
+
+            Excused: 0
+
+        };
+
+
+        records.forEach(function (record) {
+
+            if (result.hasOwnProperty(record.status)) {
+
+                result[record.status]++;
+
+            }
+
+        });
+
+
+        return result;
+
+    }
+
+
+    function summaryRow(
+        status,
+        number,
+        total
+    ) {
+
+        const percentage =
+            total === 0
+                ? 0
+                : ((number / total) * 100).toFixed(1);
+
+
+        return `
+            <tr>
+
+                <td>
+                    <span class="status ${status.toLowerCase()}">
+                        ${status}
+                    </span>
+                </td>
+
+                <td>
+                    ${number}
+                </td>
+
+                <td>
+                    ${percentage}%
+                </td>
+
+            </tr>
+        `;
+
+    }
+
+
+    /* =====================================================
+       DASHBOARD STATISTICS
+       ===================================================== */
+
+    function updateDashboardStats() {
+
+        const today =
+            getToday();
+
+
+        const studentRecords =
+            attendance.filter(function (record) {
+
+                return (
+                    record.type === "Student" &&
+                    record.date === today
+                );
+
+            });
+
+
+        const teacherRecords =
+            attendance.filter(function (record) {
+
+                return (
+                    record.type === "Teacher" &&
+                    record.date === today
+                );
+
+            });
+
+
+        const studentsPresent =
+            studentRecords.filter(
+                r => r.status === "Present"
+            ).length;
+
+
+        const teachersPresent =
+            teacherRecords.filter(
+                r => r.status === "Present"
+            ).length;
+
+
+        const studentTotal =
+            students.length;
+
+
+        const teacherTotal =
+            teachers.length;
+
+
+        const studentRate =
+            studentTotal === 0
+                ? 0
+                : Math.round(
+                    (studentsPresent / studentTotal) * 100
+                );
+
+
+        const teacherRate =
+            teacherTotal === 0
+                ? 0
+                : Math.round(
+                    (teachersPresent / teacherTotal) * 100
+                );
+
+
+        document.getElementById(
+            "studentsPresent"
+        ).textContent =
+            studentsPresent;
+
+
+        document.getElementById(
+            "teachersPresent"
+        ).textContent =
+            teachersPresent;
+
+
+        document.getElementById(
+            "studentAttendanceRate"
+        ).textContent =
+            studentRate + "%";
+
+
+        document.getElementById(
+            "teacherAttendanceRate"
+        ).textContent =
+            teacherRate + "%";
+
+    }
+
+
+    /* =====================================================
+       TABS
+       ===================================================== */
+
+    function showTab(
+        tabId,
+        button
+    ) {
+
+        document
+            .querySelectorAll(".panel")
+            .forEach(function (panel) {
+
+                panel.classList.remove("active");
+
+            });
+
+
+        document
+            .querySelectorAll(".tab-btn")
+            .forEach(function (btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+
+        document
+            .getElementById(tabId)
+            .classList.add("active");
+
+
+        button.classList.add("active");
+
+
+        if (tabId === "studentTab") {
+
+            loadStudentAttendance();
+
+        }
+
+
+        if (tabId === "teacherTab") {
+
+            loadTeacherAttendance();
+
+        }
+
+
+        if (tabId === "recordsTab") {
+
+            loadRecords();
+
+        }
+
+
+        if (tabId === "summaryTab") {
+
+            generateSummary();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NOTES
+       ===================================================== */
+
+    function openNotesModal(
+        type,
+        personId,
+        date
+    ) {
+
+        pendingNote = {
+            type,
+            personId,
+            date
+        };
+
+
+        const existing =
+            getAttendance(
+                type,
+                personId,
+                date
+            );
+
+
+        document.getElementById(
+            "attendanceNotes"
+        ).value =
+            existing
+                ? existing.notes || ""
+                : "";
+
+
+        document
+            .getElementById("notesModal")
+            .classList.add("show");
+
+    }
+
+
+    function closeNotesModal() {
+
+        document
+            .getElementById("notesModal")
+            .classList.remove("show");
+
+        pendingNote = null;
+
+    }
+
+
+    function saveNotes() {
+
+        if (!pendingNote) return;
+
+
+        const record =
+            getAttendance(
+                pendingNote.type,
+                pendingNote.personId,
+                pendingNote.date
+            );
+
+
+        if (!record) {
+
+            showToast(
+                "Please select an attendance status first."
+            );
+
+            closeNotesModal();
+
+            return;
+
+        }
+
+
+        record.notes =
+            document.getElementById(
+                "attendanceNotes"
+            ).value.trim();
+
+
+        record.updatedAt =
+            new Date().toISOString();
+
+
+        saveAttendanceData();
+
+        loadRecords();
+
+        closeNotesModal();
+
+        showToast(
+            "Attendance note saved."
+        );
+
+    }
+
+
+    /* =====================================================
+       SECURITY HELPERS
+       ===================================================== */
+
+    function escapeHTML(value) {
+
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function escapeJS(value) {
+
+        return String(value || "")
+            .replace(/\\/g, "\\\\")
+            .replace(/'/g, "\\'");
+
+    }
+
+
+    /* =====================================================
+       TOAST
+       ===================================================== */
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+
+        setTimeout(function () {
+
+            toast.classList.remove("show");
+
+        }, 2500);
+
+    }
+
+</script>
+
+</body>
+</html>
+```

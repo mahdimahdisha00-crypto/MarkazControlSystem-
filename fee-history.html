@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Fee History - Markaz Control System</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+h1{
+    color:#2563eb;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+}
+
+th{
+    background:#2563eb;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<h1>Fee Payment History</h1>
+
+<button onclick="loadFees()">
+Load Fee Records
+</button>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Student ID</th>
+<th>Amount</th>
+<th>Month</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="feeTable">
+</tbody>
+</table>
+
+<script>
+async function loadFees(){
+
+    const response =
+    await fetch("http://localhost:5000/api/fees");
+
+    const data =
+    await response.json();
+
+    let rows = "";
+
+    data.forEach(fee => {
+
+        rows += `
+        <tr>
+            <td>${fee.id}</td>
+            <td>${fee.studentId}</td>
+            <td>${fee.amount}</td>
+            <td>${fee.month}</td>
+            <td>${fee.status}</td>
+        </tr>
+        `;
+
+    });
+
+    document.getElementById("feeTable").innerHTML = rows;
+}
+</script>
+
+</body>
+</html>

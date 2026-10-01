@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher Portal</title>
+</head>
+<body>
+
+<h1>Teacher Portal</h1>
+
+<ul>
+  <li>My Students</li>
+  <li>Attendance</li>
+  <li>Daily Sabqi</li>
+  <li>Manzil Revision</li>
+  <li>Hifz Records</li>
+  <li>Reports</li>
+</ul>
+
+<h2>Teacher Dashboard</h2>
+
+<p>Total Students: <span id="students">0</span></p>
+
+<button onclick="loadStudents()">Load My Students</button>
+
+<script>
+async function loadStudents() {
+  const response = await fetch("http://localhost:5000/api/students");
+  const students = await response.json();
+
+  document.getElementById("students").innerText = students.length;
+}
+</script>
+
+</body>
+</html>

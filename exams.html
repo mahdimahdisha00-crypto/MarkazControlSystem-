@@ -1,0 +1,3427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Markaz Control System - Exams & Khatm</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #0b5cab;
+    --primary-dark: #08457f;
+    --secondary: #0f766e;
+    --success: #15803d;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --purple: #7c3aed;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --text: #172033;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    background: linear-gradient(135deg, #08457f, #0b5cab);
+    color: white;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.header p {
+    margin: 5px 0 0;
+    opacity: 0.85;
+    font-size: 13px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: white;
+    background: rgba(255,255,255,0.13);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* ================= PAGE ================= */
+
+.container {
+    max-width: 1500px;
+    margin: auto;
+    padding: 25px;
+}
+
+/* ================= STATISTICS ================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    right: -25px;
+    bottom: -30px;
+    background: rgba(11,92,171,0.08);
+}
+
+.stat-icon {
+    font-size: 27px;
+}
+
+.stat-value {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.stat-label {
+    color: var(--muted);
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+/* ================= TABS ================= */
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    border: none;
+    background: white;
+    color: #374151;
+    padding: 12px 17px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid var(--border);
+}
+
+.tab-btn:hover {
+    background: #eef6ff;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ================= CARD ================= */
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 20px;
+}
+
+.card-subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* ================= FORM ================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-family: inherit;
+    background: white;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(11,92,171,0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.required {
+    color: var(--danger);
+}
+
+/* ================= BUTTONS ================= */
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 17px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+thead {
+    background: #f1f5f9;
+}
+
+th,
+td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-size: 13px;
+}
+
+th {
+    color: #374151;
+    font-weight: bold;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* ================= BADGES ================= */
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-purple {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+/* ================= FILTERS ================= */
+
+.filters {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+/* ================= EMPTY ================= */
+
+.empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+}
+
+.empty-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+/* ================= MILESTONES ================= */
+
+.milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.milestone-card {
+    background: linear-gradient(145deg, #ffffff, #f7fafc);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.milestone-icon {
+    font-size: 38px;
+}
+
+.milestone-number {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0b5cab, #0f766e);
+    border-radius: 20px;
+}
+
+/* ================= MODAL ================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 25px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close {
+    border: none;
+    background: #f1f5f9;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* ================= NOTIFICATION ================= */
+
+.notification {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #111827;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    display: none;
+    z-index: 2000;
+    box-shadow: var(--shadow);
+}
+
+.notification.show {
+    display: block;
+}
+
+.notification.success {
+    background: #166534;
+}
+
+.notification.error {
+    background: #991b1b;
+}
+
+/* ================= PRINT ================= */
+
+@media print {
+
+    .header,
+    .tabs,
+    .filters,
+    .form-actions,
+    .btn,
+    .back-btn {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1100px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .milestone-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .header {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 18px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .milestone-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 17px;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header-left {
+        gap: 8px;
+    }
+
+    .logo {
+        width: 43px;
+        height: 43px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div class="header-left">
+
+        <div class="logo">
+            📝
+        </div>
+
+        <div>
+            <h1>Exams & Khatm</h1>
+            <p>Hifz Examinations • Revision Tests • Khatm • Memorization Milestones</p>
+        </div>
+
+    </div>
+
+    <a href="dashboard.html" class="back-btn">
+        ← Dashboard
+    </a>
+
+</header>
+
+
+<div class="container">
+
+<!-- ================= STATISTICS ================= -->
+
+<section class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value" id="totalExams">0</div>
+        <div class="stat-label">Total Examinations</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="passedExams">0</div>
+        <div class="stat-label">Successful Results</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-value" id="revisionTests">0</div>
+        <div class="stat-label">Revision Tests</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🕋</div>
+        <div class="stat-value" id="khatmCount">0</div>
+        <div class="stat-label">Khatm Records</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value" id="milestoneCount">0</div>
+        <div class="stat-label">Milestones</div>
+    </div>
+
+</section>
+
+
+<!-- ================= TABS ================= -->
+
+<div class="tabs">
+
+    <button class="tab-btn active" onclick="showTab('examTab', this)">
+        📝 New Examination
+    </button>
+
+    <button class="tab-btn" onclick="showTab('resultsTab', this)">
+        📊 Exam Results
+    </button>
+
+    <button class="tab-btn" onclick="showTab('revisionTab', this)">
+        🔄 Revision Tests
+    </button>
+
+    <button class="tab-btn" onclick="showTab('khatmTab', this)">
+        🕋 Khatm Records
+    </button>
+
+    <button class="tab-btn" onclick="showTab('milestoneTab', this)">
+        🏆 Milestones
+    </button>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- NEW EXAMINATION -->
+<!-- ========================================================= -->
+
+<section id="examTab" class="tab-content active">
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+            <h2 class="card-title">📝 Hifz Examination</h2>
+            <div class="card-subtitle">
+                Record a student's Hifz examination and performance.
+            </div>
+        </div>
+
+    </div>
+
+
+<form id="examForm">
+
+<div class="form-grid">
+
+    <div class="form-group">
+        <label>
+            Student <span class="required">*</span>
+        </label>
+
+        <select id="examStudent" required>
+            <option value="">Select Student</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label>Teacher</label>
+
+        <select id="examTeacher">
+            <option value="">Select Teacher</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label>
+            Examination Date <span class="required">*</span>
+        </label>
+
+        <input
+            type="date"
+            id="examDate"
+            required
+        >
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+            Examination Type <span class="required">*</span>
+        </label>
+
+        <select id="examType" required>
+
+            <option value="">
+                Select Type
+            </option>
+
+            <option value="Hifz Examination">
+                Hifz Examination
+            </option>
+
+            <option value="Revision Test">
+                Revision Test
+            </option>
+
+            <option value="Juz Examination">
+                Juz Examination
+            </option>
+
+            <option value="Surah Examination">
+                Surah Examination
+            </option>
+
+            <option value="Monthly Test">
+                Monthly Test
+            </option>
+
+            <option value="Quarterly Examination">
+                Quarterly Examination
+            </option>
+
+            <option value="Final Examination">
+                Final Examination
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Surah</label>
+
+        <select id="examSurah">
+
+            <option value="">
+                Select Surah
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Juz</label>
+
+        <select id="examJuz">
+
+            <option value="">
+                Select Juz
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Ayah From</label>
+
+        <input
+            type="number"
+            id="examAyahFrom"
+            min="1"
+            placeholder="Example: 1"
+        >
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Ayah To</label>
+
+        <input
+            type="number"
+            id="examAyahTo"
+            min="1"
+            placeholder="Example: 10"
+        >
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Grade</label>
+
+        <select id="examGrade">
+
+            <option value="">
+                Select Grade
+            </option>
+
+            <option value="Excellent">
+                Excellent — Mumtaz
+            </option>
+
+            <option value="Very Good">
+                Very Good — Jayyid Jiddan
+            </option>
+
+            <option value="Good">
+                Good — Jayyid
+            </option>
+
+            <option value="Needs Improvement">
+                Needs Improvement — Daeef
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Result</label>
+
+        <select id="examResult">
+
+            <option value="">
+                Select Result
+            </option>
+
+            <option value="Passed">
+                Passed
+            </option>
+
+            <option value="Passed with Revision">
+                Passed with Revision
+            </option>
+
+            <option value="Needs Improvement">
+                Needs Improvement
+            </option>
+
+            <option value="Retest Required">
+                Retest Required
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Tajweed Mistakes</label>
+
+        <input
+            type="number"
+            id="tajweedMistakes"
+            min="0"
+            value="0"
+        >
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Memory Mistakes</label>
+
+        <input
+            type="number"
+            id="memoryMistakes"
+            min="0"
+            value="0"
+        >
+
+    </div>
+
+
+    <div class="form-group full">
+
+        <label>Exam Notes</label>
+
+        <textarea
+            id="examNotes"
+            placeholder="Teacher comments, strengths, weaknesses and recommendations..."
+        ></textarea>
+
+    </div>
+
+</div>
+
+
+<div class="form-actions">
+
+    <button
+        type="submit"
+        class="btn btn-primary"
+    >
+        💾 Save Examination
+    </button>
+
+    <button
+        type="reset"
+        class="btn btn-secondary"
+        onclick="resetExamForm()"
+    >
+        ↻ Reset
+    </button>
+
+</div>
+
+</form>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- RESULTS -->
+<!-- ========================================================= -->
+
+<section id="resultsTab" class="tab-content">
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+            <h2 class="card-title">📊 Examination Results</h2>
+            <div class="card-subtitle">
+                Review recorded Hifz examination results.
+            </div>
+        </div>
+
+        <button
+            class="btn btn-secondary"
+            onclick="window.print()"
+        >
+            🖨 Print
+        </button>
+
+    </div>
+
+
+<div class="filters">
+
+    <input
+        type="text"
+        id="examSearch"
+        placeholder="🔎 Search student, surah or teacher..."
+        oninput="renderExams()"
+    >
+
+    <select
+        id="resultFilter"
+        onchange="renderExams()"
+    >
+        <option value="">All Results</option>
+        <option value="Passed">Passed</option>
+        <option value="Passed with Revision">Passed with Revision</option>
+        <option value="Needs Improvement">Needs Improvement</option>
+        <option value="Retest Required">Retest Required</option>
+    </select>
+
+
+    <select
+        id="gradeFilter"
+        onchange="renderExams()"
+    >
+        <option value="">All Grades</option>
+        <option value="Excellent">Excellent</option>
+        <option value="Very Good">Very Good</option>
+        <option value="Good">Good</option>
+        <option value="Needs Improvement">Needs Improvement</option>
+    </select>
+
+
+    <input
+        type="date"
+        id="examDateFilter"
+        onchange="renderExams()"
+    >
+
+</div>
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Student</th>
+<th>Teacher</th>
+<th>Type</th>
+<th>Surah</th>
+<th>Juz</th>
+<th>Grade</th>
+<th>Result</th>
+<th>Mistakes</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="examTableBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- REVISION TESTS -->
+<!-- ========================================================= -->
+
+<section id="revisionTab" class="tab-content">
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2 class="card-title">
+                🔄 Revision Tests
+            </h2>
+
+            <div class="card-subtitle">
+                Monitor old and recent memorization through revision testing.
+            </div>
+
+        </div>
+
+    </div>
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Student</th>
+<th>Teacher</th>
+<th>Surah</th>
+<th>Juz</th>
+<th>Grade</th>
+<th>Result</th>
+<th>Notes</th>
+
+</tr>
+
+</thead>
+
+<tbody id="revisionTableBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- KHATM -->
+<!-- ========================================================= -->
+
+<section id="khatmTab" class="tab-content">
+
+<div class="card">
+
+<div class="card-header">
+
+    <div>
+
+        <h2 class="card-title">
+            🕋 Khatm Record
+        </h2>
+
+        <div class="card-subtitle">
+            Record Quran memorization completion and important milestones.
+        </div>
+
+    </div>
+
+</div>
+
+
+<form id="khatmForm">
+
+<div class="form-grid">
+
+    <div class="form-group">
+
+        <label>
+            Student <span class="required">*</span>
+        </label>
+
+        <select id="khatmStudent" required>
+
+            <option value="">
+                Select Student
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+            Date <span class="required">*</span>
+        </label>
+
+        <input
+            type="date"
+            id="khatmDate"
+            required
+        >
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+            Juz Completed
+        </label>
+
+        <input
+            type="number"
+            id="juzCompleted"
+            min="0"
+            max="30"
+            placeholder="Example: 30"
+        >
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+            Total Juz
+        </label>
+
+        <input
+            type="number"
+            id="totalJuz"
+            value="30"
+            min="1"
+            max="30"
+        >
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+            Milestone
+        </label>
+
+        <select id="khatmMilestone">
+
+            <option value="">
+                Select Milestone
+            </option>
+
+            <option value="First Juz">
+                First Juz Completed
+            </option>
+
+            <option value="5 Juz">
+                5 Juz Completed
+            </option>
+
+            <option value="10 Juz">
+                10 Juz Completed
+            </option>
+
+            <option value="15 Juz">
+                15 Juz Completed
+            </option>
+
+            <option value="20 Juz">
+                20 Juz Completed
+            </option>
+
+            <option value="25 Juz">
+                25 Juz Completed
+            </option>
+
+            <option value="30 Juz">
+                30 Juz — Khatm Completed
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group full">
+
+        <label>
+            Khatm Notes
+        </label>
+
+        <textarea
+            id="khatmNotes"
+            placeholder="Record ceremony details, teacher comments or other important information..."
+        ></textarea>
+
+    </div>
+
+</div>
+
+
+<div class="form-actions">
+
+    <button
+        type="submit"
+        class="btn btn-success"
+    >
+        🕋 Save Khatm Record
+    </button>
+
+    <button
+        type="reset"
+        class="btn btn-secondary"
+    >
+        ↻ Reset
+    </button>
+
+</div>
+
+</form>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-header">
+
+    <div>
+
+        <h2 class="card-title">
+            🕋 Khatm History
+        </h2>
+
+    </div>
+
+</div>
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Student</th>
+<th>Juz Completed</th>
+<th>Progress</th>
+<th>Milestone</th>
+<th>Notes</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="khatmTableBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- MILESTONES -->
+<!-- ========================================================= -->
+
+<section id="milestoneTab" class="tab-content">
+
+<div class="card">
+
+<div class="card-header">
+
+    <div>
+
+        <h2 class="card-title">
+            🏆 Memorization Milestones
+        </h2>
+
+        <div class="card-subtitle">
+            Track important stages in each student's Hifz journey.
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="milestone-grid">
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            🌱
+        </div>
+
+        <div class="milestone-number" id="milestone1">
+            0
+        </div>
+
+        <div>
+            First Juz
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress1"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            📖
+        </div>
+
+        <div class="milestone-number" id="milestone5">
+            0
+        </div>
+
+        <div>
+            5 Juz
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress5"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            ⭐
+        </div>
+
+        <div class="milestone-number" id="milestone10">
+            0
+        </div>
+
+        <div>
+            10 Juz
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress10"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            🏅
+        </div>
+
+        <div class="milestone-number" id="milestone15">
+            0
+        </div>
+
+        <div>
+            15 Juz
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress15"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            🏆
+        </div>
+
+        <div class="milestone-number" id="milestone20">
+            0
+        </div>
+
+        <div>
+            20 Juz
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress20"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            🥇
+        </div>
+
+        <div class="milestone-number" id="milestone25">
+            0
+        </div>
+
+        <div>
+            25 Juz
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress25"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            🕋
+        </div>
+
+        <div class="milestone-number" id="milestone30">
+            0
+        </div>
+
+        <div>
+            Complete Quran
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progress30"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="milestone-card">
+
+        <div class="milestone-icon">
+            🎓
+        </div>
+
+        <div class="milestone-number">
+            HIFZ
+        </div>
+
+        <div>
+            Hafiz / Hafiza Completion
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                style="width:100%"
+            ></div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+    class="modal"
+    id="detailsModal"
+>
+
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <h2 id="modalTitle">
+            Record Details
+        </h2>
+
+        <button
+            class="close"
+            onclick="closeModal()"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <div id="modalContent"></div>
+
+</div>
+
+</div>
+
+
+<!-- ================= NOTIFICATION ================= -->
+
+<div
+    id="notification"
+    class="notification"
+></div>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL DATA
+========================================================= */
+
+let students = [];
+let teachers = [];
+let exams = [];
+let khatmRecords = [];
+
+const API_BASE = "";
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function today() {
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", async function() {
+
+    document.getElementById("examDate").value = today();
+
+    document.getElementById("khatmDate").value = today();
+
+    populateSurahs();
+
+    populateJuz();
+
+    await loadStudents();
+
+    await loadTeachers();
+
+    await loadExams();
+
+    await loadKhatm();
+
+    updateStatistics();
+
+    renderExams();
+
+    renderRevisionTests();
+
+    renderKhatm();
+
+    updateMilestones();
+
+});
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function showTab(tabId, button) {
+
+    document.querySelectorAll(".tab-content").forEach(tab => {
+
+        tab.classList.remove("active");
+
+    });
+
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+
+        btn.classList.remove("active");
+
+    });
+
+
+    document.getElementById(tabId).classList.add("active");
+
+    button.classList.add("active");
+
+}
+
+
+/* =========================================================
+   STUDENTS
+========================================================= */
+
+async function loadStudents() {
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/students`
+        );
+
+        if (!response.ok) {
+            throw new Error("Student API unavailable");
+        }
+
+        const data = await response.json();
+
+        students = Array.isArray(data)
+            ? data
+            : (data.students || []);
+
+    } catch (error) {
+
+        console.log(
+            "Using local student data:",
+            error.message
+        );
+
+        students = JSON.parse(
+            localStorage.getItem("markaz_students") || "[]"
+        );
+
+    }
+
+
+    populateStudentSelects();
+
+}
+
+
+function populateStudentSelects() {
+
+    const selects = [
+        document.getElementById("examStudent"),
+        document.getElementById("khatmStudent")
+    ];
+
+
+    selects.forEach(select => {
+
+        if (!select) return;
+
+        select.innerHTML =
+            '<option value="">Select Student</option>';
+
+
+        students.forEach(student => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                student.id ?? student.studentId ?? student.name;
+
+            option.textContent =
+                student.name ||
+                student.fullName ||
+                "Unnamed Student";
+
+            select.appendChild(option);
+
+        });
+
+    });
+
+}
+
+
+/* =========================================================
+   TEACHERS
+========================================================= */
+
+async function loadTeachers() {
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/teachers`
+        );
+
+        if (!response.ok) {
+            throw new Error("Teacher API unavailable");
+        }
+
+        const data = await response.json();
+
+        teachers = Array.isArray(data)
+            ? data
+            : (data.teachers || []);
+
+    } catch (error) {
+
+        console.log(
+            "Using local teacher data:",
+            error.message
+        );
+
+        teachers = JSON.parse(
+            localStorage.getItem("markaz_teachers") || "[]"
+        );
+
+    }
+
+
+    const select =
+        document.getElementById("examTeacher");
+
+    select.innerHTML =
+        '<option value="">Select Teacher</option>';
+
+
+    teachers.forEach(teacher => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            teacher.id ?? teacher.teacherId ?? teacher.name;
+
+        option.textContent =
+            teacher.name || "Unnamed Teacher";
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   SURAH LIST
+========================================================= */
+
+function populateSurahs() {
+
+    const surahs = [
+
+        "Al-Fatihah",
+        "Al-Baqarah",
+        "Aal-Imran",
+        "An-Nisa",
+        "Al-Ma'idah",
+        "Al-An'am",
+        "Al-A'raf",
+        "Al-Anfal",
+        "At-Tawbah",
+        "Yunus",
+        "Hud",
+        "Yusuf",
+        "Ar-Ra'd",
+        "Ibrahim",
+        "Al-Hijr",
+        "An-Nahl",
+        "Al-Isra",
+        "Al-Kahf",
+        "Maryam",
+        "Ta-Ha",
+        "Al-Anbiya",
+        "Al-Hajj",
+        "Al-Mu'minun",
+        "An-Nur",
+        "Al-Furqan",
+        "Ash-Shu'ara",
+        "An-Naml",
+        "Al-Qasas",
+        "Al-Ankabut",
+        "Ar-Rum",
+        "Luqman",
+        "As-Sajdah",
+        "Al-Ahzab",
+        "Saba",
+        "Fatir",
+        "Ya-Sin",
+        "As-Saffat",
+        "Sad",
+        "Az-Zumar",
+        "Ghafir",
+        "Fussilat",
+        "Ash-Shura",
+        "Az-Zukhruf",
+        "Ad-Dukhan",
+        "Al-Jathiyah",
+        "Al-Ahqaf",
+        "Muhammad",
+        "Al-Fath",
+        "Al-Hujurat",
+        "Qaf",
+        "Adh-Dhariyat",
+        "At-Tur",
+        "An-Najm",
+        "Al-Qamar",
+        "Ar-Rahman",
+        "Al-Waqi'ah",
+        "Al-Hadid",
+        "Al-Mujadilah",
+        "Al-Hashr",
+        "Al-Mumtahanah",
+        "As-Saff",
+        "Al-Jumu'ah",
+        "Al-Munafiqun",
+        "At-Taghabun",
+        "At-Talaq",
+        "At-Tahrim",
+        "Al-Mulk",
+        "Al-Qalam",
+        "Al-Haqqah",
+        "Al-Ma'arij",
+        "Nuh",
+        "Al-Jinn",
+        "Al-Muzzammil",
+        "Al-Muddaththir",
+        "Al-Qiyamah",
+        "Al-Insan",
+        "Al-Mursalat",
+        "An-Naba",
+        "An-Nazi'at",
+        "Abasa",
+        "At-Takwir",
+        "Al-Infitar",
+        "Al-Mutaffifin",
+        "Al-Inshiqaq",
+        "Al-Buruj",
+        "At-Tariq",
+        "Al-A'la",
+        "Al-Ghashiyah",
+        "Al-Fajr",
+        "Al-Balad",
+        "Ash-Shams",
+        "Al-Layl",
+        "Ad-Duha",
+        "Ash-Sharh",
+        "At-Tin",
+        "Al-Alaq",
+        "Al-Qadr",
+        "Al-Bayyinah",
+        "Az-Zalzalah",
+        "Al-Adiyat",
+        "Al-Qari'ah",
+        "At-Takathur",
+        "Al-Asr",
+        "Al-Humazah",
+        "Al-Fil",
+        "Quraysh",
+        "Al-Ma'un",
+        "Al-Kawthar",
+        "Al-Kafirun",
+        "An-Nasr",
+        "Al-Masad",
+        "Al-Ikhlas",
+        "Al-Falaq",
+        "An-Nas"
+
+    ];
+
+
+    const select =
+        document.getElementById("examSurah");
+
+
+    surahs.forEach((surah, index) => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = surah;
+
+        option.textContent =
+            `${index + 1}. ${surah}`;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   JUZ
+========================================================= */
+
+function populateJuz() {
+
+    const select =
+        document.getElementById("examJuz");
+
+
+    for (let i = 1; i <= 30; i++) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = i;
+
+        option.textContent =
+            `Juz ${i}`;
+
+        select.appendChild(option);
+
+    }
+
+}
+
+
+/* =========================================================
+   EXAMS API
+========================================================= */
+
+async function loadExams() {
+
+    try {
+
+        const response =
+            await fetch(`${API_BASE}/api/exams`);
+
+        if (!response.ok) {
+            throw new Error("Exam API unavailable");
+        }
+
+        const data = await response.json();
+
+        exams = Array.isArray(data)
+            ? data
+            : (data.exams || []);
+
+    } catch (error) {
+
+        console.log(
+            "Using local exam storage:",
+            error.message
+        );
+
+        exams = JSON.parse(
+            localStorage.getItem("markaz_exams") || "[]"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE EXAM
+========================================================= */
+
+document.getElementById("examForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const studentId =
+            document.getElementById("examStudent").value;
+
+
+        const student =
+            students.find(
+                s =>
+                    String(s.id ?? s.studentId ?? s.name)
+                    === String(studentId)
+            );
+
+
+        const teacherId =
+            document.getElementById("examTeacher").value;
+
+
+        const teacher =
+            teachers.find(
+                t =>
+                    String(t.id ?? t.teacherId ?? t.name)
+                    === String(teacherId)
+            );
+
+
+        const exam = {
+
+            studentId: studentId,
+
+            studentName:
+                student?.name ||
+                student?.fullName ||
+                "",
+
+            teacherId: teacherId,
+
+            teacherName:
+                teacher?.name ||
+                "",
+
+            examDate:
+                document.getElementById("examDate").value,
+
+            examType:
+                document.getElementById("examType").value,
+
+            surah:
+                document.getElementById("examSurah").value,
+
+            juz:
+                document.getElementById("examJuz").value,
+
+            ayahFrom:
+                document.getElementById("examAyahFrom").value,
+
+            ayahTo:
+                document.getElementById("examAyahTo").value,
+
+            grade:
+                document.getElementById("examGrade").value,
+
+            result:
+                document.getElementById("examResult").value,
+
+            tajweedMistakes:
+                document.getElementById("tajweedMistakes").value || 0,
+
+            memoryMistakes:
+                document.getElementById("memoryMistakes").value || 0,
+
+            notes:
+                document.getElementById("examNotes").value,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/exams`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify(exam)
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error("API save failed");
+            }
+
+
+            const saved =
+                await response.json();
+
+
+            exams.unshift(
+                saved.exam || saved
+            );
+
+
+            showNotification(
+                "Examination saved successfully.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            exam.id =
+                Date.now();
+
+
+            exams.unshift(exam);
+
+
+            localStorage.setItem(
+                "markaz_exams",
+                JSON.stringify(exams)
+            );
+
+
+            showNotification(
+                "Examination saved locally.",
+                "success"
+            );
+
+        }
+
+
+        document.getElementById("examForm").reset();
+
+        document.getElementById("examDate").value =
+            today();
+
+
+        updateStatistics();
+
+        renderExams();
+
+        renderRevisionTests();
+
+        updateMilestones();
+
+    }
+);
+
+
+/* =========================================================
+   RENDER EXAMS
+========================================================= */
+
+function renderExams() {
+
+    const tbody =
+        document.getElementById("examTableBody");
+
+
+    const search =
+        document.getElementById("examSearch")
+        ?.value
+        .toLowerCase()
+        .trim() || "";
+
+
+    const resultFilter =
+        document.getElementById("resultFilter")
+        ?.value || "";
+
+
+    const gradeFilter =
+        document.getElementById("gradeFilter")
+        ?.value || "";
+
+
+    const dateFilter =
+        document.getElementById("examDateFilter")
+        ?.value || "";
+
+
+    let filtered =
+        exams.filter(exam => {
+
+            const searchable = [
+
+                exam.studentName,
+                exam.teacherName,
+                exam.surah,
+                exam.examType,
+                exam.grade,
+                exam.result
+
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+            if (
+                search &&
+                !searchable.includes(search)
+            ) {
+                return false;
+            }
+
+
+            if (
+                resultFilter &&
+                exam.result !== resultFilter
+            ) {
+                return false;
+            }
+
+
+            if (
+                gradeFilter &&
+                exam.grade !== gradeFilter
+            ) {
+                return false;
+            }
+
+
+            if (
+                dateFilter &&
+                exam.examDate !== dateFilter
+            ) {
+                return false;
+            }
+
+
+            return true;
+
+        });
+
+
+    tbody.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+        tbody.innerHTML = `
+
+        <tr>
+
+            <td colspan="10">
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        📝
+                    </div>
+
+                    No examination records found.
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(exam => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const resultClass =
+            getResultClass(exam.result);
+
+
+        const gradeClass =
+            getGradeClass(exam.grade);
+
+
+        const mistakes =
+            Number(exam.tajweedMistakes || 0)
+            +
+            Number(exam.memoryMistakes || 0);
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHTML(exam.examDate || "-")}
+            </td>
+
+            <td>
+                <strong>
+                    ${escapeHTML(exam.studentName || "-")}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHTML(exam.teacherName || "-")}
+            </td>
+
+            <td>
+                ${escapeHTML(exam.examType || "-")}
+            </td>
+
+            <td>
+                ${escapeHTML(exam.surah || "-")}
+            </td>
+
+            <td>
+                ${escapeHTML(exam.juz || "-")}
+            </td>
+
+            <td>
+                <span class="badge ${gradeClass}">
+                    ${escapeHTML(exam.grade || "-")}
+                </span>
+            </td>
+
+            <td>
+                <span class="badge ${resultClass}">
+                    ${escapeHTML(exam.result || "-")}
+                </span>
+            </td>
+
+            <td>
+                ${mistakes}
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="viewExam(${exam.id})"
+                >
+                    View
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="deleteExam(${exam.id})"
+                >
+                    Delete
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================================
+   REVISION TESTS
+========================================================= */
+
+function renderRevisionTests() {
+
+    const tbody =
+        document.getElementById("revisionTableBody");
+
+
+    const revision =
+        exams.filter(exam =>
+            exam.examType === "Revision Test"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (revision.length === 0) {
+
+        tbody.innerHTML = `
+
+        <tr>
+
+            <td colspan="8">
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        🔄
+                    </div>
+
+                    No revision tests recorded yet.
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    revision.forEach(exam => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHTML(exam.examDate || "-")}
+            </td>
+
+            <td>
+                <strong>
+                    ${escapeHTML(exam.studentName || "-")}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHTML(exam.teacherName || "-")}
+            </td>
+
+            <td>
+                ${escapeHTML(exam.surah || "-")}
+            </td>
+
+            <td>
+                ${escapeHTML(exam.juz || "-")}
+            </td>
+
+            <td>
+                <span class="badge ${getGradeClass(exam.grade)}">
+                    ${escapeHTML(exam.grade || "-")}
+                </span>
+            </td>
+
+            <td>
+                <span class="badge ${getResultClass(exam.result)}">
+                    ${escapeHTML(exam.result || "-")}
+                </span>
+            </td>
+
+            <td>
+                ${escapeHTML(exam.notes || "-")}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================================
+   VIEW EXAM
+========================================================= */
+
+function viewExam(id) {
+
+    const exam =
+        exams.find(
+            item => String(item.id) === String(id)
+        );
+
+
+    if (!exam) return;
+
+
+    document.getElementById("modalTitle").textContent =
+        "Examination Details";
+
+
+    document.getElementById("modalContent").innerHTML = `
+
+        <div class="form-grid">
+
+            <div>
+                <strong>Student</strong>
+                <p>${escapeHTML(exam.studentName || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Teacher</strong>
+                <p>${escapeHTML(exam.teacherName || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Date</strong>
+                <p>${escapeHTML(exam.examDate || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Exam Type</strong>
+                <p>${escapeHTML(exam.examType || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Surah</strong>
+                <p>${escapeHTML(exam.surah || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Juz</strong>
+                <p>${escapeHTML(exam.juz || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Ayah Range</strong>
+                <p>
+                    ${escapeHTML(exam.ayahFrom || "-")}
+                    -
+                    ${escapeHTML(exam.ayahTo || "-")}
+                </p>
+            </div>
+
+            <div>
+                <strong>Grade</strong>
+                <p>${escapeHTML(exam.grade || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Result</strong>
+                <p>${escapeHTML(exam.result || "-")}</p>
+            </div>
+
+            <div>
+                <strong>Tajweed Mistakes</strong>
+                <p>${escapeHTML(exam.tajweedMistakes || "0")}</p>
+            </div>
+
+            <div>
+                <strong>Memory Mistakes</strong>
+                <p>${escapeHTML(exam.memoryMistakes || "0")}</p>
+            </div>
+
+            <div class="form-group full">
+
+                <strong>Notes</strong>
+
+                <p>
+                    ${escapeHTML(exam.notes || "No notes.")}
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById("detailsModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal() {
+
+    document
+        .getElementById("detailsModal")
+        .classList.remove("show");
+
+}
+
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const modal =
+            document.getElementById("detailsModal");
+
+        if (event.target === modal) {
+            closeModal();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DELETE EXAM
+========================================================= */
+
+async function deleteExam(id) {
+
+    if (
+        !confirm(
+            "Are you sure you want to delete this examination record?"
+        )
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/exams/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+            throw new Error("Delete API failed");
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Using local delete:",
+            error.message
+        );
+
+    }
+
+
+    exams =
+        exams.filter(
+            exam =>
+                String(exam.id) !== String(id)
+        );
+
+
+    localStorage.setItem(
+        "markaz_exams",
+        JSON.stringify(exams)
+    );
+
+
+    updateStatistics();
+
+    renderExams();
+
+    renderRevisionTests();
+
+
+    showNotification(
+        "Examination deleted.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   KHATM API
+========================================================= */
+
+async function loadKhatm() {
+
+    try {
+
+        const response =
+            await fetch(`${API_BASE}/api/khatm`);
+
+        if (!response.ok) {
+            throw new Error("Khatm API unavailable");
+        }
+
+        const data = await response.json();
+
+        khatmRecords =
+            Array.isArray(data)
+                ? data
+                : (data.records || data.khatm || []);
+
+    } catch (error) {
+
+        console.log(
+            "Using local Khatm storage:",
+            error.message
+        );
+
+        khatmRecords = JSON.parse(
+            localStorage.getItem("markaz_khatm") || "[]"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE KHATM
+========================================================= */
+
+document.getElementById("khatmForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const studentId =
+            document.getElementById("khatmStudent").value;
+
+
+        const student =
+            students.find(
+                s =>
+                    String(s.id ?? s.studentId ?? s.name)
+                    === String(studentId)
+            );
+
+
+        const record = {
+
+            studentId: studentId,
+
+            studentName:
+                student?.name ||
+                student?.fullName ||
+                "",
+
+            date:
+                document.getElementById("khatmDate").value,
+
+            juzCompleted:
+                Number(
+                    document.getElementById("juzCompleted").value
+                    || 0
+                ),
+
+            totalJuz:
+                Number(
+                    document.getElementById("totalJuz").value
+                    || 30
+                ),
+
+            milestone:
+                document.getElementById("khatmMilestone").value,
+
+            notes:
+                document.getElementById("khatmNotes").value,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/khatm`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify(record)
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error("Khatm API save failed");
+            }
+
+
+            const saved =
+                await response.json();
+
+
+            khatmRecords.unshift(
+                saved.record || saved
+            );
+
+
+            showNotification(
+                "Khatm record saved successfully.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            record.id =
+                Date.now();
+
+
+            khatmRecords.unshift(record);
+
+
+            localStorage.setItem(
+                "markaz_khatm",
+                JSON.stringify(khatmRecords)
+            );
+
+
+            showNotification(
+                "Khatm record saved locally.",
+                "success"
+            );
+
+        }
+
+
+        document.getElementById("khatmForm").reset();
+
+        document.getElementById("khatmDate").value =
+            today();
+
+        document.getElementById("totalJuz").value =
+            30;
+
+
+        updateStatistics();
+
+        renderKhatm();
+
+        updateMilestones();
+
+    }
+);
+
+
+/* =========================================================
+   RENDER KHATM
+========================================================= */
+
+function renderKhatm() {
+
+    const tbody =
+        document.getElementById("khatmTableBody");
+
+
+    tbody.innerHTML = "";
+
+
+    if (khatmRecords.length === 0) {
+
+        tbody.innerHTML = `
+
+        <tr>
+
+            <td colspan="7">
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        🕋
+                    </div>
+
+                    No Khatm records found.
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    khatmRecords.forEach(record => {
+
+        const total =
+            Number(record.totalJuz || 30);
+
+
+        const completed =
+            Number(record.juzCompleted || 0);
+
+
+        const percentage =
+            Math.min(
+                100,
+                Math.round(
+                    completed / total * 100
+                )
+            );
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHTML(record.date || "-")}
+            </td>
+
+            <td>
+                <strong>
+                    ${escapeHTML(record.studentName || "-")}
+                </strong>
+            </td>
+
+            <td>
+                ${completed} / ${total}
+            </td>
+
+            <td>
+
+                ${percentage}%
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width:${percentage}%"
+                    ></div>
+
+                </div>
+
+            </td>
+
+            <td>
+
+                <span class="badge badge-purple">
+                    ${escapeHTML(record.milestone || "-")}
+                </span>
+
+            </td>
+
+            <td>
+                ${escapeHTML(record.notes || "-")}
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="deleteKhatm(${record.id})"
+                >
+                    Delete
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================================
+   DELETE KHATM
+========================================================= */
+
+async function deleteKhatm(id) {
+
+    if (
+        !confirm(
+            "Delete this Khatm record?"
+        )
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/khatm/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+            throw new Error("Delete failed");
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Local delete:",
+            error.message
+        );
+
+    }
+
+
+    khatmRecords =
+        khatmRecords.filter(
+            record =>
+                String(record.id) !== String(id)
+        );
+
+
+    localStorage.setItem(
+        "markaz_khatm",
+        JSON.stringify(khatmRecords)
+    );
+
+
+    updateStatistics();
+
+    renderKhatm();
+
+    updateMilestones();
+
+
+    showNotification(
+        "Khatm record deleted.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function updateStatistics() {
+
+    document.getElementById("totalExams").textContent =
+        exams.length;
+
+
+    const passed =
+        exams.filter(
+            exam =>
+                exam.result === "Passed" ||
+                exam.result === "Passed with Revision"
+        ).length;
+
+
+    document.getElementById("passedExams").textContent =
+        passed;
+
+
+    const revisions =
+        exams.filter(
+            exam =>
+                exam.examType === "Revision Test"
+        ).length;
+
+
+    document.getElementById("revisionTests").textContent =
+        revisions;
+
+
+    document.getElementById("khatmCount").textContent =
+        khatmRecords.length;
+
+
+    const milestones =
+        khatmRecords.filter(
+            record =>
+                record.milestone &&
+                record.milestone.trim() !== ""
+        ).length;
+
+
+    document.getElementById("milestoneCount").textContent =
+        milestones;
+
+}
+
+
+/* =========================================================
+   MILESTONES
+========================================================= */
+
+function updateMilestones() {
+
+    const levels = [
+        1,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30
+    ];
+
+
+    levels.forEach(level => {
+
+        const count =
+            khatmRecords.filter(
+                record =>
+                    Number(record.juzCompleted || 0)
+                    >= level
+            ).length;
+
+
+        const numberElement =
+            document.getElementById(
+                `milestone${level}`
+            );
+
+
+        const progressElement =
+            document.getElementById(
+                `progress${level}`
+            );
+
+
+        if (numberElement) {
+
+            numberElement.textContent =
+                count;
+
+        }
+
+
+        if (progressElement) {
+
+            const percentage =
+                students.length > 0
+                    ? Math.min(
+                        100,
+                        Math.round(
+                            count / students.length * 100
+                        )
+                    )
+                    : 0;
+
+
+            progressElement.style.width =
+                `${percentage}%`;
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   RESET EXAM
+========================================================= */
+
+function resetExamForm() {
+
+    setTimeout(() => {
+
+        document.getElementById("examDate").value =
+            today();
+
+    }, 10);
+
+}
+
+
+/* =========================================================
+   RESULT COLORS
+========================================================= */
+
+function getResultClass(result) {
+
+    if (
+        result === "Passed"
+    ) {
+        return "badge-success";
+    }
+
+
+    if (
+        result === "Passed with Revision"
+    ) {
+        return "badge-info";
+    }
+
+
+    if (
+        result === "Retest Required"
+    ) {
+        return "badge-danger";
+    }
+
+
+    if (
+        result === "Needs Improvement"
+    ) {
+        return "badge-warning";
+    }
+
+
+    return "badge-info";
+
+}
+
+
+/* =========================================================
+   GRADE COLORS
+========================================================= */
+
+function getGradeClass(grade) {
+
+    if (grade === "Excellent") {
+        return "badge-success";
+    }
+
+
+    if (grade === "Very Good") {
+        return "badge-info";
+    }
+
+
+    if (grade === "Good") {
+        return "badge-purple";
+    }
+
+
+    if (grade === "Needs Improvement") {
+        return "badge-warning";
+    }
+
+
+    return "badge-info";
+
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+function showNotification(message, type = "") {
+
+    const notification =
+        document.getElementById("notification");
+
+
+    notification.textContent =
+        message;
+
+
+    notification.className =
+        `notification show ${type}`;
+
+
+    setTimeout(() => {
+
+        notification.className =
+            "notification";
+
+    }, 3000);
+
+}
+
+
+/* =========================================================
+   HTML SECURITY
+========================================================= */
+
+function escapeHTML(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   KEYBOARD ESCAPE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+            closeModal();
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

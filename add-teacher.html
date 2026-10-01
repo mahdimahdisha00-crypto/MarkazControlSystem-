@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Teacher</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    max-width:600px;
+    margin:auto;
+    padding:20px;
+    border-radius:10px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Add Teacher</h2>
+
+<input type="text" id="name" placeholder="Teacher Name">
+
+<input type="text" id="phone" placeholder="Phone Number">
+
+<input type="text" id="qualification" placeholder="Qualification">
+
+<button onclick="saveTeacher()">
+Save Teacher
+</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+
+async function saveTeacher(){
+
+    const response = await fetch(
+        "http://localhost:5000/api/teachers",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                name:document.getElementById("name").value,
+                phone:document.getElementById("phone").value,
+                qualification:document.getElementById("qualification").value
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("result").innerHTML =
+    data.message;
+
+}
+
+</script>
+
+</body>
+</html>

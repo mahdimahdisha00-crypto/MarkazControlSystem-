@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Backup</title>
+</head>
+<body>
+
+<h1>Backup Database</h1>
+
+<button onclick="backup()">
+Create Backup
+</button>
+
+<p id="result"></p>
+
+<script>
+
+async function backup(){
+
+  const response =
+  await fetch("http://localhost:5000/api/backup");
+
+  const data =
+  await response.json();
+
+  document.getElementById("result").innerHTML =
+  data.message;
+
+}
+
+</script>
+
+</body>
+</html>

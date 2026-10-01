@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>System Administration - Markaz Control System</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: white;
+    padding: 22px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.header-left p {
+    margin: 6px 0 0;
+    opacity: .8;
+}
+
+.back-btn {
+    background: white;
+    color: #1e3a8a;
+    text-decoration: none;
+    padding: 10px 17px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.stat-card .icon {
+    font-size: 30px;
+}
+
+.stat-card h3 {
+    margin: 10px 0 5px;
+    font-size: 27px;
+}
+
+.stat-card p {
+    margin: 0;
+    color: #64748b;
+}
+
+/* =========================
+   TABS
+========================= */
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    border: none;
+    background: #eef2ff;
+    color: #334155;
+    padding: 12px 17px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tab-btn:hover {
+    background: #dbeafe;
+}
+
+.tab-btn.active {
+    background: #1d4ed8;
+    color: white;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h2 {
+    margin-top: 0;
+    color: #0f172a;
+}
+
+.card h3 {
+    color: #1e3a8a;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+    border: none;
+    padding: 11px 17px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #1d4ed8;
+    color: white;
+}
+
+.btn-success {
+    background: #15803d;
+    color: white;
+}
+
+.btn-warning {
+    background: #d97706;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-secondary {
+    background: #64748b;
+    color: white;
+}
+
+.btn:hover {
+    opacity: .88;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+th {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-admin {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-manager {
+    background: #ede9fe;
+    color: #6b21a8;
+}
+
+.badge-teacher {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-accountant {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* =========================
+   PERMISSIONS
+========================= */
+
+.permission-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.permission-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.permission-box h4 {
+    margin-top: 0;
+}
+
+.permission-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* =========================
+   SECURITY
+========================= */
+
+.security-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.security-item:last-child {
+    border-bottom: none;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 25px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #cbd5e1;
+    border-radius: 30px;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 19px;
+    width: 19px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.switch input:checked + .slider {
+    background: #2563eb;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(23px);
+}
+
+/* =========================
+   ALERT
+========================= */
+
+.alert {
+    display: none;
+    padding: 13px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.alert.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.alert.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box {
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    max-width: 450px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+
+    .stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 750px) {
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-grid,
+    .permission-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        width: 93%;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+    <div class="header-left">
+
+        <h1>⚙️ System Administration</h1>
+
+        <p>
+            Markaz Control System • Users, Roles, Security & Settings
+        </p>
+
+    </div>
+
+    <a href="dashboard.html" class="back-btn">
+        ← Dashboard
+    </a>
+
+</header>
+
+
+<div class="container">
+
+<!-- =====================================================
+     ALERT
+===================================================== -->
+
+<div id="alertBox" class="alert"></div>
+
+
+<!-- =====================================================
+     STATISTICS
+===================================================== -->
+
+<div class="stats">
+
+    <div class="stat-card">
+        <div class="icon">👥</div>
+        <h3 id="totalUsers">0</h3>
+        <p>Total Users</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon">👨‍💼</div>
+        <h3 id="managerCount">0</h3>
+        <p>Managers</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon">👨‍🏫</div>
+        <h3 id="teacherCount">0</h3>
+        <p>Teachers</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon">🛡️</div>
+        <h3 id="activeCount">0</h3>
+        <p>Active Accounts</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon">📋</div>
+        <h3 id="logCount">0</h3>
+        <p>Activity Logs</p>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TABS
+===================================================== -->
+
+<div class="tabs">
+
+    <button class="tab-btn active" onclick="showTab('users', this)">
+        👥 User Accounts
+    </button>
+
+    <button class="tab-btn" onclick="showTab('add-user', this)">
+        ➕ Add User
+    </button>
+
+    <button class="tab-btn" onclick="showTab('roles', this)">
+        🔐 Roles
+    </button>
+
+    <button class="tab-btn" onclick="showTab('permissions', this)">
+        🛡️ Permissions
+    </button>
+
+    <button class="tab-btn" onclick="showTab('settings', this)">
+        ⚙️ Settings
+    </button>
+
+    <button class="tab-btn" onclick="showTab('security', this)">
+        🔒 Security
+    </button>
+
+    <button class="tab-btn" onclick="showTab('logs', this)">
+        📋 Activity Logs
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     USER ACCOUNTS
+===================================================== -->
+
+<section id="users" class="section active">
+
+    <div class="card">
+
+        <h2>👥 User Accounts</h2>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="userSearch"
+                placeholder="Search username, name or role..."
+                oninput="renderUsers()"
+            >
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="usersTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ADD USER
+===================================================== -->
+
+<section id="add-user" class="section">
+
+    <div class="card">
+
+        <h2>➕ Create User Account</h2>
+
+        <form id="userForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Username</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Role</label>
+
+                    <select id="role">
+
+                        <option value="Manager">
+                            Manager
+                        </option>
+
+                        <option value="Teacher">
+                            Teacher
+                        </option>
+
+                        <option value="Accountant">
+                            Accountant
+                        </option>
+
+                        <option value="Reception">
+                            Reception
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Status</label>
+
+                    <select id="status">
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Phone</label>
+
+                    <input
+                        type="text"
+                        id="phone"
+                    >
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <button class="btn btn-primary" type="submit">
+                ➕ Create Account
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ROLES
+===================================================== -->
+
+<section id="roles" class="section">
+
+    <div class="card">
+
+        <h2>🔐 User Roles</h2>
+
+        <p>
+            Roles determine what each user can access inside
+            the Markaz Control System.
+        </p>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Role</th>
+                        <th>Description</th>
+                        <th>Main Access</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            <span class="badge badge-admin">
+                                Super Admin
+                            </span>
+                        </td>
+
+                        <td>
+                            Complete system administration
+                        </td>
+
+                        <td>
+                            All modules
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            <span class="badge badge-manager">
+                                Manager
+                            </span>
+                        </td>
+
+                        <td>
+                            Markaz management
+                        </td>
+
+                        <td>
+                            Students, Teachers, Hifz,
+                            Attendance, Reports, Fees
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            <span class="badge badge-teacher">
+                                Teacher
+                            </span>
+                        </td>
+
+                        <td>
+                            Student and Hifz management
+                        </td>
+
+                        <td>
+                            Students, Attendance,
+                            Hifz, Exams
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            <span class="badge badge-accountant">
+                                Accountant
+                            </span>
+                        </td>
+
+                        <td>
+                            Financial management
+                        </td>
+
+                        <td>
+                            Fees, Donations,
+                            Financial Reports
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Reception
+                        </td>
+
+                        <td>
+                            Front desk operations
+                        </td>
+
+                        <td>
+                            Students, Parents,
+                            Attendance
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PERMISSIONS
+===================================================== -->
+
+<section id="permissions" class="section">
+
+    <div class="card">
+
+        <h2>🛡️ Permissions</h2>
+
+        <p>
+            System permissions define what each role can do.
+        </p>
+
+        <div class="permission-grid">
+
+            <div class="permission-box">
+
+                <h4>👨‍💼 Manager</h4>
+
+                <div class="permission-item">
+                    Students
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Teachers
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Attendance
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Hifz
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Exams
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Fees
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    System Settings
+                    <input type="checkbox">
+                </div>
+
+            </div>
+
+
+            <div class="permission-box">
+
+                <h4>👨‍🏫 Teacher</h4>
+
+                <div class="permission-item">
+                    Students
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Attendance
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Hifz
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Exams
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Fees
+                    <input type="checkbox">
+                </div>
+
+                <div class="permission-item">
+                    System Settings
+                    <input type="checkbox">
+                </div>
+
+            </div>
+
+
+            <div class="permission-box">
+
+                <h4>💰 Accountant</h4>
+
+                <div class="permission-item">
+                    Students
+                    <input type="checkbox">
+                </div>
+
+                <div class="permission-item">
+                    Attendance
+                    <input type="checkbox">
+                </div>
+
+                <div class="permission-item">
+                    Fees
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Donations
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Financial Reports
+                    <input type="checkbox" checked>
+                </div>
+
+            </div>
+
+
+            <div class="permission-box">
+
+                <h4>🛎️ Reception</h4>
+
+                <div class="permission-item">
+                    Students
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Parents
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Attendance
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="permission-item">
+                    Fees
+                    <input type="checkbox">
+                </div>
+
+                <div class="permission-item">
+                    System Settings
+                    <input type="checkbox">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<section id="settings" class="section">
+
+    <div class="card">
+
+        <h2>⚙️ System Settings</h2>
+
+        <form id="settingsForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Markaz Name</label>
+
+                    <input
+                        type="text"
+                        id="markazName"
+                        value="Markaz Control System"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Academic Year</label>
+
+                    <input
+                        type="text"
+                        id="academicYear"
+                        placeholder="2026 / 2027"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Phone Number</label>
+
+                    <input
+                        type="text"
+                        id="systemPhone"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    <input
+                        type="email"
+                        id="systemEmail"
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>Markaz Address</label>
+
+                    <textarea
+                        id="systemAddress"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                type="submit"
+                class="btn btn-success"
+            >
+                💾 Save Settings
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SECURITY
+===================================================== -->
+
+<section id="security" class="section">
+
+    <div class="card">
+
+        <h2>🔒 Security Settings</h2>
+
+
+        <div class="security-item">
+
+            <div>
+
+                <strong>Login Protection</strong>
+
+                <p>
+                    Protect accounts from repeated failed logins.
+                </p>
+
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="loginProtection"
+                    checked
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <div class="security-item">
+
+            <div>
+
+                <strong>Session Timeout</strong>
+
+                <p>
+                    Automatically end inactive sessions.
+                </p>
+
+            </div>
+
+            <select
+                id="sessionTimeout"
+                style="width:150px;"
+            >
+
+                <option value="15">15 minutes</option>
+                <option value="30" selected>30 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="120">2 hours</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="security-item">
+
+            <div>
+
+                <strong>Activity Logging</strong>
+
+                <p>
+                    Record important system actions.
+                </p>
+
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="activityLogging"
+                    checked
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <div class="security-item">
+
+            <div>
+
+                <strong>Password Protection</strong>
+
+                <p>
+                    Require secure passwords for user accounts.
+                </p>
+
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="passwordProtection"
+                    checked
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+        <br>
+
+        <button
+            class="btn btn-primary"
+            onclick="saveSecurity()"
+        >
+            🔒 Save Security Settings
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>🔑 Change Administrator Password</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Current Password</label>
+
+                <input
+                    type="password"
+                    id="currentPassword"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>New Password</label>
+
+                <input
+                    type="password"
+                    id="newPassword"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Confirm New Password</label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                >
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <button
+            class="btn btn-warning"
+            onclick="changePassword()"
+        >
+            🔑 Change Password
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ACTIVITY LOGS
+===================================================== -->
+
+<section id="logs" class="section">
+
+    <div class="card">
+
+        <h2>📋 Activity Logs</h2>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="logSearch"
+                placeholder="Search activity..."
+                oninput="renderLogs()"
+            >
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="logsTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<footer class="footer">
+
+    Markaz Control System © 2026
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let users = [];
+
+let logs = [];
+
+let settings = {
+    markazName: "Markaz Control System",
+    academicYear: "",
+    phone: "",
+    email: "",
+    address: ""
+};
+
+
+/* =====================================================
+   LOAD DATA
+===================================================== */
+
+async function loadData() {
+
+    try {
+
+        const response = await fetch("/api/users");
+
+        if (response.ok) {
+
+            users = await response.json();
+
+        } else {
+
+            loadLocalUsers();
+
+        }
+
+    } catch (error) {
+
+        loadLocalUsers();
+
+    }
+
+
+    try {
+
+        const response = await fetch("/api/activity-logs");
+
+        if (response.ok) {
+
+            logs = await response.json();
+
+        } else {
+
+            loadLocalLogs();
+
+        }
+
+    } catch (error) {
+
+        loadLocalLogs();
+
+    }
+
+
+    try {
+
+        const response = await fetch("/api/settings");
+
+        if (response.ok) {
+
+            const data = await response.json();
+
+            if (data) {
+
+                settings = {
+                    ...settings,
+                    ...data
+                };
+
+            }
+
+        }
+
+    } catch (error) {
+
+        loadLocalSettings();
+
+    }
+
+
+    renderUsers();
+
+    renderLogs();
+
+    updateStatistics();
+
+    loadSettings();
+
+}
+
+
+/* =====================================================
+   LOCAL USERS
+===================================================== */
+
+function loadLocalUsers() {
+
+    const stored = localStorage.getItem(
+        "markaz_admin_users"
+    );
+
+    if (stored) {
+
+        users = JSON.parse(stored);
+
+    } else {
+
+        users = [
+            {
+                id: 1,
+                fullName: "System Administrator",
+                username: "admin",
+                role: "Super Admin",
+                status: "Active",
+                lastLogin: "-"
+            }
+        ];
+
+        saveLocalUsers();
+
+    }
+
+}
+
+
+function saveLocalUsers() {
+
+    localStorage.setItem(
+        "markaz_admin_users",
+        JSON.stringify(users)
+    );
+
+}
+
+
+/* =====================================================
+   LOCAL LOGS
+===================================================== */
+
+function loadLocalLogs() {
+
+    const stored = localStorage.getItem(
+        "markaz_admin_logs"
+    );
+
+    if (stored) {
+
+        logs = JSON.parse(stored);
+
+    } else {
+
+        logs = [];
+
+    }
+
+}
+
+
+function saveLocalLogs() {
+
+    localStorage.setItem(
+        "markaz_admin_logs",
+        JSON.stringify(logs)
+    );
+
+}
+
+
+/* =====================================================
+   LOCAL SETTINGS
+===================================================== */
+
+function loadLocalSettings() {
+
+    const stored = localStorage.getItem(
+        "markaz_system_settings"
+    );
+
+    if (stored) {
+
+        settings = {
+            ...settings,
+            ...JSON.parse(stored)
+        };
+
+    }
+
+}
+
+
+/* =====================================================
+   TABS
+===================================================== */
+
+function showTab(id, button) {
+
+    document.querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.remove("active");
+        });
+
+    document.querySelectorAll(".tab-btn")
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+    document.getElementById(id)
+        .classList.add("active");
+
+    button.classList.add("active");
+
+}
+
+
+/* =====================================================
+   RENDER USERS
+===================================================== */
+
+function renderUsers() {
+
+    const table =
+        document.getElementById("usersTable");
+
+    const search =
+        document.getElementById("userSearch")
+        ?.value
+        .toLowerCase() || "";
+
+    const filtered = users.filter(user => {
+
+        return (
+            String(user.fullName || "")
+                .toLowerCase()
+                .includes(search)
+            ||
+            String(user.username || "")
+                .toLowerCase()
+                .includes(search)
+            ||
+            String(user.role || "")
+                .toLowerCase()
+                .includes(search)
+        );
+
+    });
+
+
+    table.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center;">
+                    No users found
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(user => {
+
+        let roleClass = "badge-manager";
+
+        if (user.role === "Super Admin") {
+            roleClass = "badge-admin";
+        }
+
+        if (user.role === "Teacher") {
+            roleClass = "badge-teacher";
+        }
+
+        if (user.role === "Accountant") {
+            roleClass = "badge-accountant";
+        }
+
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>${user.id || ""}</td>
+
+                <td>${escapeHTML(
+                    user.fullName || ""
+                )}</td>
+
+                <td>${escapeHTML(
+                    user.username || ""
+                )}</td>
+
+                <td>
+                    <span class="badge ${roleClass}">
+                        ${escapeHTML(user.role || "")}
+                    </span>
+                </td>
+
+                <td>
+
+                    <span class="badge ${
+                        user.status === "Active"
+                        ? "badge-active"
+                        : "badge-inactive"
+                    }">
+
+                        ${escapeHTML(
+                            user.status || ""
+                        )}
+
+                    </span>
+
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        user.lastLogin || "-"
+                    )}
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn btn-warning"
+                        onclick="toggleUserStatus(${user.id})"
+                    >
+                        ${
+                            user.status === "Active"
+                            ? "Deactivate"
+                            : "Activate"
+                        }
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="deleteUser(${user.id})"
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* =====================================================
+   ADD USER
+===================================================== */
+
+document.getElementById("userForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    const user = {
+
+        fullName:
+            document.getElementById("fullName").value.trim(),
+
+        username:
+            document.getElementById("username").value.trim(),
+
+        password:
+            document.getElementById("password").value,
+
+        role:
+            document.getElementById("role").value,
+
+        status:
+            document.getElementById("status").value,
+
+        phone:
+            document.getElementById("phone").value.trim()
+
+    };
+
+
+    if (!user.fullName || !user.username || !user.password) {
+
+        showAlert(
+            "Please complete all required fields.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+            "/api/users",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify(user)
+            }
+        );
+
+
+        if (response.ok) {
+
+            showAlert(
+                "User account created successfully.",
+                "success"
+            );
+
+            document.getElementById("userForm")
+                .reset();
+
+            await loadData();
+
+            return;
+
+        }
+
+    } catch (error) {
+
+        // Local fallback
+
+    }
+
+
+    user.id =
+        users.length
+        ? Math.max(...users.map(u => Number(u.id) || 0)) + 1
+        : 1;
+
+    user.lastLogin = "-";
+
+
+    users.push(user);
+
+    saveLocalUsers();
+
+
+    addLocalLog(
+        "Administrator",
+        "Created user account: " +
+        user.username
+    );
+
+
+    renderUsers();
+
+    updateStatistics();
+
+    document.getElementById("userForm")
+        .reset();
+
+
+    showAlert(
+        "User account saved locally.",
+        "success"
+    );
+
+});
+
+
+/* =====================================================
+   DELETE USER
+===================================================== */
+
+async function deleteUser(id) {
+
+    const user = users.find(
+        u => Number(u.id) === Number(id)
+    );
+
+    if (!user) return;
+
+
+    if (user.username === "admin") {
+
+        showAlert(
+            "The main administrator account cannot be deleted.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!confirm(
+        "Delete this user account?"
+    )) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `/api/users/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        if (response.ok) {
+
+            addLocalLog(
+                "Administrator",
+                "Deleted user: " +
+                user.username
+            );
+
+            await loadData();
+
+            return;
+
+        }
+
+    } catch (error) {
+
+        // Local fallback
+
+    }
+
+
+    users =
+        users.filter(
+            u => Number(u.id) !== Number(id)
+        );
+
+    saveLocalUsers();
+
+
+    addLocalLog(
+        "Administrator",
+        "Deleted user: " +
+        user.username
+    );
+
+
+    renderUsers();
+
+    updateStatistics();
+
+}
+
+
+/* =====================================================
+   TOGGLE USER
+===================================================== */
+
+async function toggleUserStatus(id) {
+
+    const user = users.find(
+        u => Number(u.id) === Number(id)
+    );
+
+    if (!user) return;
+
+
+    const newStatus =
+        user.status === "Active"
+        ? "Inactive"
+        : "Active";
+
+
+    try {
+
+        const response = await fetch(
+            `/api/users/${id}/status`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    status: newStatus
+                })
+            }
+        );
+
+
+        if (response.ok) {
+
+            await loadData();
+
+            return;
+
+        }
+
+    } catch (error) {
+
+        // Local fallback
+
+    }
+
+
+    user.status = newStatus;
+
+    saveLocalUsers();
+
+
+    addLocalLog(
+        "Administrator",
+        `${newStatus === "Active"
+            ? "Activated"
+            : "Deactivated"} user: ${user.username}`
+    );
+
+
+    renderUsers();
+
+    updateStatistics();
+
+}
+
+
+/* =====================================================
+   LOGS
+===================================================== */
+
+function renderLogs() {
+
+    const table =
+        document.getElementById("logsTable");
+
+    const search =
+        document.getElementById("logSearch")
+        ?.value
+        .toLowerCase() || "";
+
+
+    const filtered =
+        logs.filter(log => {
+
+            return (
+                String(log.username || "")
+                    .toLowerCase()
+                    .includes(search)
+                ||
+                String(log.action || "")
+                    .toLowerCase()
+                    .includes(search)
+            );
+
+        });
+
+
+    table.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center;">
+                    No activity logs found
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(log => {
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>${log.id || ""}</td>
+
+                <td>
+                    ${escapeHTML(
+                        log.username || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        log.action || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        log.logDate || ""
+                    )}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* =====================================================
+   LOCAL LOG
+===================================================== */
+
+function addLocalLog(username, action) {
+
+    const log = {
+
+        id:
+            logs.length
+            ? Math.max(
+                ...logs.map(
+                    l => Number(l.id) || 0
+                )
+            ) + 1
+            : 1,
+
+        username,
+
+        action,
+
+        logDate:
+            new Date().toLocaleString()
+
+    };
+
+
+    logs.unshift(log);
+
+    saveLocalLogs();
+
+    renderLogs();
+
+    updateStatistics();
+
+}
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+function loadSettings() {
+
+    document.getElementById("markazName")
+        .value =
+        settings.markazName || "";
+
+    document.getElementById("academicYear")
+        .value =
+        settings.academicYear || "";
+
+    document.getElementById("systemPhone")
+        .value =
+        settings.phone || "";
+
+    document.getElementById("systemEmail")
+        .value =
+        settings.email || "";
+
+    document.getElementById("systemAddress")
+        .value =
+        settings.address || "";
+
+}
+
+
+document.getElementById("settingsForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    settings = {
+
+        markazName:
+            document.getElementById("markazName")
+                .value.trim(),
+
+        academicYear:
+            document.getElementById("academicYear")
+                .value.trim(),
+
+        phone:
+            document.getElementById("systemPhone")
+                .value.trim(),
+
+        email:
+            document.getElementById("systemEmail")
+                .value.trim(),
+
+        address:
+            document.getElementById("systemAddress")
+                .value.trim()
+
+    };
+
+
+    try {
+
+        const response = await fetch(
+            "/api/settings",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify(settings)
+            }
+        );
+
+
+        if (response.ok) {
+
+            addLocalLog(
+                "Administrator",
+                "Updated system settings"
+            );
+
+            showAlert(
+                "System settings saved successfully.",
+                "success"
+            );
+
+            return;
+
+        }
+
+    } catch (error) {
+
+        // Local fallback
+
+    }
+
+
+    localStorage.setItem(
+        "markaz_system_settings",
+        JSON.stringify(settings)
+    );
+
+
+    addLocalLog(
+        "Administrator",
+        "Updated system settings"
+    );
+
+
+    showAlert(
+        "System settings saved locally.",
+        "success"
+    );
+
+});
+
+
+/* =====================================================
+   SECURITY
+===================================================== */
+
+function saveSecurity() {
+
+    const security = {
+
+        loginProtection:
+            document.getElementById(
+                "loginProtection"
+            ).checked,
+
+        activityLogging:
+            document.getElementById(
+                "activityLogging"
+            ).checked,
+
+        passwordProtection:
+            document.getElementById(
+                "passwordProtection"
+            ).checked,
+
+        sessionTimeout:
+            document.getElementById(
+                "sessionTimeout"
+            ).value
+
+    };
+
+
+    localStorage.setItem(
+        "markaz_security_settings",
+        JSON.stringify(security)
+    );
+
+
+    addLocalLog(
+        "Administrator",
+        "Updated security settings"
+    );
+
+
+    showAlert(
+        "Security settings saved.",
+        "success"
+    );
+
+}
+
+
+/* =====================================================
+   CHANGE PASSWORD
+===================================================== */
+
+function changePassword() {
+
+    const current =
+        document.getElementById(
+            "currentPassword"
+        ).value;
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value;
+
+
+    if (!current || !newPassword || !confirmPassword) {
+
+        showAlert(
+            "Please complete all password fields.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (newPassword !== confirmPassword) {
+
+        showAlert(
+            "New passwords do not match.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (newPassword.length < 6) {
+
+        showAlert(
+            "Password must contain at least 6 characters.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showAlert(
+        "Password change request recorded. Connect this form to the secure authentication API before using it for real account changes.",
+        "success"
+    );
+
+
+    addLocalLog(
+        "Administrator",
+        "Requested administrator password change"
+    );
+
+
+    document.getElementById(
+        "currentPassword"
+    ).value = "";
+
+    document.getElementById(
+        "newPassword"
+    ).value = "";
+
+    document.getElementById(
+        "confirmPassword"
+    ).value = "";
+
+}
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+function updateStatistics() {
+
+    document.getElementById(
+        "totalUsers"
+    ).textContent = users.length;
+
+
+    document.getElementById(
+        "managerCount"
+    ).textContent =
+        users.filter(
+            u =>
+                u.role === "Manager"
+                ||
+                u.role === "Super Admin"
+        ).length;
+
+
+    document.getElementById(
+        "teacherCount"
+    ).textContent =
+        users.filter(
+            u => u.role === "Teacher"
+        ).length;
+
+
+    document.getElementById(
+        "activeCount"
+    ).textContent =
+        users.filter(
+            u => u.status === "Active"
+        ).length;
+
+
+    document.getElementById(
+        "logCount"
+    ).textContent =
+        logs.length;
+
+}
+
+
+/* =====================================================
+   ALERT
+===================================================== */
+
+function showAlert(message, type) {
+
+    const box =
+        document.getElementById("alertBox");
+
+    box.className =
+        "alert " + type;
+
+    box.textContent = message;
+
+
+    setTimeout(() => {
+
+        box.className = "alert";
+
+    }, 5000);
+
+}
+
+
+/* =====================================================
+   HTML SAFETY
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadData();
+
+</script>
+
+</body>
+</node server.jshtml>

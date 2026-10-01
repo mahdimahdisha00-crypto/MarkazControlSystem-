@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fee Payment</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px;
+    width:100%;
+    cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Fee Payment Entry</h2>
+
+<input id="student_name" placeholder="Student Name">
+
+<input id="monthly_fee" placeholder="Monthly Fee">
+
+<input id="paid_amount" placeholder="Paid Amount">
+
+<input id="balance" placeholder="Balance">
+
+<input id="payment_date" placeholder="2026-09-27">
+
+<input id="status" placeholder="Paid / Unpaid">
+
+<button onclick="saveFee()">
+Save Fee
+</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+
+async function saveFee(){
+
+const response = await fetch(
+"http://localhost:5000/api/fees",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+student_name:
+document.getElementById("student_name").value,
+
+monthly_fee:
+document.getElementById("monthly_fee").value,
+
+paid_amount:
+document.getElementById("paid_amount").value,
+
+balance:
+document.getElementById("balance").value,
+
+payment_date:
+document.getElementById("payment_date").value,
+
+status:
+document.getElementById("status").value
+})
+}
+);
+
+const data = await response.json();
+
+document.getElementById("result").innerHTML =
+data.message;
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Student Profiles - Markaz Control System</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f3f6f9;
+        color: #17212b;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header {
+        background: linear-gradient(135deg, #064e3b, #0f766e);
+        color: white;
+        padding: 22px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    .header-inner {
+        max-width: 1400px;
+        margin: auto;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 27px;
+    }
+
+    .header p {
+        margin: 7px 0 0;
+        opacity: 0.9;
+    }
+
+    /* ================= CONTAINER ================= */
+
+    .container {
+        max-width: 1400px;
+        margin: 25px auto;
+        padding: 0 18px;
+    }
+
+    /* ================= TOP BAR ================= */
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .back-btn {
+        border: none;
+        background: #374151;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .back-btn:hover {
+        background: #1f2937;
+    }
+
+    .refresh-btn {
+        border: none;
+        background: #2563eb;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .refresh-btn:hover {
+        background: #1d4ed8;
+    }
+
+    /* ================= SEARCH ================= */
+
+    .search-box {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .search-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 12px;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 14px;
+        background: white;
+    }
+
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: #059669;
+    }
+
+    /* ================= PROFILE GRID ================= */
+
+    .profiles-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 2px 9px rgba(0,0,0,0.08);
+        transition: 0.2s;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 16px rgba(0,0,0,0.12);
+    }
+
+    /* ================= PROFILE TOP ================= */
+
+    .profile-top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .avatar {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: #d1fae5;
+        color: #065f46;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .profile-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #064e3b;
+    }
+
+    .profile-id {
+        color: #6b7280;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    /* ================= BADGES ================= */
+
+    .badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        margin-top: 6px;
+    }
+
+    .active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .level {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    /* ================= PROFILE DETAILS ================= */
+
+    .detail {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+    }
+
+    .detail:last-child {
+        border-bottom: none;
+    }
+
+    .label {
+        color: #6b7280;
+    }
+
+    .value {
+        font-weight: bold;
+        text-align: right;
+        color: #374151;
+    }
+
+    /* ================= ACTIONS ================= */
+
+    .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    .action-btn {
+        border: none;
+        padding: 9px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+        color: white;
+        font-size: 12px;
+        flex: 1;
+    }
+
+    .view-btn {
+        background: #2563eb;
+    }
+
+    .edit-btn {
+        background: #d97706;
+    }
+
+    .hifz-btn {
+        background: #059669;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty {
+        background: white;
+        padding: 60px 20px;
+        border-radius: 12px;
+        text-align: center;
+        color: #6b7280;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
+
+    /* ================= MODAL ================= */
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        background: rgba(0,0,0,0.55);
+        padding: 25px 15px;
+    }
+
+    .modal-content {
+        max-width: 850px;
+        margin: auto;
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        color: #064e3b;
+    }
+
+    .close {
+        font-size: 30px;
+        color: #6b7280;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: #111827;
+    }
+
+    /* ================= FULL PROFILE ================= */
+
+    .full-profile-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        background: #ecfdf5;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .large-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #059669;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        font-weight: bold;
+    }
+
+    .full-name {
+        font-size: 23px;
+        font-weight: bold;
+        color: #064e3b;
+    }
+
+    .section-title {
+        margin-top: 22px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #d1fae5;
+        color: #065f46;
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+    }
+
+    .info-item {
+        background: #f9fafb;
+        padding: 12px;
+        border-radius: 7px;
+    }
+
+    .info-item .label {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .info-item .value {
+        display: block;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    /* ================= HISTORY ================= */
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .history-table th {
+        background: #ecfdf5;
+        color: #065f46;
+        padding: 11px;
+        text-align: left;
+        font-size: 12px;
+    }
+
+    .history-table td {
+        padding: 11px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 12px;
+    }
+
+    .no-history {
+        padding: 20px;
+        text-align: center;
+        background: #f9fafb;
+        color: #6b7280;
+        border-radius: 8px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1050px) {
+
+        .profiles-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 750px) {
+
+        .search-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profiles-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .full-profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+    }
+
+    @media (max-width: 500px) {
+
+        .header h1 {
+            font-size: 21px;
+        }
+
+        .profile-card {
+            padding: 16px;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<div class="header">
+
+```
+<div class="header-inner">
+
+    <h1>👨‍🎓 Student Profiles</h1>
+
+    <p>
+        Markaz Control System — Complete student information and history
+    </p>
+
+</div>
+```
+
+</div>
+
+<div class="container">
+
+```
+<!-- =====================================================
+     TOP BAR
+====================================================== -->
+
+<div class="top-bar">
+
+    <button
+        class="back-btn"
+        onclick="location.href='dashboard.html'"
+    >
+        ← Back to Dashboard
+    </button>
+
+    <button
+        class="refresh-btn"
+        onclick="loadProfiles()"
+    >
+        🔄 Refresh Profiles
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     SEARCH
+====================================================== -->
+
+<div class="search-box">
+
+    <div class="search-grid">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Search student name, ID, parent or phone..."
+            oninput="filterProfiles()"
+        >
+
+        <select
+            id="levelFilter"
+            onchange="filterProfiles()"
+        >
+
+            <option value="">
+                All Levels
+            </option>
+
+            <option value="Beginner">
+                Beginner
+            </option>
+
+            <option value="Intermediate">
+                Intermediate
+            </option>
+
+            <option value="Advanced">
+                Advanced
+            </option>
+
+            <option value="Hifz">
+                Hifz
+            </option>
+
+            <option value="Revision">
+                Revision
+            </option>
+
+        </select>
+
+
+        <select
+            id="statusFilter"
+            onchange="filterProfiles()"
+        >
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PROFILE CARDS
+====================================================== -->
+
+<div
+    class="profiles-grid"
+    id="profilesGrid"
+></div>
+```
+
+</div>
+
+<!-- =========================================================
+     FULL PROFILE MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="profileModal"
+>
+
+```
+<div class="modal-content">
+
+    <div class="modal-header">
+
+        <h2>
+            👨‍🎓 Student Profile
+        </h2>
+
+        <span
+            class="close"
+            onclick="closeProfile()"
+        >
+            &times;
+        </span>
+
+    </div>
+
+
+    <div id="fullProfileContent"></div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+/*
+==============================================================
+    MARKAZ CONTROL SYSTEM
+    STUDENT PROFILES
+==============================================================
+*/
+
+
+let students = [];
+
+
+/* ==========================================================
+   LOAD STUDENT DATA
+========================================================== */
+
+function loadProfiles() {
+
+    const saved =
+        localStorage.getItem("markaz_students");
+
+    if (saved) {
+
+        try {
+
+            students = JSON.parse(saved);
+
+        } catch (error) {
+
+            students = [];
+
+        }
+
+    } else {
+
+        students = [];
+
+    }
+
+    renderProfiles(students);
+
+}
+
+
+/* ==========================================================
+   FILTER PROFILES
+========================================================== */
+
+function filterProfiles() {
+
+    const search =
+        document
+            .getElementById("searchInput")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const level =
+        document
+            .getElementById("levelFilter")
+            .value;
+
+    const status =
+        document
+            .getElementById("statusFilter")
+            .value;
+
+
+    const filtered =
+        students.filter(student => {
+
+            const searchableText = (
+
+                (student.name || "") +
+                " " +
+                (student.id || "") +
+                " " +
+                (student.parentName || "") +
+                " " +
+                (student.parentPhone || "") +
+                " " +
+                (student.teacher || "")
+
+            ).toLowerCase();
+
+
+            const matchesSearch =
+                searchableText.includes(search);
+
+
+            const matchesLevel =
+                !level ||
+                student.level === level;
+
+
+            const matchesStatus =
+                !status ||
+                student.status === status;
+
+
+            return (
+                matchesSearch &&
+                matchesLevel &&
+                matchesStatus
+            );
+
+        });
+
+
+    renderProfiles(filtered);
+
+}
+
+
+/* ==========================================================
+   RENDER PROFILE CARDS
+========================================================== */
+
+function renderProfiles(list) {
+
+    const grid =
+        document.getElementById("profilesGrid");
+
+    grid.innerHTML = "";
+
+
+    if (!list || list.length === 0) {
+
+        grid.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    👨‍🎓
+                </div>
+
+                <h3>
+                    No Student Profiles Found
+                </h3>
+
+                <p>
+                    Add students from Student Management
+                    to see their profiles here.
+                </p>
+
+                <button
+                    class="refresh-btn"
+                    onclick="location.href='students.html'"
+                >
+                    📚 Go to Student Management
+                </button>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(student => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "profile-card";
+
+
+        const firstLetter =
+            (student.name || "?")
+                .charAt(0)
+                .toUpperCase();
+
+
+        const statusClass =
+            student.status === "Active"
+                ? "active"
+                : "inactive";
+
+
+        card.innerHTML = `
+
+            <div class="profile-top">
+
+                <div class="avatar">
+                    ${firstLetter}
+                </div>
+
+                <div>
+
+                    <div class="profile-name">
+                        ${escapeHTML(student.name || "Unknown")}
+                    </div>
+
+                    <div class="profile-id">
+                        ID: ${escapeHTML(student.id || "N/A")}
+                    </div>
+
+                    <span class="badge ${statusClass}">
+                        ${escapeHTML(student.status || "Unknown")}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Age
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(String(student.age || "N/A"))}
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Level / Class
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.level || "Not assigned")}
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Teacher
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.teacher || "Not assigned")}
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Parent
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.parentName || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Parent Phone
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.parentPhone || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="card-actions">
+
+                <button
+                    class="action-btn view-btn"
+                    onclick="viewFullProfile('${student.id}')"
+                >
+                    👁 View Profile
+                </button>
+
+                <button
+                    class="action-btn edit-btn"
+                    onclick="editStudent('${student.id}')"
+                >
+                    ✏️ Edit
+                </button>
+
+                <button
+                    class="action-btn hifz-btn"
+                    onclick="openHifz('${student.id}')"
+                >
+                    📖 Hifz
+                </button>
+
+            </div>
+
+        `;
+
+
+        grid.appendChild(card);
+
+    });
+
+}
+
+
+/* ==========================================================
+   VIEW FULL PROFILE
+========================================================== */
+
+function viewFullProfile(id) {
+
+    const student =
+        students.find(
+            item => item.id === id
+        );
+
+
+    if (!student) {
+
+        alert("Student profile could not be found.");
+
+        return;
+
+    }
+
+
+    const firstLetter =
+        (student.name || "?")
+            .charAt(0)
+            .toUpperCase();
+
+
+    const statusClass =
+        student.status === "Active"
+            ? "active"
+            : "inactive";
+
+
+    const history =
+        getStudentHistory(student.id);
+
+
+    document.getElementById(
+        "fullProfileContent"
+    ).innerHTML = `
+
+        <div class="full-profile-header">
+
+            <div class="large-avatar">
+                ${firstLetter}
+            </div>
+
+            <div>
+
+                <div class="full-name">
+                    ${escapeHTML(student.name || "Unknown")}
+                </div>
+
+                <div>
+                    Student ID:
+                    <strong>
+                        ${escapeHTML(student.id || "N/A")}
+                    </strong>
+                </div>
+
+                <span class="badge ${statusClass}">
+                    ${escapeHTML(student.status || "Unknown")}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERSONAL INFORMATION -->
+
+        <div class="section-title">
+            👤 Personal Information
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="label">
+                    Full Name
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.name || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Age
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(String(student.age || "Not provided"))}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Gender
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.gender || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Enrollment Date
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.enrollmentDate || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Address
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.address || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Status
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.status || "Not provided")}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACADEMIC INFORMATION -->
+
+        <div class="section-title">
+            📚 Academic Information
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="label">
+                    Level / Class
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.level || "Not assigned")}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Assigned Teacher
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.teacher || "Not assigned")}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- PARENT INFORMATION -->
+
+        <div class="section-title">
+            👨‍👩‍👧 Parent / Guardian Information
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="label">
+                    Parent / Guardian Name
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.parentName || "Not provided")}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="label">
+                    Phone Number
+                </span>
+
+                <span class="value">
+                    ${escapeHTML(student.parentPhone || "Not provided")}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- STUDENT HISTORY -->
+
+        <div class="section-title">
+            📜 Student History
+        </div>
+
+        ${history}
+
+
+        <!-- NOTES -->
+
+        <div class="section-title">
+            📝 Notes
+        </div>
+
+        <div class="info-item">
+
+            <span class="value">
+                ${escapeHTML(student.notes || "No additional notes.")}
+            </span>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "profileModal"
+    ).style.display = "block";
+
+}
+
+
+/* ==========================================================
+   STUDENT HISTORY
+========================================================== */
+
+function getStudentHistory(studentId) {
+
+    let history = [];
+
+
+    /*
+       HIFZ HISTORY
+       Compatible with future localStorage data.
+    */
+
+    const savedHifz =
+        localStorage.getItem("markaz_hifz");
+
+    if (savedHifz) {
+
+        try {
+
+            const hifzRecords =
+                JSON.parse(savedHifz);
+
+
+            hifzRecords.forEach(record => {
+
+                if (
+                    record.studentId === studentId ||
+                    record.student === studentId
+                ) {
+
+                    history.push({
+
+                        date:
+                            record.date || "N/A",
+
+                        type:
+                            "Hifz / Sabaq",
+
+                        details:
+                            (
+                                (record.surah || "") +
+                                " " +
+                                (record.ayahFrom || "") +
+                                "-" +
+                                (record.ayahTo || "")
+                            ),
+
+                        result:
+                            record.grade ||
+                            record.performance ||
+                            "N/A"
+
+                    });
+
+                }
+
+            });
+
+        } catch (error) {
+
+            console.log(
+                "Hifz history unavailable."
+            );
+
+        }
+
+    }
+
+
+    /*
+       ATTENDANCE HISTORY
+    */
+
+    const savedAttendance =
+        localStorage.getItem("markaz_attendance");
+
+    if (savedAttendance) {
+
+        try {
+
+            const attendanceRecords =
+                JSON.parse(savedAttendance);
+
+
+            attendanceRecords.forEach(record => {
+
+                if (
+                    record.studentId === studentId ||
+                    record.student === studentId
+                ) {
+
+                    history.push({
+
+                        date:
+                            record.date || "N/A",
+
+                        type:
+                            "Attendance",
+
+                        details:
+                            record.status || "N/A",
+
+                        result:
+                            record.remarks || ""
+
+                    });
+
+                }
+
+            });
+
+        } catch (error) {
+
+            console.log(
+                "Attendance history unavailable."
+            );
+
+        }
+
+    }
+
+
+    /*
+       IF NO HISTORY
+    */
+
+    if (history.length === 0) {
+
+        return `
+
+            <div class="no-history">
+
+                📜 No activity history available yet.
+
+                <br><br>
+
+                Hifz records and attendance records
+                will appear here when those modules
+                are connected to this student.
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+       SORT NEWEST FIRST
+    */
+
+    history.sort(
+        (a, b) =>
+            new Date(b.date) -
+            new Date(a.date)
+    );
+
+
+    let html = `
+
+        <div style="overflow-x:auto;">
+
+            <table class="history-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Activity
+                        </th>
+
+                        <th>
+                            Details
+                        </th>
+
+                        <th>
+                            Result
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+    `;
+
+
+    history.forEach(item => {
+
+        html += `
+
+            <tr>
+
+                <td>
+                    ${escapeHTML(item.date)}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.type)}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.details)}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.result)}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+
+    return html;
+
+}
+
+
+/* ==========================================================
+   EDIT STUDENT
+========================================================== */
+
+function editStudent(id) {
+
+    /*
+       Student Management remains responsible for editing.
+    */
+
+    window.location.href =
+        "students.html?edit=" +
+        encodeURIComponent(id);
+
+}
+
+
+/* ==========================================================
+   OPEN HIFZ
+========================================================== */
+
+function openHifz(id) {
+
+    window.location.href =
+        "hifz.html?student=" +
+        encodeURIComponent(id);
+
+}
+
+
+/* ==========================================================
+   CLOSE PROFILE MODAL
+========================================================== */
+
+function closeProfile() {
+
+    document.getElementById(
+        "profileModal"
+    ).style.display = "none";
+
+}
+
+
+/* ==========================================================
+   ESCAPE HTML
+========================================================== */
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value == null
+            ? ""
+            : String(value);
+
+    return div.innerHTML;
+
+}
+
+
+/* ==========================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+========================================================== */
+
+window.onclick = function(event) {
+
+    const modal =
+        document.getElementById("profileModal");
+
+    if (event.target === modal) {
+
+        closeProfile();
+
+    }
+
+};
+
+
+/* ==========================================================
+   INITIALIZE
+========================================================== */
+
+loadProfiles();
+
+</script>
+
+</body>
+</html>
