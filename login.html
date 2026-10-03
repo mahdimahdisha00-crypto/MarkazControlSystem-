@@ -1,70 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Markaz Control System Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markaz Control System Login</title>
 
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            background:#f4f6f9;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            margin:0;
-        }
+<style>
 
-        .login-box{
-            width:350px;
-            background:white;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.2);
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
 
-        h2{
-            text-align:center;
-            color:#0b4f8a;
-        }
+body{
+    background:#f4f6f9;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-        input{
-            width:100%;
-            padding:10px;
-            margin-top:10px;
-            margin-bottom:15px;
-            border:1px solid #ccc;
-            border-radius:5px;
-        }
+.login-box{
+    width:400px;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.15);
+}
 
-        button{
-            width:100%;
-            padding:12px;
-            background:#0b4f8a;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-        }
+h1{
+    text-align:center;
+    color:#0b4f8a;
+    margin-bottom:5px;
+}
 
-        button:hover{
-            background:#083b67;
-        }
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:20px;
+}
 
-        .status{
-            text-align:center;
-            margin-bottom:15px;
-            font-weight:bold;
-        }
-    </style>
+.status{
+    text-align:center;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#0b4f8a;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#083b67;
+}
+
+.roles{
+    margin-top:20px;
+    text-align:center;
+    color:#555;
+}
+
+.footer{
+    margin-top:20px;
+    text-align:center;
+    color:#888;
+    font-size:13px;
+}
+
+</style>
 </head>
 <body>
 
 <div class="login-box">
 
-    <h2>Markaz Control System</h2>
+    <h1>Markaz Control System</h1>
+
+    <div class="subtitle">
+        Quran Memorization Center Management
+    </div>
 
     <div id="serverStatus" class="status">
-        Checking server...
+        Checking Server...
     </div>
 
     <input
@@ -81,6 +115,16 @@
         Sign In
     </button>
 
+    <div class="roles">
+        👑 Administrator &nbsp;
+        👔 Manager &nbsp;
+        👨‍🏫 Teacher
+    </div>
+
+    <div class="footer">
+        © 2026 Markaz Control System
+    </div>
+
 </div>
 
 <script>
@@ -92,20 +136,28 @@ async function checkServer(){
         const response =
         await fetch("/api/status");
 
-        const data =
-        await response.json();
+        if(response.ok){
 
-        document.getElementById(
-            "serverStatus"
-        ).innerHTML =
-        "✅ Server Connected";
+            document.getElementById(
+                "serverStatus"
+            ).innerHTML =
+            "✅ Server Connected";
+
+        }else{
+
+            document.getElementById(
+                "serverStatus"
+            ).innerHTML =
+            "❌ Server Error";
+
+        }
 
     }catch(error){
 
         document.getElementById(
             "serverStatus"
         ).innerHTML =
-        "❌ Cannot connect to server";
+        "❌ Cannot Connect To Server";
 
     }
 
@@ -113,9 +165,59 @@ async function checkServer(){
 
 async function login(){
 
-    alert(
-        "Login API not added yet."
-    );
+    const username =
+    document.getElementById("username").value;
+
+    const password =
+    document.getElementById("password").value;
+
+    try{
+
+        const response =
+        await fetch("/api/login",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                username,
+                password
+            })
+        });
+
+        const data =
+        await response.json();
+
+        if(data.success){
+
+            localStorage.setItem(
+                "role",
+                data.role
+            );
+
+            alert(
+                "Login Successful"
+            );
+
+            window.location.href =
+            "dashboard.html";
+
+        }else{
+
+            alert(
+                data.message ||
+                "Invalid Username Or Password"
+            );
+
+        }
+
+    }catch(error){
+
+        alert(
+            "Cannot connect to login server."
+        );
+
+    }
 
 }
 
