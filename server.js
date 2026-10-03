@@ -734,7 +734,43 @@ app.delete("/api/parent-communications/:id", (req, res) => {
 // =====================================================
 // DASHBOARD
 // =====================================================
+app.post("/api/login", (req, res) => {
 
+    const { username, password } = req.body;
+
+    if (username === "admin" && password === "admin123") {
+
+        return res.json({
+            success: true,
+            role: "Administrator"
+        });
+
+    }
+
+    if (username === "manager" && password === "manager123") {
+
+        return res.json({
+            success: true,
+            role: "Manager"
+        });
+
+    }
+
+    if (username === "teacher" && password === "teacher123") {
+
+        return res.json({
+            success: true,
+            role: "Teacher"
+        });
+
+    }
+
+    res.json({
+        success: false,
+        message: "Invalid username or password"
+    });
+
+});
 app.get("/api/dashboard", (req, res) => {
 
     db.get(
