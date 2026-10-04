@@ -1,3533 +1,1934 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Markaz Control System - Fees & Donations</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-:root {
-    --primary: #0b5cab;
-    --primary-dark: #08457f;
-    --success: #15803d;
-    --warning: #d97706;
-    --danger: #dc2626;
-    --purple: #7c3aed;
-    --teal: #0f766e;
-    --bg: #f4f7fb;
-    --card: #ffffff;
-    --text: #172033;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --shadow: 0 8px 25px rgba(15,23,42,.08);
-}
-
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-}
-
-.header {
-    background: linear-gradient(135deg,#08457f,#0b5cab);
-    color: white;
-    padding: 18px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.15);
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.logo {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.15);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 27px;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 22px;
-}
-
-.header p {
-    margin: 5px 0 0;
-    font-size: 13px;
-    opacity: .85;
-}
-
-.back-btn {
-    color: white;
-    text-decoration: none;
-    background: rgba(255,255,255,.13);
-    padding: 10px 15px;
-    border-radius: 8px;
-}
-
-.container {
-    max-width: 1500px;
-    margin: auto;
-    padding: 25px;
-}
-
-/* STATISTICS */
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(6,1fr);
-    gap: 16px;
-    margin-bottom: 25px;
-}
-
-.stat {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    padding: 18px;
-    box-shadow: var(--shadow);
-}
-
-.stat-icon {
-    font-size: 25px;
-}
-
-.stat-value {
-    font-size: 27px;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-.stat-label {
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-/* TABS */
-
-.tabs {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
-.tab {
-    border: 1px solid var(--border);
-    background: white;
-    padding: 12px 17px;
-    border-radius: 9px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.tab.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-.section {
-    display: none;
-}
-
-.section.active {
-    display: block;
-}
-
-/* CARD */
-
-.card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    padding: 24px;
-    box-shadow: var(--shadow);
-    margin-bottom: 22px;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.card-title {
-    margin: 0;
-    font-size: 20px;
-}
-
-.card-subtitle {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 5px;
-}
-
-/* FORMS */
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 17px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.full {
-    grid-column: 1/-1;
-}
-
-label {
-    font-size: 13px;
-    font-weight: bold;
-    margin-bottom: 7px;
-}
-
-input,
-select,
-textarea {
-    width: 100%;
-    padding: 11px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    font-family: inherit;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(11,92,171,.1);
-}
-
-textarea {
-    min-height: 90px;
-    resize: vertical;
-}
-
-.actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-
-/* BUTTONS */
-
-.btn {
-    border: none;
-    border-radius: 8px;
-    padding: 11px 17px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.primary {
-    background: var(--primary);
-    color: white;
-}
-
-.success {
-    background: var(--success);
-    color: white;
-}
-
-.warning {
-    background: var(--warning);
-    color: white;
-}
-
-.danger {
-    background: var(--danger);
-    color: white;
-}
-
-.secondary {
-    background: #e5e7eb;
-    color: #1f2937;
-}
-
-.purple {
-    background: var(--purple);
-    color: white;
-}
-
-/* TABLE */
-
-.table-wrapper {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 950px;
-}
-
-thead {
-    background: #f1f5f9;
-}
-
-th,
-td {
-    padding: 12px 10px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    font-size: 13px;
-}
-
-th {
-    font-weight: bold;
-}
-
-tbody tr:hover {
-    background: #f8fafc;
-}
-
-/* BADGES */
-
-.badge {
-    display: inline-block;
-    padding: 5px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.badge-paid {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-partial {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-unpaid {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.badge-donation {
-    background: #ede9fe;
-    color: #5b21b6;
-}
-
-.badge-info {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-/* FILTERS */
-
-.filters {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 18px;
-}
-
-/* SUMMARY */
-
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 18px;
-}
-
-.summary-box {
-    padding: 22px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: linear-gradient(145deg,#fff,#f8fafc);
-}
-
-.summary-box h3 {
-    margin: 0;
-    font-size: 14px;
-    color: var(--muted);
-}
-
-.summary-number {
-    font-size: 30px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-/* EMPTY */
-
-.empty {
-    text-align: center;
-    padding: 45px 20px;
-    color: var(--muted);
-}
-
-.empty-icon {
-    font-size: 45px;
-    margin-bottom: 10px;
-}
-
-/* MODAL */
-
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15,23,42,.6);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.modal.show {
-    display: flex;
-}
-
-.modal-box {
-    background: white;
-    width: 100%;
-    max-width: 650px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 16px;
-    padding: 25px;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.close {
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-/* NOTIFICATION */
-
-.notification {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    padding: 14px 18px;
-    border-radius: 10px;
-    background: #111827;
-    color: white;
-    display: none;
-    z-index: 2000;
-}
-
-.notification.show {
-    display: block;
-}
-
-.notification.success-message {
-    background: #166534;
-}
-
-.notification.error-message {
-    background: #991b1b;
-}
-
-/* PRINT */
-
-@media print {
-
-    .header,
-    .tabs,
-    .filters,
-    .actions,
-    .btn,
-    .back-btn {
-        display: none !important;
-    }
-
-    body {
-        background: white;
-    }
-
-    .card {
-        box-shadow: none;
-    }
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1200px) {
-
-    .stats {
-        grid-template-columns: repeat(3,1fr);
-    }
-
-}
-
-@media(max-width:900px) {
-
-    .form-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .filters {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .summary-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-}
-
-@media(max-width:650px) {
-
-    .header {
-        padding: 15px;
-    }
-
-    .container {
-        padding: 15px;
-    }
-
-    .stats {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .full {
-        grid-column: auto;
-    }
-
-    .filters,
-    .summary-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .card {
-        padding: 17px;
-    }
-
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fees & Donations | Markaz Control System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --secondary: #14b8a6;
+            --blue: #2563eb;
+            --green: #16a34a;
+            --orange: #f59e0b;
+            --red: #dc2626;
+            --purple: #7c3aed;
+            --dark: #0f172a;
+            --text: #334155;
+            --muted: #64748b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        body {
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: var(--text);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0f172a, #134e4a);
+            color: white;
+            padding: 24px 16px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px 25px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            margin-bottom: 18px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .brand h2 {
+            font-size: 17px;
+            line-height: 1.2;
+        }
+
+        .brand span {
+            font-size: 11px;
+            color: #99f6e4;
+        }
+
+        .menu-title {
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 10px 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 11px 12px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(20,184,166,.18);
+            color: white;
+        }
+
+        .nav-link.active {
+            border-left: 3px solid #2dd4bf;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 72px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .manager {
+            background: #f0fdfa;
+            color: var(--primary-dark);
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 30px;
+            color: var(--dark);
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .dashboard-btn {
+            text-decoration: none;
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--dark);
+            padding: 11px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dashboard-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::after {
+            content: "";
+            position: absolute;
+            right: -25px;
+            bottom: -30px;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(20,184,166,.08);
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            margin-bottom: 13px;
+            font-size: 20px;
+        }
+
+        .teal { background: #ccfbf1; }
+        .blue { background: #dbeafe; }
+        .green { background: #dcfce7; }
+        .orange { background: #fef3c7; }
+        .purple { background: #ede9fe; }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        /* GRID */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 390px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 17px;
+            color: var(--dark);
+        }
+
+        .card-header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .card-body {
+            padding: 22px;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 7px;
+        }
+
+        label span {
+            color: var(--red);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            padding: 11px 12px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+            color: var(--dark);
+            transition: .2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(20,184,166,.1);
+        }
+
+        textarea {
+            min-height: 75px;
+            resize: vertical;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .balance-preview {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 17px;
+        }
+
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 12px;
+        }
+
+        .balance-row:last-child {
+            margin-bottom: 0;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 9px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: .92;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+
+        /* TABLE */
+
+        .toolbar {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar input {
+            flex: 1;
+            min-width: 190px;
+        }
+
+        .toolbar select {
+            width: 145px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            text-align: left;
+            padding: 13px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .student-name {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .amount {
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .badge-paid {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-partial {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-unpaid {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .delete-btn {
+            padding: 7px 10px;
+            border-radius: 7px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 55px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 35px;
+            color: var(--muted);
+        }
+
+        /* ALERT */
+
+        .alert {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            padding: 14px 18px;
+            background: #0f172a;
+            color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            font-size: 13px;
+            display: none;
+            z-index: 3000;
+            max-width: 350px;
+        }
+
+        .alert.success {
+            border-left: 4px solid #22c55e;
+        }
+
+        .alert.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        /* MOBILE */
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            font-size: 23px;
+            color: var(--dark);
+        }
+
+        @media (max-width: 1200px) {
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .25s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .page-heading {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .manager {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<header class="header">
+<!-- SIDEBAR -->
 
-    <div class="header-left">
+<aside class="sidebar" id="sidebar">
 
-        <div class="logo">
-            💰
-        </div>
-
+    <div class="brand">
+        <div class="brand-icon">🕌</div>
         <div>
-            <h1>Fees & Donations</h1>
-            <p>Student Fees • Payments • Balances • Donations • Financial Reports</p>
+            <h2>Markaz Control</h2>
+            <span>Management System</span>
         </div>
-
     </div>
 
-    <a href="dashboard.html" class="back-btn">
-        ← Dashboard
+    <div class="menu-title">Main</div>
+
+    <a class="nav-link" href="dashboard.html">
+        📊 <span>Dashboard</span>
     </a>
 
-</header>
+    <a class="nav-link" href="students.html">
+        👨‍🎓 <span>Students</span>
+    </a>
+
+    <a class="nav-link" href="teachers.html">
+        👨‍🏫 <span>Teachers</span>
+    </a>
+
+    <a class="nav-link" href="attendance.html">
+        📅 <span>Attendance</span>
+    </a>
+
+    <a class="nav-link" href="hifz.html">
+        📖 <span>Hifz Tracking</span>
+    </a>
+
+    <div class="menu-title">Management</div>
+
+    <a class="nav-link active" href="fees.html">
+        💰 <span>Fees & Donations</span>
+    </a>
+
+    <a class="nav-link" href="exams.html">
+        📝 <span>Exams</span>
+    </a>
+
+    <a class="nav-link" href="reports.html">
+        📊 <span>Reports</span>
+    </a>
+
+    <a class="nav-link" href="parents.html">
+        👪 <span>Parents</span>
+    </a>
+
+    <div class="menu-title">System</div>
+
+    <a class="nav-link" href="backup.html">
+        💾 <span>Backup</span>
+    </a>
+
+    <a class="nav-link" href="settings.html">
+        ⚙️ <span>Settings</span>
+    </a>
+
+</aside>
 
 
-<div class="container">
+<!-- MAIN -->
 
-<!-- =====================================================
-     STATISTICS
-===================================================== -->
+<main class="main">
 
-<div class="stats">
+    <header class="topbar">
 
-    <div class="stat">
-        <div class="stat-icon">💰</div>
-        <div class="stat-value" id="totalExpected">Br 0</div>
-        <div class="stat-label">Expected Fees</div>
-    </div>
+        <div style="display:flex;align-items:center;gap:15px;">
+            <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-title">Financial Management</div>
+        </div>
 
-    <div class="stat">
-        <div class="stat-icon">💵</div>
-        <div class="stat-value" id="totalCollected">Br 0</div>
-        <div class="stat-label">Collected</div>
-    </div>
+        <div class="topbar-right">
+            <div class="manager">👤 Manager</div>
+        </div>
 
-    <div class="stat">
-        <div class="stat-icon">⚠️</div>
-        <div class="stat-value" id="totalOutstanding">Br 0</div>
-        <div class="stat-label">Outstanding</div>
-    </div>
-
-    <div class="stat">
-        <div class="stat-icon">🤲</div>
-        <div class="stat-value" id="totalDonations">Br 0</div>
-        <div class="stat-label">Donations</div>
-    </div>
-
-    <div class="stat">
-        <div class="stat-icon">👨‍🎓</div>
-        <div class="stat-value" id="studentsWithFees">0</div>
-        <div class="stat-label">Students with Fees</div>
-    </div>
-
-    <div class="stat">
-        <div class="stat-icon">📋</div>
-        <div class="stat-value" id="paymentCount">0</div>
-        <div class="stat-label">Payments</div>
-    </div>
-
-</div>
+    </header>
 
 
-<!-- =====================================================
-     TABS
-===================================================== -->
+    <section class="content">
 
-<div class="tabs">
+        <div class="page-heading">
 
-    <button class="tab active" onclick="showTab('feesTab',this)">
-        💰 Student Fees
-    </button>
-
-    <button class="tab" onclick="showTab('paymentsTab',this)">
-        💳 Payment Records
-    </button>
-
-    <button class="tab" onclick="showTab('balanceTab',this)">
-        ⚠️ Outstanding
-    </button>
-
-    <button class="tab" onclick="showTab('historyTab',this)">
-        📜 Fee History
-    </button>
-
-    <button class="tab" onclick="showTab('donationsTab',this)">
-        🤲 Donations
-    </button>
-
-    <button class="tab" onclick="showTab('summaryTab',this)">
-        📊 Financial Summary
-    </button>
-
-</div>
-
-
-<!-- =====================================================
-     STUDENT FEES
-===================================================== -->
-
-<section id="feesTab" class="section active">
-
-<div class="card">
-
-    <div class="card-header">
-
-        <div>
-            <h2 class="card-title">💰 Student Fee Management</h2>
-            <div class="card-subtitle">
-                Assign monthly fees and track student balances.
+            <div>
+                <h1>💰 Fees & Donations</h1>
+                <p>
+                    Manage student fees, payments, balances and financial records.
+                </p>
             </div>
+
+            <a href="dashboard.html" class="dashboard-btn">
+                ← Back to Dashboard
+            </a>
+
         </div>
 
-    </div>
 
+        <!-- STATISTICS -->
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-icon teal">💰</div>
+                <div class="stat-label">Expected Fees</div>
+                <div class="stat-value" id="expectedFees">Br 0.00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon blue">💳</div>
+                <div class="stat-label">Collected</div>
+                <div class="stat-value" id="collectedFees">Br 0.00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon orange">⏳</div>
+                <div class="stat-label">Outstanding</div>
+                <div class="stat-value" id="outstandingFees">Br 0.00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon green">👥</div>
+                <div class="stat-label">Students With Fees</div>
+                <div class="stat-value" id="studentsWithFees">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon purple">🧾</div>
+                <div class="stat-label">Payments</div>
+                <div class="stat-value" id="paymentCount">0</div>
+            </div>
 
-<form id="feeForm">
-
-<div class="form-grid">
-
-    <div class="form-group">
-
-        <label>Student *</label>
-
-        <select id="feeStudent" required>
-
-            <option value="">
-                Select Student
-            </option>
-
-        </select>
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Fee Month *</label>
-
-        <input
-            type="month"
-            id="feeMonth"
-            required
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Monthly Fee (ETB) *</label>
-
-        <input
-            type="number"
-            id="monthlyFee"
-            min="0"
-            step="0.01"
-            placeholder="Example: 500"
-            required
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Amount Paid (ETB)</label>
-
-        <input
-            type="number"
-            id="initialPayment"
-            min="0"
-            step="0.01"
-            value="0"
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Payment Date</label>
-
-        <input
-            type="date"
-            id="paymentDate"
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Payment Method</label>
-
-        <select id="paymentMethod">
-
-            <option value="Cash">
-                Cash
-            </option>
-
-            <option value="Bank">
-                Bank
-            </option>
-
-            <option value="Mobile Money">
-                Mobile Money
-            </option>
-
-            <option value="Other">
-                Other
-            </option>
-
-        </select>
-
-    </div>
-
-
-    <div class="form-group full">
-
-        <label>Notes</label>
-
-        <textarea
-            id="feeNotes"
-            placeholder="Additional fee information..."
-        ></textarea>
-
-    </div>
-
-</div>
-
-
-<div class="actions">
-
-    <button class="btn primary" type="submit">
-        💾 Save Fee Record
-    </button>
-
-    <button
-        class="btn secondary"
-        type="reset"
-        onclick="resetFeeForm()"
-    >
-        ↻ Reset
-    </button>
-
-</div>
-
-</form>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-header">
-
-    <div>
-        <h2 class="card-title">
-            📋 Student Fee Status
-        </h2>
-    </div>
-
-</div>
-
-<div class="filters">
-
-    <input
-        id="feeSearch"
-        placeholder="🔎 Search student..."
-        oninput="renderFees()"
-    >
-
-    <select id="feeStatusFilter" onchange="renderFees()">
-
-        <option value="">
-            All Status
-        </option>
-
-        <option value="Paid">
-            Paid
-        </option>
-
-        <option value="Partial">
-            Partial
-        </option>
-
-        <option value="Unpaid">
-            Unpaid
-        </option>
-
-    </select>
-
-    <input
-        type="month"
-        id="feeMonthFilter"
-        onchange="renderFees()"
-    >
-
-    <select id="feeSort" onchange="renderFees()">
-
-        <option value="name">
-            Student Name
-        </option>
-
-        <option value="balance">
-            Highest Balance
-        </option>
-
-        <option value="date">
-            Recent
-        </option>
-
-    </select>
-
-</div>
-
-
-<div class="table-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Student</th>
-<th>Month</th>
-<th>Expected</th>
-<th>Paid</th>
-<th>Balance</th>
-<th>Status</th>
-<th>Actions</th>
-
-</tr>
-
-</thead>
-
-<tbody id="feeTableBody"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     PAYMENT RECORDS
-===================================================== -->
-
-<section id="paymentsTab" class="section">
-
-<div class="card">
-
-<div class="card-header">
-
-    <div>
-        <h2 class="card-title">
-            💳 Payment Records
-        </h2>
-
-        <div class="card-subtitle">
-            Record individual fee payments.
-        </div>
-    </div>
-
-</div>
-
-
-<form id="paymentForm">
-
-<div class="form-grid">
-
-    <div class="form-group">
-
-        <label>Student *</label>
-
-        <select id="paymentStudent" required>
-
-            <option value="">
-                Select Student
-            </option>
-
-        </select>
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Payment Date *</label>
-
-        <input
-            type="date"
-            id="paymentRecordDate"
-            required
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Amount (ETB) *</label>
-
-        <input
-            type="number"
-            id="paymentAmount"
-            min="0"
-            step="0.01"
-            required
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Payment Method</label>
-
-        <select id="paymentRecordMethod">
-
-            <option>Cash</option>
-            <option>Bank</option>
-            <option>Mobile Money</option>
-            <option>Other</option>
-
-        </select>
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Reference Number</label>
-
-        <input
-            id="paymentReference"
-            placeholder="Receipt / transaction number"
-        >
-
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Fee Month</label>
-
-        <input
-            type="month"
-            id="paymentFeeMonth"
-        >
-
-    </div>
-
-
-    <div class="form-group full">
-
-        <label>Notes</label>
-
-        <textarea id="paymentNotes"></textarea>
-
-    </div>
-
-</div>
-
-
-<div class="actions">
-
-    <button class="btn success" type="submit">
-        💵 Record Payment
-    </button>
-
-</div>
-
-</form>
-
-</div>
-
-
-<div class="card">
-
-<div class="table-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Date</th>
-<th>Student</th>
-<th>Amount</th>
-<th>Method</th>
-<th>Reference</th>
-<th>Fee Month</th>
-<th>Actions</th>
-
-</tr>
-
-</thead>
-
-<tbody id="paymentTableBody"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     OUTSTANDING
-===================================================== -->
-
-<section id="balanceTab" class="section">
-
-<div class="card">
-
-<div class="card-header">
-
-    <div>
-        <h2 class="card-title">
-            ⚠️ Outstanding Balances
-        </h2>
-
-        <div class="card-subtitle">
-            Students with unpaid or partially paid fees.
-        </div>
-    </div>
-
-    <button
-        class="btn secondary"
-        onclick="window.print()"
-    >
-        🖨 Print
-    </button>
-
-</div>
-
-
-<div class="table-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Student</th>
-<th>Fee Month</th>
-<th>Expected</th>
-<th>Paid</th>
-<th>Outstanding</th>
-<th>Status</th>
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody id="outstandingBody"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     FEE HISTORY
-===================================================== -->
-
-<section id="historyTab" class="section">
-
-<div class="card">
-
-<div class="card-header">
-
-    <div>
-        <h2 class="card-title">
-            📜 Fee History
-        </h2>
-
-        <div class="card-subtitle">
-            Complete history of student fee transactions.
-        </div>
-    </div>
-
-    <button
-        class="btn secondary"
-        onclick="window.print()"
-    >
-        🖨 Print History
-    </button>
-
-</div>
-
-
-<div class="filters">
-
-    <input
-        id="historySearch"
-        placeholder="🔎 Search student..."
-        oninput="renderHistory()"
-    >
-
-    <input
-        type="date"
-        id="historyDate"
-        onchange="renderHistory()"
-    >
-
-    <select id="historyMethod" onchange="renderHistory()">
-
-        <option value="">
-            All Methods
-        </option>
-
-        <option>Cash</option>
-        <option>Bank</option>
-        <option>Mobile Money</option>
-        <option>Other</option>
-
-    </select>
-
-</div>
-
-
-<div class="table-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Date</th>
-<th>Student</th>
-<th>Amount</th>
-<th>Method</th>
-<th>Reference</th>
-<th>Fee Month</th>
-<th>Notes</th>
-
-</tr>
-
-</thead>
-
-<tbody id="historyBody"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     DONATIONS
-===================================================== -->
-
-<section id="donationsTab" class="section">
-
-<div class="card">
-
-<div class="card-header">
-
-    <div>
-
-        <h2 class="card-title">
-            🤲 Donation Management
-        </h2>
-
-        <div class="card-subtitle">
-            Record donations and financial support received by the Markaz.
         </div>
 
-    </div>
 
-</div>
+        <!-- FORM + TABLE -->
 
+        <div class="grid">
 
-<form id="donationForm">
+            <!-- ADD FEE -->
 
-<div class="form-grid">
+            <div class="card">
 
-    <div class="form-group">
+                <div class="card-header">
+                    <h2>➕ Record Student Fee</h2>
+                    <p>Add a new monthly fee payment.</p>
+                </div>
 
-        <label>Donor Name *</label>
+                <div class="card-body">
 
-        <input
-            id="donorName"
-            required
-            placeholder="Donor / organization"
-        >
+                    <form id="feeForm">
 
-    </div>
+                        <div class="form-group">
 
+                            <label>
+                                Student <span>*</span>
+                            </label>
 
-    <div class="form-group">
+                            <select id="studentId" required>
 
-        <label>Donation Date *</label>
+                                <option value="">
+                                    Loading students...
+                                </option>
 
-        <input
-            type="date"
-            id="donationDate"
-            required
-        >
+                            </select>
 
-    </div>
+                        </div>
 
 
-    <div class="form-group">
+                        <div class="form-group">
 
-        <label>Amount (ETB) *</label>
+                            <label>
+                                Fee Month <span>*</span>
+                            </label>
 
-        <input
-            type="number"
-            id="donationAmount"
-            min="0"
-            step="0.01"
-            required
-        >
+                            <input
+                                type="month"
+                                id="feeMonth"
+                                required
+                            >
 
-    </div>
+                        </div>
 
 
-    <div class="form-group">
+                        <div class="two-col">
 
-        <label>Donation Type</label>
+                            <div class="form-group">
 
-        <select id="donationType">
+                                <label>
+                                    Monthly Fee (ETB) <span>*</span>
+                                </label>
 
-            <option>General Donation</option>
+                                <input
+                                    type="number"
+                                    id="monthlyFee"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="500"
+                                    required
+                                >
 
-            <option>Student Support</option>
+                            </div>
 
-            <option>Quran Program</option>
 
-            <option>Food Support</option>
+                            <div class="form-group">
 
-            <option>Building / Construction</option>
+                                <label>
+                                    Amount Paid (ETB)
+                                </label>
 
-            <option>Equipment</option>
+                                <input
+                                    type="number"
+                                    id="paidAmount"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="500"
+                                    value="0"
+                                >
 
-            <option>Zakat</option>
+                            </div>
 
-            <option>Sadaqah</option>
+                        </div>
 
-            <option>Other</option>
 
-        </select>
+                        <div class="balance-preview">
 
-    </div>
+                            <div class="balance-row">
+                                <span>Monthly Fee</span>
+                                <strong id="previewFee">Br 0.00</strong>
+                            </div>
 
+                            <div class="balance-row">
+                                <span>Amount Paid</span>
+                                <strong id="previewPaid">Br 0.00</strong>
+                            </div>
 
-    <div class="form-group">
+                            <div class="balance-row">
+                                <span>Remaining Balance</span>
+                                <strong id="previewBalance">Br 0.00</strong>
+                            </div>
 
-        <label>Payment Method</label>
+                        </div>
 
-        <select id="donationMethod">
 
-            <option>Cash</option>
-            <option>Bank</option>
-            <option>Mobile Money</option>
-            <option>Other</option>
+                        <div class="two-col">
 
-        </select>
+                            <div class="form-group">
 
-    </div>
+                                <label>Payment Date</label>
 
+                                <input
+                                    type="date"
+                                    id="paymentDate"
+                                >
 
-    <div class="form-group">
+                            </div>
 
-        <label>Reference</label>
 
-        <input
-            id="donationReference"
-            placeholder="Receipt / transaction number"
-        >
+                            <div class="form-group">
 
-    </div>
+                                <label>Payment Method</label>
 
+                                <select id="paymentMethod">
 
-    <div class="form-group full">
+                                    <option value="Cash">
+                                        Cash
+                                    </option>
 
-        <label>Notes</label>
+                                    <option value="Bank">
+                                        Bank
+                                    </option>
 
-        <textarea
-            id="donationNotes"
-            placeholder="Donation purpose or additional information..."
-        ></textarea>
+                                    <option value="Mobile Money">
+                                        Mobile Money
+                                    </option>
 
-    </div>
+                                    <option value="Other">
+                                        Other
+                                    </option>
 
-</div>
+                                </select>
 
+                            </div>
 
-<div class="actions">
+                        </div>
 
-    <button class="btn purple" type="submit">
-        🤲 Save Donation
-    </button>
 
-</div>
+                        <div class="form-group">
 
-</form>
+                            <label>Notes</label>
 
-</div>
+                            <textarea
+                                id="notes"
+                                placeholder="Optional payment notes..."
+                            ></textarea>
 
+                        </div>
 
-<div class="card">
 
-<div class="card-header">
+                        <div class="form-actions">
 
-    <h2 class="card-title">
-        🤲 Donation History
-    </h2>
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                id="saveBtn"
+                            >
+                                💾 Save Fee Record
+                            </button>
 
-</div>
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                onclick="resetForm()"
+                            >
+                                Reset
+                            </button>
 
+                        </div>
 
-<div class="table-wrapper">
+                    </form>
 
-<table>
+                </div>
 
-<thead>
+            </div>
 
-<tr>
 
-<th>Date</th>
-<th>Donor</th>
-<th>Amount</th>
-<th>Type</th>
-<th>Method</th>
-<th>Reference</th>
-<th>Actions</th>
+            <!-- FEE RECORDS -->
 
-</tr>
+            <div class="card">
 
-</thead>
+                <div class="card-header">
 
-<tbody id="donationBody"></tbody>
+                    <h2>📋 Student Fee Records</h2>
 
-</table>
+                    <p>
+                        View payments, balances and monthly fee status.
+                    </p>
 
-</div>
+                </div>
 
-</div>
 
-</section>
+                <div class="toolbar">
 
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="🔍 Search student..."
+                        oninput="filterFees()"
+                    >
 
-<!-- =====================================================
-     FINANCIAL SUMMARY
-===================================================== -->
+                    <select
+                        id="statusFilter"
+                        onchange="filterFees()"
+                    >
 
-<section id="summaryTab" class="section">
+                        <option value="all">
+                            All Status
+                        </option>
 
-<div class="card">
+                        <option value="Paid">
+                            Paid
+                        </option>
 
-<div class="card-header">
+                        <option value="Partial">
+                            Partial
+                        </option>
 
-    <div>
+                        <option value="Unpaid">
+                            Unpaid
+                        </option>
 
-        <h2 class="card-title">
-            📊 Financial Summary
-        </h2>
+                    </select>
 
-        <div class="card-subtitle">
-            Overview of Markaz financial activity.
+                    <select
+                        id="monthFilter"
+                        onchange="filterFees()"
+                    >
+
+                        <option value="all">
+                            All Months
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Student</th>
+
+                                <th>Month</th>
+
+                                <th>Expected</th>
+
+                                <th>Paid</th>
+
+                                <th>Balance</th>
+
+                                <th>Status</th>
+
+                                <th>Date</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="feeTableBody">
+
+                            <tr>
+                                <td colspan="8">
+                                    <div class="loading">
+                                        Loading fee records...
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
         </div>
 
-    </div>
+    </section>
 
-    <button
-        class="btn secondary"
-        onclick="window.print()"
-    >
-        🖨 Print Summary
-    </button>
-
-</div>
+</main>
 
 
-<div class="summary-grid">
-
-    <div class="summary-box">
-
-        <h3>Total Expected Fees</h3>
-
-        <div
-            class="summary-number"
-            id="summaryExpected"
-        >
-            Br 0
-        </div>
-
-    </div>
-
-
-    <div class="summary-box">
-
-        <h3>Total Fee Payments</h3>
-
-        <div
-            class="summary-number"
-            id="summaryCollected"
-        >
-            Br 0
-        </div>
-
-    </div>
-
-
-    <div class="summary-box">
-
-        <h3>Outstanding Fees</h3>
-
-        <div
-            class="summary-number"
-            id="summaryOutstanding"
-        >
-            Br 0
-        </div>
-
-    </div>
-
-
-    <div class="summary-box">
-
-        <h3>Total Donations</h3>
-
-        <div
-            class="summary-number"
-            id="summaryDonations"
-        >
-            Br 0
-        </div>
-
-    </div>
-
-
-    <div class="summary-box">
-
-        <h3>Total Financial Inflow</h3>
-
-        <div
-            class="summary-number"
-            id="summaryInflow"
-        >
-            Br 0
-        </div>
-
-    </div>
-
-
-    <div class="summary-box">
-
-        <h3>Payment Transactions</h3>
-
-        <div
-            class="summary-number"
-            id="summaryTransactions"
-        >
-            0
-        </div>
-
-    </div>
-
-</div>
-
-</div>
-
-</section>
-
-</div>
-
-
-<!-- MODAL -->
-
-<div class="modal" id="detailsModal">
-
-<div class="modal-box">
-
-    <div class="modal-header">
-
-        <h2 id="modalTitle">
-            Financial Details
-        </h2>
-
-        <button
-            class="close"
-            onclick="closeModal()"
-        >
-            ×
-        </button>
-
-    </div>
-
-    <div id="modalContent"></div>
-
-</div>
-
-</div>
-
-
-<div id="notification" class="notification"></div>
+<div class="alert" id="alert"></div>
 
 
 <script>
 
-/* =========================================================
-   GLOBAL DATA
-========================================================= */
-
-let students = [];
-let fees = [];
-let payments = [];
-let donations = [];
-
-const API = "";
+    let allFees = [];
+    let allStudents = [];
 
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+    /* API */
 
-document.addEventListener("DOMContentLoaded", async () => {
-
-    document.getElementById("paymentDate").value = today();
-    document.getElementById("paymentRecordDate").value = today();
-    document.getElementById("donationDate").value = today();
-
-    document.getElementById("feeMonth").value =
-        currentMonth();
-
-    document.getElementById("paymentFeeMonth").value =
-        currentMonth();
-
-    await loadStudents();
-    await loadFees();
-    await loadPayments();
-    await loadDonations();
-
-    renderAll();
-
-});
+    const API = "";
 
 
-/* =========================================================
-   DATE HELPERS
-========================================================= */
+    /* PAGE START */
 
-function today() {
+    document.addEventListener("DOMContentLoaded", () => {
 
-    const d = new Date();
+        setToday();
 
-    const y = d.getFullYear();
+        setCurrentMonth();
 
-    const m = String(d.getMonth()+1).padStart(2,"0");
+        loadStudents();
 
-    const day = String(d.getDate()).padStart(2,"0");
+        loadFees();
 
-    return `${y}-${m}-${day}`;
-}
+        loadSummary();
 
+        updatePreview();
 
-function currentMonth() {
-
-    return today().substring(0,7);
-
-}
+    });
 
 
-/* =========================================================
-   TABS
-========================================================= */
+    /* DATE */
 
-function showTab(id, button) {
+    function setToday() {
 
-    document.querySelectorAll(".section")
-        .forEach(section => {
-            section.classList.remove("active");
-        });
+        const today = new Date();
 
-    document.querySelectorAll(".tab")
-        .forEach(tab => {
-            tab.classList.remove("active");
-        });
+        const date =
+            today.getFullYear() +
+            "-" +
+            String(today.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(today.getDate()).padStart(2, "0");
 
-    document.getElementById(id)
-        .classList.add("active");
-
-    button.classList.add("active");
-
-}
-
-
-/* =========================================================
-   STUDENTS
-========================================================= */
-
-async function loadStudents() {
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/students`);
-
-        if (!response.ok) {
-            throw new Error("Student API unavailable");
-        }
-
-        const data =
-            await response.json();
-
-        students =
-            Array.isArray(data)
-                ? data
-                : (data.students || []);
-
-    } catch(error) {
-
-        students =
-            JSON.parse(
-                localStorage.getItem("markaz_students")
-                || "[]"
-            );
+        document.getElementById("paymentDate").value = date;
 
     }
 
-    populateStudentSelects();
 
-}
+    function setCurrentMonth() {
+
+        const today = new Date();
+
+        const month =
+            today.getFullYear() +
+            "-" +
+            String(today.getMonth() + 1).padStart(2, "0");
+
+        document.getElementById("feeMonth").value = month;
+
+    }
 
 
-function populateStudentSelects() {
+    /* STUDENTS */
 
-    const selects = [
+    async function loadStudents() {
 
-        document.getElementById("feeStudent"),
+        const select =
+            document.getElementById("studentId");
 
-        document.getElementById("paymentStudent")
+        try {
 
-    ];
+            const response =
+                await fetch(API + "/api/students");
+
+            if (!response.ok) {
+                throw new Error("Could not load students");
+            }
+
+            allStudents = await response.json();
+
+            select.innerHTML =
+                '<option value="">Select Student</option>';
+
+            allStudents.forEach(student => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = student.id;
+
+                option.textContent =
+                    student.name;
+
+                select.appendChild(option);
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            select.innerHTML =
+                '<option value="">Unable to load students</option>';
+
+            showAlert(
+                "Unable to load students.",
+                "error"
+            );
+
+        }
+
+    }
 
 
-    selects.forEach(select => {
+    /* FEES */
 
-        if (!select) return;
+    async function loadFees() {
+
+        const body =
+            document.getElementById("feeTableBody");
+
+        try {
+
+            const response =
+                await fetch(API + "/api/fees");
+
+            if (!response.ok) {
+                throw new Error("Could not load fees");
+            }
+
+            allFees = await response.json();
+
+            buildMonthFilter();
+
+            renderFees(allFees);
+
+        } catch (error) {
+
+            console.error(error);
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="8">
+                        <div class="empty">
+                            <div class="empty-icon">⚠️</div>
+                            <strong>Unable to load fee records</strong>
+                            <p style="margin-top:8px;">
+                                Please make sure the server and /api/fees are working.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+        }
+
+    }
+
+
+    /* SUMMARY */
+
+    async function loadSummary() {
+
+        try {
+
+            const response =
+                await fetch(API + "/api/fees/summary");
+
+            if (!response.ok) {
+                throw new Error("Summary unavailable");
+            }
+
+            const data =
+                await response.json();
+
+            document.getElementById("expectedFees").textContent =
+                money(data.expectedFees);
+
+            document.getElementById("collectedFees").textContent =
+                money(data.collected);
+
+            document.getElementById("outstandingFees").textContent =
+                money(data.outstanding);
+
+            document.getElementById("studentsWithFees").textContent =
+                data.studentsWithFees || 0;
+
+            document.getElementById("paymentCount").textContent =
+                data.payments || 0;
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    /* RENDER */
+
+    function renderFees(records) {
+
+        const body =
+            document.getElementById("feeTableBody");
+
+        if (!records.length) {
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="8">
+                        <div class="empty">
+                            <div class="empty-icon">💰</div>
+                            <strong>No fee records found</strong>
+                            <p style="margin-top:8px;">
+                                Add the first student fee record using the form.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        body.innerHTML = records.map(fee => {
+
+            const studentName =
+                fee.studentName ||
+                fee.student_name ||
+                fee.name ||
+                "Unknown Student";
+
+            const month =
+                fee.fee_month ||
+                fee.feeMonth ||
+                "-";
+
+            const expected =
+                Number(fee.monthly_fee || fee.monthlyFee || 0);
+
+            const paid =
+                Number(fee.paid_amount || fee.paidAmount || 0);
+
+            const balance =
+                Number(
+                    fee.balance !== undefined
+                        ? fee.balance
+                        : Math.max(expected - paid, 0)
+                );
+
+            const status =
+                fee.status ||
+                getStatus(expected, paid);
+
+            const date =
+                fee.payment_date ||
+                fee.paymentDate ||
+                "-";
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <div class="student-name">
+                            ${escapeHtml(studentName)}
+                        </div>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(formatMonth(month))}
+                    </td>
+
+                    <td class="amount">
+                        ${money(expected)}
+                    </td>
+
+                    <td class="amount">
+                        ${money(paid)}
+                    </td>
+
+                    <td class="amount">
+                        ${money(balance)}
+                    </td>
+
+                    <td>
+                        ${statusBadge(status)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(formatDate(date))}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteFee(${fee.id})"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+    }
+
+
+    /* STATUS */
+
+    function getStatus(expected, paid) {
+
+        if (paid >= expected && expected > 0) {
+            return "Paid";
+        }
+
+        if (paid > 0) {
+            return "Partial";
+        }
+
+        return "Unpaid";
+
+    }
+
+
+    function statusBadge(status) {
+
+        const clean =
+            String(status || "Unpaid");
+
+        if (clean.toLowerCase() === "paid") {
+
+            return `<span class="badge badge-paid">PAID</span>`;
+
+        }
+
+        if (clean.toLowerCase() === "partial") {
+
+            return `<span class="badge badge-partial">PARTIAL</span>`;
+
+        }
+
+        return `<span class="badge badge-unpaid">UNPAID</span>`;
+
+    }
+
+
+    /* FORM */
+
+    document.getElementById("feeForm")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+
+            const studentId =
+                document.getElementById("studentId").value;
+
+            const selectedStudent =
+                allStudents.find(
+                    student => String(student.id) === String(studentId)
+                );
+
+
+            const monthlyFee =
+                Number(
+                    document.getElementById("monthlyFee").value || 0
+                );
+
+            const paidAmount =
+                Number(
+                    document.getElementById("paidAmount").value || 0
+                );
+
+
+            if (!studentId) {
+
+                showAlert(
+                    "Please select a student.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (monthlyFee <= 0) {
+
+                showAlert(
+                    "Please enter a valid monthly fee.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (paidAmount < 0) {
+
+                showAlert(
+                    "Paid amount cannot be negative.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const saveButton =
+                document.getElementById("saveBtn");
+
+            saveButton.disabled = true;
+
+            saveButton.textContent = "Saving...";
+
+
+            const payload = {
+
+                studentId: Number(studentId),
+
+                student_name:
+                    selectedStudent
+                        ? selectedStudent.name
+                        : "",
+
+                monthly_fee: monthlyFee,
+
+                paid_amount: paidAmount,
+
+                fee_month:
+                    document.getElementById("feeMonth").value,
+
+                payment_date:
+                    document.getElementById("paymentDate").value,
+
+                payment_method:
+                    document.getElementById("paymentMethod").value,
+
+                notes:
+                    document.getElementById("notes").value
+
+            };
+
+
+            try {
+
+                const response =
+                    await fetch(API + "/api/fees", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(payload)
+
+                    });
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        "Failed to save fee record"
+                    );
+
+                }
+
+
+                showAlert(
+                    "Fee record saved successfully.",
+                    "success"
+                );
+
+
+                resetForm();
+
+                await loadFees();
+
+                await loadSummary();
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showAlert(
+                    error.message ||
+                    "Failed to save fee record.",
+                    "error"
+                );
+
+            } finally {
+
+                saveButton.disabled = false;
+
+                saveButton.textContent =
+                    "💾 Save Fee Record";
+
+            }
+
+        });
+
+
+    /* PREVIEW */
+
+    document.getElementById("monthlyFee")
+        .addEventListener("input", updatePreview);
+
+    document.getElementById("paidAmount")
+        .addEventListener("input", updatePreview);
+
+
+    function updatePreview() {
+
+        const fee =
+            Number(
+                document.getElementById("monthlyFee").value || 0
+            );
+
+        const paid =
+            Number(
+                document.getElementById("paidAmount").value || 0
+            );
+
+        const balance =
+            Math.max(fee - paid, 0);
+
+
+        document.getElementById("previewFee").textContent =
+            money(fee);
+
+        document.getElementById("previewPaid").textContent =
+            money(paid);
+
+        document.getElementById("previewBalance").textContent =
+            money(balance);
+
+    }
+
+
+    /* FILTER */
+
+    function filterFees() {
+
+        const search =
+            document.getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+        const status =
+            document.getElementById("statusFilter").value;
+
+        const month =
+            document.getElementById("monthFilter").value;
+
+
+        const filtered =
+            allFees.filter(fee => {
+
+                const name =
+                    String(
+                        fee.studentName ||
+                        fee.student_name ||
+                        fee.name ||
+                        ""
+                    ).toLowerCase();
+
+
+                const feeStatus =
+                    fee.status ||
+                    getStatus(
+                        Number(fee.monthly_fee || 0),
+                        Number(fee.paid_amount || 0)
+                    );
+
+
+                const feeMonth =
+                    fee.fee_month ||
+                    fee.feeMonth ||
+                    "";
+
+
+                const searchMatch =
+                    name.includes(search);
+
+                const statusMatch =
+                    status === "all" ||
+                    feeStatus === status;
+
+                const monthMatch =
+                    month === "all" ||
+                    feeMonth === month;
+
+
+                return (
+                    searchMatch &&
+                    statusMatch &&
+                    monthMatch
+                );
+
+            });
+
+
+        renderFees(filtered);
+
+    }
+
+
+    /* MONTH FILTER */
+
+    function buildMonthFilter() {
+
+        const select =
+            document.getElementById("monthFilter");
+
+        const months =
+            [...new Set(
+                allFees
+                    .map(fee =>
+                        fee.fee_month ||
+                        fee.feeMonth
+                    )
+                    .filter(Boolean)
+            )]
+            .sort()
+            .reverse();
+
 
         select.innerHTML =
-            `<option value="">Select Student</option>`;
+            '<option value="all">All Months</option>';
 
 
-        students.forEach(student => {
+        months.forEach(month => {
 
             const option =
                 document.createElement("option");
 
-            option.value =
-                student.id ??
-                student.studentId ??
-                student.name;
+            option.value = month;
 
             option.textContent =
-                student.name ||
-                student.fullName ||
-                "Unnamed Student";
+                formatMonth(month);
 
             select.appendChild(option);
 
         });
 
-    });
-
-}
-
-
-/* =========================================================
-   FEES
-========================================================= */
-
-async function loadFees() {
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/fees`);
-
-        if (!response.ok) {
-            throw new Error("Fees API unavailable");
-        }
-
-        const data =
-            await response.json();
-
-        fees =
-            Array.isArray(data)
-                ? data
-                : (data.fees || []);
-
-    } catch(error) {
-
-        fees =
-            JSON.parse(
-                localStorage.getItem("markaz_fees")
-                || "[]"
-            );
-
     }
 
-}
 
+    /* DELETE */
 
-/* =========================================================
-   PAYMENTS
-========================================================= */
+    async function deleteFee(id) {
 
-async function loadPayments() {
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/payments`);
-
-        if (!response.ok) {
-            throw new Error("Payment API unavailable");
-        }
-
-        const data =
-            await response.json();
-
-        payments =
-            Array.isArray(data)
-                ? data
-                : (data.payments || []);
-
-    } catch(error) {
-
-        payments =
-            JSON.parse(
-                localStorage.getItem("markaz_payments")
-                || "[]"
-            );
-
-    }
-
-}
-
-
-/* =========================================================
-   DONATIONS
-========================================================= */
-
-async function loadDonations() {
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/donations`);
-
-        if (!response.ok) {
-            throw new Error("Donation API unavailable");
-        }
-
-        const data =
-            await response.json();
-
-        donations =
-            Array.isArray(data)
-                ? data
-                : (data.donations || []);
-
-    } catch(error) {
-
-        donations =
-            JSON.parse(
-                localStorage.getItem("markaz_donations")
-                || "[]"
-            );
-
-    }
-
-}
-
-
-/* =========================================================
-   SAVE FEE
-========================================================= */
-
-document.getElementById("feeForm")
-.addEventListener("submit", async function(e) {
-
-    e.preventDefault();
-
-
-    const studentId =
-        document.getElementById("feeStudent").value;
-
-
-    const student =
-        students.find(s =>
-            String(
-                s.id ??
-                s.studentId ??
-                s.name
-            )
-            === String(studentId)
-        );
-
-
-    const expected =
-        Number(
-            document.getElementById("monthlyFee").value
-        );
-
-
-    const paid =
-        Number(
-            document.getElementById("initialPayment").value
-            || 0
-        );
-
-
-    const balance =
-        Math.max(0, expected - paid);
-
-
-    const status =
-        calculateStatus(expected,paid);
-
-
-    const fee = {
-
-        id: Date.now(),
-
-        studentId,
-
-        studentName:
-            student?.name ||
-            student?.fullName ||
-            "",
-
-        feeMonth:
-            document.getElementById("feeMonth").value,
-
-        monthlyFee: expected,
-
-        paidAmount: paid,
-
-        balance,
-
-        status,
-
-        paymentDate:
-            document.getElementById("paymentDate").value,
-
-        paymentMethod:
-            document.getElementById("paymentMethod").value,
-
-        notes:
-            document.getElementById("feeNotes").value,
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/fees`, {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type":"application/json"
-                },
-
-                body: JSON.stringify(fee)
-
-            });
-
-
-        if (!response.ok) {
-            throw new Error("Fee API save failed");
+        if (!confirm(
+            "Are you sure you want to delete this fee record?"
+        )) {
+            return;
         }
 
 
-        const saved =
-            await response.json();
+        try {
 
+            const response =
+                await fetch(
+                    API + "/api/fees/" + id,
+                    {
+                        method: "DELETE"
+                    }
+                );
 
-        fees.unshift(
-            saved.fee || saved
-        );
 
+            const data =
+                await response.json();
 
-    } catch(error) {
 
-        fees.unshift(fee);
+            if (!response.ok) {
 
-        localStorage.setItem(
-            "markaz_fees",
-            JSON.stringify(fees)
-        );
+                throw new Error(
+                    data.error ||
+                    "Unable to delete record"
+                );
 
-    }
+            }
 
 
-    /* Create initial payment */
+            showAlert(
+                "Fee record deleted successfully.",
+                "success"
+            );
 
-    if (paid > 0) {
 
-        const payment = {
+            await loadFees();
 
-            id: Date.now() + 1,
+            await loadSummary();
 
-            studentId,
 
-            studentName:
-                fee.studentName,
+        } catch (error) {
 
-            amount: paid,
+            console.error(error);
 
-            paymentDate:
-                fee.paymentDate,
+            showAlert(
+                error.message ||
+                "Unable to delete fee record.",
+                "error"
+            );
 
-            paymentMethod:
-                fee.paymentMethod,
-
-            reference: "",
-
-            feeMonth:
-                fee.feeMonth,
-
-            notes:
-                "Initial payment",
-
-            createdAt:
-                new Date().toISOString()
-
-        };
-
-
-        payments.unshift(payment);
-
-
-        localStorage.setItem(
-            "markaz_payments",
-            JSON.stringify(payments)
-        );
-
-    }
-
-
-    showNotification(
-        "Fee record saved successfully.",
-        "success-message"
-    );
-
-
-    this.reset();
-
-    document.getElementById("feeMonth").value =
-        currentMonth();
-
-    document.getElementById("paymentDate").value =
-        today();
-
-
-    renderAll();
-
-});
-
-
-/* =========================================================
-   SAVE PAYMENT
-========================================================= */
-
-document.getElementById("paymentForm")
-.addEventListener("submit", async function(e) {
-
-    e.preventDefault();
-
-
-    const studentId =
-        document.getElementById("paymentStudent").value;
-
-
-    const student =
-        students.find(s =>
-            String(
-                s.id ??
-                s.studentId ??
-                s.name
-            )
-            === String(studentId)
-        );
-
-
-    const payment = {
-
-        id: Date.now(),
-
-        studentId,
-
-        studentName:
-            student?.name ||
-            student?.fullName ||
-            "",
-
-        amount:
-            Number(
-                document.getElementById("paymentAmount").value
-            ),
-
-        paymentDate:
-            document.getElementById("paymentRecordDate").value,
-
-        paymentMethod:
-            document.getElementById("paymentRecordMethod").value,
-
-        reference:
-            document.getElementById("paymentReference").value,
-
-        feeMonth:
-            document.getElementById("paymentFeeMonth").value,
-
-        notes:
-            document.getElementById("paymentNotes").value,
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/payments`, {
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(payment)
-
-            });
-
-
-        if (!response.ok) {
-            throw new Error("Payment API unavailable");
         }
 
-        const saved =
-            await response.json();
+    }
 
-        payments.unshift(
-            saved.payment || saved
-        );
 
-    } catch(error) {
+    /* RESET */
 
-        payments.unshift(payment);
+    function resetForm() {
 
-        localStorage.setItem(
-            "markaz_payments",
-            JSON.stringify(payments)
-        );
+        document.getElementById("feeForm").reset();
+
+        setToday();
+
+        setCurrentMonth();
+
+        document.getElementById("paidAmount").value = "0";
+
+        updatePreview();
 
     }
 
 
-    showNotification(
-        "Payment recorded successfully.",
-        "success-message"
-    );
+    /* MONEY */
+
+    function money(value) {
+
+        return "Br " +
+            Number(value || 0)
+                .toLocaleString(
+                    "en-US",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+    }
 
 
-    this.reset();
+    /* MONTH */
 
-    document.getElementById("paymentRecordDate").value =
-        today();
+    function formatMonth(value) {
 
-
-    renderAll();
-
-});
-
-
-/* =========================================================
-   SAVE DONATION
-========================================================= */
-
-document.getElementById("donationForm")
-.addEventListener("submit", async function(e) {
-
-    e.preventDefault();
-
-
-    const donation = {
-
-        id: Date.now(),
-
-        donorName:
-            document.getElementById("donorName").value,
-
-        donationDate:
-            document.getElementById("donationDate").value,
-
-        amount:
-            Number(
-                document.getElementById("donationAmount").value
-            ),
-
-        donationType:
-            document.getElementById("donationType").value,
-
-        paymentMethod:
-            document.getElementById("donationMethod").value,
-
-        reference:
-            document.getElementById("donationReference").value,
-
-        notes:
-            document.getElementById("donationNotes").value,
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(`${API}/api/donations`, {
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(donation)
-
-            });
-
-
-        if (!response.ok) {
-            throw new Error("Donation API unavailable");
+        if (!value || !value.includes("-")) {
+            return value || "-";
         }
 
 
-        const saved =
-            await response.json();
-
-
-        donations.unshift(
-            saved.donation || saved
-        );
-
-    } catch(error) {
-
-        donations.unshift(donation);
-
-        localStorage.setItem(
-            "markaz_donations",
-            JSON.stringify(donations)
-        );
-
-    }
-
-
-    showNotification(
-        "Donation recorded successfully.",
-        "success-message"
-    );
-
-
-    this.reset();
-
-    document.getElementById("donationDate").value =
-        today();
-
-
-    renderAll();
-
-});
-
-
-/* =========================================================
-   RENDER EVERYTHING
-========================================================= */
-
-function renderAll() {
-
-    renderFees();
-
-    renderPayments();
-
-    renderOutstanding();
-
-    renderHistory();
-
-    renderDonations();
-
-    updateStatistics();
-
-}
-
-
-/* =========================================================
-   FEE STATUS
-========================================================= */
-
-function calculateStatus(expected,paid) {
-
-    if (paid >= expected && expected > 0) {
-        return "Paid";
-    }
-
-    if (paid > 0) {
-        return "Partial";
-    }
-
-    return "Unpaid";
-
-}
-
-
-/* =========================================================
-   RENDER FEES
-========================================================= */
-
-function renderFees() {
-
-    const body =
-        document.getElementById("feeTableBody");
-
-
-    const search =
-        document.getElementById("feeSearch")
-        ?.value
-        .toLowerCase() || "";
-
-
-    const statusFilter =
-        document.getElementById("feeStatusFilter")
-        ?.value || "";
-
-
-    const monthFilter =
-        document.getElementById("feeMonthFilter")
-        ?.value || "";
-
-
-    let records =
-        [...fees];
-
-
-    records =
-        records.filter(fee => {
-
-            if (
-                search &&
-                !(fee.studentName || "")
-                .toLowerCase()
-                .includes(search)
-            ) {
-                return false;
-            }
-
-
-            if (
-                statusFilter &&
-                fee.status !== statusFilter
-            ) {
-                return false;
-            }
-
-
-            if (
-                monthFilter &&
-                fee.feeMonth !== monthFilter
-            ) {
-                return false;
-            }
-
-
-            return true;
-
-        });
-
-
-    const sort =
-        document.getElementById("feeSort")
-        ?.value || "name";
-
-
-    if (sort === "name") {
-
-        records.sort((a,b) =>
-            (a.studentName || "")
-            .localeCompare(b.studentName || "")
-        );
-
-    }
-
-
-    if (sort === "balance") {
-
-        records.sort((a,b) =>
-            Number(b.balance || 0)
-            -
-            Number(a.balance || 0)
-        );
-
-    }
-
-
-    if (sort === "date") {
-
-        records.sort((a,b) =>
-            String(b.paymentDate || "")
-            .localeCompare(
-                String(a.paymentDate || "")
-            )
-        );
-
-    }
-
-
-    body.innerHTML = "";
-
-
-    if (records.length === 0) {
-
-        body.innerHTML = emptyRow(
-            7,
-            "💰",
-            "No fee records found."
-        );
-
-        return;
-
-    }
-
-
-    records.forEach(fee => {
-
-        const row =
-            document.createElement("tr");
-
-
-        const status =
-            calculateStatus(
-                Number(fee.monthlyFee || 0),
-                Number(fee.paidAmount || 0)
+        const parts =
+            value.split("-");
+
+        const date =
+            new Date(
+                Number(parts[0]),
+                Number(parts[1]) - 1,
+                1
             );
 
 
-        const balance =
-            Math.max(
-                0,
-                Number(fee.monthlyFee || 0)
-                -
-                Number(fee.paidAmount || 0)
-            );
-
-
-        row.innerHTML = `
-
-            <td>
-                <strong>
-                    ${escapeHTML(fee.studentName || "-")}
-                </strong>
-            </td>
-
-            <td>
-                ${escapeHTML(fee.feeMonth || "-")}
-            </td>
-
-            <td>
-                Br ${money(fee.monthlyFee)}
-            </td>
-
-            <td>
-                Br ${money(fee.paidAmount)}
-            </td>
-
-            <td>
-                <strong>
-                    Br ${money(balance)}
-                </strong>
-            </td>
-
-            <td>
-                <span class="badge ${statusClass(status)}">
-                    ${status}
-                </span>
-            </td>
-
-            <td>
-
-                <button
-                    class="btn secondary"
-                    onclick="viewFee(${fee.id})"
-                >
-                    View
-                </button>
-
-                <button
-                    class="btn danger"
-                    onclick="deleteFee(${fee.id})"
-                >
-                    Delete
-                </button>
-
-            </td>
-
-        `;
-
-
-        body.appendChild(row);
-
-    });
-
-}
-
-
-/* =========================================================
-   RENDER PAYMENTS
-========================================================= */
-
-function renderPayments() {
-
-    const body =
-        document.getElementById("paymentTableBody");
-
-
-    body.innerHTML = "";
-
-
-    if (payments.length === 0) {
-
-        body.innerHTML =
-            emptyRow(
-                7,
-                "💳",
-                "No payment records found."
-            );
-
-        return;
-
-    }
-
-
-    [...payments]
-    .sort((a,b) =>
-        String(b.paymentDate || "")
-        .localeCompare(
-            String(a.paymentDate || "")
-        )
-    )
-    .forEach(payment => {
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(payment.paymentDate || "-")}
-            </td>
-
-            <td>
-                <strong>
-                    ${escapeHTML(payment.studentName || "-")}
-                </strong>
-            </td>
-
-            <td>
-                <strong>
-                    Br ${money(payment.amount)}
-                </strong>
-            </td>
-
-            <td>
-                ${escapeHTML(payment.paymentMethod || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(payment.reference || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(payment.feeMonth || "-")}
-            </td>
-
-            <td>
-
-                <button
-                    class="btn danger"
-                    onclick="deletePayment(${payment.id})"
-                >
-                    Delete
-                </button>
-
-            </td>
-
-        `;
-
-
-        body.appendChild(row);
-
-    });
-
-}
-
-
-/* =========================================================
-   OUTSTANDING
-========================================================= */
-
-function renderOutstanding() {
-
-    const body =
-        document.getElementById("outstandingBody");
-
-
-    const outstanding =
-        fees.filter(
-            fee =>
-                Number(fee.balance || 0) > 0
-        );
-
-
-    body.innerHTML = "";
-
-
-    if (outstanding.length === 0) {
-
-        body.innerHTML =
-            emptyRow(
-                7,
-                "✅",
-                "No outstanding balances."
-            );
-
-        return;
-
-    }
-
-
-    outstanding.forEach(fee => {
-
-        const row =
-            document.createElement("tr");
-
-
-        const balance =
-            Number(fee.monthlyFee || 0)
-            -
-            Number(fee.paidAmount || 0);
-
-
-        row.innerHTML = `
-
-            <td>
-                <strong>
-                    ${escapeHTML(fee.studentName || "-")}
-                </strong>
-            </td>
-
-            <td>
-                ${escapeHTML(fee.feeMonth || "-")}
-            </td>
-
-            <td>
-                Br ${money(fee.monthlyFee)}
-            </td>
-
-            <td>
-                Br ${money(fee.paidAmount)}
-            </td>
-
-            <td>
-                <strong style="color:#dc2626">
-                    Br ${money(balance)}
-                </strong>
-            </td>
-
-            <td>
-                <span class="badge badge-unpaid">
-                    ${escapeHTML(fee.status || "Unpaid")}
-                </span>
-            </td>
-
-            <td>
-
-                <button
-                    class="btn success"
-                    onclick="openPaymentFor('${escapeJS(fee.studentId)}')"
-                >
-                    💵 Pay
-                </button>
-
-            </td>
-
-        `;
-
-
-        body.appendChild(row);
-
-    });
-
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-function renderHistory() {
-
-    const body =
-        document.getElementById("historyBody");
-
-
-    const search =
-        document.getElementById("historySearch")
-        ?.value
-        .toLowerCase() || "";
-
-
-    const date =
-        document.getElementById("historyDate")
-        ?.value || "";
-
-
-    const method =
-        document.getElementById("historyMethod")
-        ?.value || "";
-
-
-    const records =
-        payments.filter(payment => {
-
-            if (
-                search &&
-                !(payment.studentName || "")
-                .toLowerCase()
-                .includes(search)
-            ) {
-                return false;
-            }
-
-
-            if (
-                date &&
-                payment.paymentDate !== date
-            ) {
-                return false;
-            }
-
-
-            if (
-                method &&
-                payment.paymentMethod !== method
-            ) {
-                return false;
-            }
-
-
-            return true;
-
-        });
-
-
-    body.innerHTML = "";
-
-
-    if (records.length === 0) {
-
-        body.innerHTML =
-            emptyRow(
-                7,
-                "📜",
-                "No fee history found."
-            );
-
-        return;
-
-    }
-
-
-    records.forEach(payment => {
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(payment.paymentDate || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(payment.studentName || "-")}
-            </td>
-
-            <td>
-                <strong>
-                    Br ${money(payment.amount)}
-                </strong>
-            </td>
-
-            <td>
-                ${escapeHTML(payment.paymentMethod || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(payment.reference || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(payment.feeMonth || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(payment.notes || "-")}
-            </td>
-
-        `;
-
-
-        body.appendChild(row);
-
-    });
-
-}
-
-
-/* =========================================================
-   DONATIONS
-========================================================= */
-
-function renderDonations() {
-
-    const body =
-        document.getElementById("donationBody");
-
-
-    body.innerHTML = "";
-
-
-    if (donations.length === 0) {
-
-        body.innerHTML =
-            emptyRow(
-                7,
-                "🤲",
-                "No donations recorded."
-            );
-
-        return;
-
-    }
-
-
-    donations.forEach(donation => {
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(donation.donationDate || "-")}
-            </td>
-
-            <td>
-                <strong>
-                    ${escapeHTML(donation.donorName || "-")}
-                </strong>
-            </td>
-
-            <td>
-                <strong>
-                    Br ${money(donation.amount)}
-                </strong>
-            </td>
-
-            <td>
-                <span class="badge badge-donation">
-                    ${escapeHTML(donation.donationType || "-")}
-                </span>
-            </td>
-
-            <td>
-                ${escapeHTML(donation.paymentMethod || "-")}
-            </td>
-
-            <td>
-                ${escapeHTML(donation.reference || "-")}
-            </td>
-
-            <td>
-
-                <button
-                    class="btn secondary"
-                    onclick="viewDonation(${donation.id})"
-                >
-                    View
-                </button>
-
-                <button
-                    class="btn danger"
-                    onclick="deleteDonation(${donation.id})"
-                >
-                    Delete
-                </button>
-
-            </td>
-
-        `;
-
-
-        body.appendChild(row);
-
-    });
-
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-function updateStatistics() {
-
-    const expected =
-        fees.reduce(
-            (sum, fee) =>
-                sum + Number(fee.monthlyFee || 0),
-            0
-        );
-
-
-    const collected =
-        payments.reduce(
-            (sum, payment) =>
-                sum + Number(payment.amount || 0),
-            0
-        );
-
-
-    const outstanding =
-        fees.reduce(
-            (sum, fee) =>
-                sum +
-                Math.max(
-                    0,
-                    Number(fee.monthlyFee || 0)
-                    -
-                    Number(fee.paidAmount || 0)
-                ),
-            0
-        );
-
-
-    const donationTotal =
-        donations.reduce(
-            (sum, donation) =>
-                sum + Number(donation.amount || 0),
-            0
-        );
-
-
-    document.getElementById("totalExpected")
-        .textContent =
-        "Br " + money(expected);
-
-
-    document.getElementById("totalCollected")
-        .textContent =
-        "Br " + money(collected);
-
-
-    document.getElementById("totalOutstanding")
-        .textContent =
-        "Br " + money(outstanding);
-
-
-    document.getElementById("totalDonations")
-        .textContent =
-        "Br " + money(donationTotal);
-
-
-    document.getElementById("studentsWithFees")
-        .textContent =
-        new Set(
-            fees.map(f => f.studentId)
-        ).size;
-
-
-    document.getElementById("paymentCount")
-        .textContent =
-        payments.length;
-
-
-    document.getElementById("summaryExpected")
-        .textContent =
-        "Br " + money(expected);
-
-
-    document.getElementById("summaryCollected")
-        .textContent =
-        "Br " + money(collected);
-
-
-    document.getElementById("summaryOutstanding")
-        .textContent =
-        "Br " + money(outstanding);
-
-
-    document.getElementById("summaryDonations")
-        .textContent =
-        "Br " + money(donationTotal);
-
-
-    document.getElementById("summaryInflow")
-        .textContent =
-        "Br " +
-        money(collected + donationTotal);
-
-
-    document.getElementById("summaryTransactions")
-        .textContent =
-        payments.length + donations.length;
-
-}
-
-
-/* =========================================================
-   VIEW FEE
-========================================================= */
-
-function viewFee(id) {
-
-    const fee =
-        fees.find(
-            item =>
-                String(item.id) === String(id)
-        );
-
-
-    if (!fee) return;
-
-
-    const balance =
-        Math.max(
-            0,
-            Number(fee.monthlyFee || 0)
-            -
-            Number(fee.paidAmount || 0)
-        );
-
-
-    document.getElementById("modalTitle")
-        .textContent =
-        "Fee Record";
-
-
-    document.getElementById("modalContent")
-        .innerHTML = `
-
-        <div class="form-grid">
-
-            <div>
-                <strong>Student</strong>
-                <p>${escapeHTML(fee.studentName || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Month</strong>
-                <p>${escapeHTML(fee.feeMonth || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Expected</strong>
-                <p>Br ${money(fee.monthlyFee)}</p>
-            </div>
-
-            <div>
-                <strong>Paid</strong>
-                <p>Br ${money(fee.paidAmount)}</p>
-            </div>
-
-            <div>
-                <strong>Balance</strong>
-                <p>Br ${money(balance)}</p>
-            </div>
-
-            <div>
-                <strong>Status</strong>
-                <p>${escapeHTML(fee.status || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Payment Date</strong>
-                <p>${escapeHTML(fee.paymentDate || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Payment Method</strong>
-                <p>${escapeHTML(fee.paymentMethod || "-")}</p>
-            </div>
-
-            <div class="full">
-                <strong>Notes</strong>
-                <p>${escapeHTML(fee.notes || "No notes.")}</p>
-            </div>
-
-        </div>
-
-    `;
-
-
-    document.getElementById("detailsModal")
-        .classList.add("show");
-
-}
-
-
-/* =========================================================
-   VIEW DONATION
-========================================================= */
-
-function viewDonation(id) {
-
-    const donation =
-        donations.find(
-            item =>
-                String(item.id) === String(id)
-        );
-
-
-    if (!donation) return;
-
-
-    document.getElementById("modalTitle")
-        .textContent =
-        "Donation Details";
-
-
-    document.getElementById("modalContent")
-        .innerHTML = `
-
-        <div class="form-grid">
-
-            <div>
-                <strong>Donor</strong>
-                <p>${escapeHTML(donation.donorName || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Date</strong>
-                <p>${escapeHTML(donation.donationDate || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Amount</strong>
-                <p>Br ${money(donation.amount)}</p>
-            </div>
-
-            <div>
-                <strong>Type</strong>
-                <p>${escapeHTML(donation.donationType || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Method</strong>
-                <p>${escapeHTML(donation.paymentMethod || "-")}</p>
-            </div>
-
-            <div>
-                <strong>Reference</strong>
-                <p>${escapeHTML(donation.reference || "-")}</p>
-            </div>
-
-            <div class="full">
-                <strong>Notes</strong>
-                <p>${escapeHTML(donation.notes || "No notes.")}</p>
-            </div>
-
-        </div>
-
-    `;
-
-
-    document.getElementById("detailsModal")
-        .classList.add("show");
-
-}
-
-
-/* =========================================================
-   DELETE FEE
-========================================================= */
-
-async function deleteFee(id) {
-
-    if (!confirm("Delete this fee record?")) {
-        return;
-    }
-
-
-    try {
-
-        await fetch(
-            `${API}/api/fees/${id}`,
-            {
-                method: "DELETE"
-            }
-        );
-
-    } catch(error) {
-
-        console.log(error);
-
-    }
-
-
-    fees =
-        fees.filter(
-            fee =>
-                String(fee.id) !== String(id)
-        );
-
-
-    localStorage.setItem(
-        "markaz_fees",
-        JSON.stringify(fees)
-    );
-
-
-    renderAll();
-
-
-    showNotification(
-        "Fee record deleted.",
-        "success-message"
-    );
-
-}
-
-
-/* =========================================================
-   DELETE PAYMENT
-========================================================= */
-
-async function deletePayment(id) {
-
-    if (!confirm("Delete this payment record?")) {
-        return;
-    }
-
-
-    try {
-
-        await fetch(
-            `${API}/api/payments/${id}`,
-            {
-                method:"DELETE"
-            }
-        );
-
-    } catch(error) {
-
-        console.log(error);
-
-    }
-
-
-    payments =
-        payments.filter(
-            payment =>
-                String(payment.id)
-                !== String(id)
-        );
-
-
-    localStorage.setItem(
-        "markaz_payments",
-        JSON.stringify(payments)
-    );
-
-
-    renderAll();
-
-}
-
-
-/* =========================================================
-   DELETE DONATION
-========================================================= */
-
-async function deleteDonation(id) {
-
-    if (!confirm("Delete this donation?")) {
-        return;
-    }
-
-
-    try {
-
-        await fetch(
-            `${API}/api/donations/${id}`,
-            {
-                method:"DELETE"
-            }
-        );
-
-    } catch(error) {
-
-        console.log(error);
-
-    }
-
-
-    donations =
-        donations.filter(
-            donation =>
-                String(donation.id)
-                !== String(id)
-        );
-
-
-    localStorage.setItem(
-        "markaz_donations",
-        JSON.stringify(donations)
-    );
-
-
-    renderAll();
-
-}
-
-
-/* =========================================================
-   OPEN PAYMENT
-========================================================= */
-
-function openPaymentFor(studentId) {
-
-    showTab(
-        "paymentsTab",
-        document.querySelectorAll(".tab")[1]
-    );
-
-
-    document.getElementById("paymentStudent").value =
-        studentId;
-
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-function resetFeeForm() {
-
-    setTimeout(() => {
-
-        document.getElementById("feeMonth").value =
-            currentMonth();
-
-        document.getElementById("paymentDate").value =
-            today();
-
-    },10);
-
-}
-
-
-/* =========================================================
-   STATUS CLASS
-========================================================= */
-
-function statusClass(status) {
-
-    if (status === "Paid") {
-        return "badge-paid";
-    }
-
-    if (status === "Partial") {
-        return "badge-partial";
-    }
-
-    return "badge-unpaid";
-
-}
-
-
-/* =========================================================
-   EMPTY ROW
-========================================================= */
-
-function emptyRow(columns,icon,message) {
-
-    return `
-
-        <tr>
-
-            <td colspan="${columns}">
-
-                <div class="empty">
-
-                    <div class="empty-icon">
-                        ${icon}
-                    </div>
-
-                    ${message}
-
-                </div>
-
-            </td>
-
-        </tr>
-
-    `;
-
-}
-
-
-/* =========================================================
-   MONEY
-========================================================= */
-
-function money(value) {
-
-    return Number(value || 0)
-        .toLocaleString(
+        return date.toLocaleDateString(
             "en-US",
             {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                month: "long",
+                year: "numeric"
             }
         );
 
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
     }
 
 
-    return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    /* DATE */
 
-}
+    function formatDate(value) {
 
-
-function escapeJS(value) {
-
-    return String(value || "")
-        .replace(/\\/g,"\\\\")
-        .replace(/'/g,"\\'");
-
-}
+        if (!value || value === "-") {
+            return "-";
+        }
 
 
-/* =========================================================
-   MODAL
-========================================================= */
-
-function closeModal() {
-
-    document.getElementById("detailsModal")
-        .classList.remove("show");
-
-}
+        const date =
+            new Date(value);
 
 
-window.addEventListener("click",function(e) {
+        if (isNaN(date.getTime())) {
+            return value;
+        }
 
-    const modal =
-        document.getElementById("detailsModal");
 
-    if (e.target === modal) {
-        closeModal();
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            }
+        );
+
     }
 
-});
 
+    /* SECURITY */
 
-/* =========================================================
-   NOTIFICATION
-========================================================= */
+    function escapeHtml(value) {
 
-function showNotification(message,type="") {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
-    const box =
-        document.getElementById("notification");
-
-
-    box.textContent = message;
-
-    box.className =
-        `notification show ${type}`;
-
-
-    setTimeout(() => {
-
-        box.className =
-            "notification";
-
-    },3000);
-
-}
-
-
-/* =========================================================
-   ESC KEY
-========================================================= */
-
-document.addEventListener("keydown",function(e) {
-
-    if (e.key === "Escape") {
-        closeModal();
     }
 
-});
+
+    /* ALERT */
+
+    function showAlert(message, type) {
+
+        const alert =
+            document.getElementById("alert");
+
+        alert.textContent = message;
+
+        alert.className =
+            "alert " + (type || "");
+
+        alert.style.display = "block";
+
+
+        setTimeout(() => {
+
+            alert.style.display = "none";
+
+        }, 3500);
+
+    }
+
+
+    /* MOBILE SIDEBAR */
+
+    function toggleSidebar() {
+
+        document
+            .getElementById("sidebar")
+            .classList
+            .toggle("open");
+
+    }
 
 </script>
 
