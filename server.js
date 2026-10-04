@@ -760,7 +760,78 @@ app.delete("/api/parent-communications/:id", (req, res) => {
     );
 });
 
+// =====================================================
+// FEES
+// =====================================================
 
+app.get("/api/fees", (req, res) => {
+
+    db.all(
+        "SELECT * FROM fees ORDER BY id DESC",
+        [],
+        (err, rows) => {
+
+            if (err) {
+                return res.status(500).json({
+                    error: err.message
+                });
+            }
+
+            res.json(rows);
+        }
+    );
+
+});
+
+
+app.post("/api/fees", (req, res) => {
+
+    const {
+        student_name,
+        monthly_fee,
+        paid_amount,
+        balance,
+        payment_date,
+        status
+    } = req.body;
+
+    db.run(
+        `INSERT INTO fees
+        (
+            student_name,
+            monthly_fee,
+            paid_amount,
+            balance,
+            payment_date,
+            status
+        )
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+            student_name || "",
+            monthly_fee || 0,
+            paid_amount || 0,
+            balance || 0,
+            payment_date || "",
+            status || "Unpaid"
+        ],
+        function(err){
+
+            if(err){
+                return res.status(500).json({
+                    error: err.message
+                });
+            }
+
+            res.json({
+                success:true,
+                message:"Fee saved successfully",
+                feeId:this.lastID
+            });
+
+        }
+    );
+
+});
 // =====================================================
 // DASHBOARD
 // =====================================================
