@@ -1,14 +1,51 @@
 const sqlite3 = require("sqlite3").verbose();
 
 const db = new sqlite3.Database("./markaz.db", (err) => {
-
     if (err) {
         console.error("Database connection error:", err.message);
-        return;
+    } else {
+        console.log("Connected to Markaz Database");
     }
-
-    console.log("Connected to Markaz Database");
 });
+
+
+// =====================================================
+// HELPER - ADD COLUMN IF IT DOES NOT EXIST
+// =====================================================
+
+function addColumnIfMissing(table, column, definition) {
+
+    db.all(`PRAGMA table_info(${table})`, [], (err, columns) => {
+
+        if (err) {
+            console.error(`Cannot inspect ${table}:`, err.message);
+            return;
+        }
+
+        const exists = columns.some(col => col.name === column);
+
+        if (!exists) {
+
+            db.run(
+                `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`,
+                (alterErr) => {
+
+                    if (alterErr) {
+                        console.error(
+                            `Error adding ${column} to ${table}:`,
+                            alterErr.message
+                        );
+                    } else {
+                        console.log(`Added ${column} to ${table}`);
+                    }
+
+                }
+            );
+
+        }
+
+    });
+}
 
 
 // =====================================================
@@ -17,7 +54,10 @@ const db = new sqlite3.Database("./markaz.db", (err) => {
 
 db.serialize(() => {
 
+    // =================================================
     // STUDENTS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS students (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +69,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // TEACHERS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS teachers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +83,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // ATTENDANCE
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS attendance (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,7 +97,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // HIFZ
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS hifz (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +115,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // EXAMS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS exams (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +137,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // KHATM
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS khatm_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,7 +157,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // PARENTS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS parents (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -112,7 +176,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // STUDENT ↔ PARENT
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS student_parents (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -124,7 +192,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // PARENT COMMUNICATION
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS parent_communications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -138,7 +210,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // USERS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -153,7 +229,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // ACTIVITY LOGS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS activity_logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -163,7 +243,11 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // SYSTEM SETTINGS
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS system_settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -176,20 +260,84 @@ db.serialize(() => {
         )
     `);
 
+
+    // =================================================
     // FEES
+    // =================================================
+
     db.run(`
         CREATE TABLE IF NOT EXISTS fees (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_name TEXT,
-            monthly_fee REAL,
-            paid_amount REAL,
-            balance REAL,
+            monthly_fee REAL DEFAULT 0,
+            paid_amount REAL DEFAULT 0,
+            balance REAL DEFAULT 0,
             payment_date TEXT,
             status TEXT
         )
     `);
 
+
+    // =================================================
+    // PAYMENTS
+    // =================================================
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            studentId INTEGER,
+            studentName TEXT,
+            amount REAL DEFAULT 0,
+            paymentDate TEXT,
+            paymentMethod TEXT,
+            reference TEXT,
+            feeMonth TEXT,
+            notes TEXT,
+            createdAt TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
+
+    // =================================================
+    // DONATIONS
+    // =================================================
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS donations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            donorName TEXT,
+            donationDate TEXT,
+            amount REAL DEFAULT 0,
+            donationType TEXT,
+            paymentMethod TEXT,
+            reference TEXT,
+            notes TEXT,
+            createdAt TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
 });
+
+
+// =====================================================
+// UPGRADE OLD FEES TABLE
+// =====================================================
+
+// These columns are added only if they do not already exist.
+
+setTimeout(() => {
+
+    addColumnIfMissing("fees", "studentId", "INTEGER");
+    addColumnIfMissing("fees", "studentName", "TEXT");
+    addColumnIfMissing("fees", "feeMonth", "TEXT");
+    addColumnIfMissing("fees", "monthlyFee", "REAL DEFAULT 0");
+    addColumnIfMissing("fees", "paidAmount", "REAL DEFAULT 0");
+    addColumnIfMissing("fees", "paymentDate", "TEXT");
+    addColumnIfMissing("fees", "paymentMethod", "TEXT");
+    addColumnIfMissing("fees", "notes", "TEXT");
+    addColumnIfMissing("fees", "createdAt", "TEXT");
+
+}, 500);
 
 
 // =====================================================
