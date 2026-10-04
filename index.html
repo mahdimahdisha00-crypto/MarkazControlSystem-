@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Daru Al Ibaadah | Markaz Control System</title>
+
+    <meta
+        name="description"
+        content="Daru Al Ibaadah Markaz Control System — a modern management platform for Quran memorization centers."
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --navy: #071c2c;
+            --navy-2: #0b293d;
+            --green: #0f766e;
+            --green-dark: #075e57;
+            --gold: #c99b3b;
+            --gold-light: #e5c777;
+            --cream: #faf8f2;
+            --white: #ffffff;
+            --text: #183042;
+            --muted: #667784;
+            --border: #e5e9e7;
+            --shadow: 0 20px 60px rgba(7, 28, 44, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(7, 28, 44, .94);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .nav-container {
+            max-width: 1180px;
+            margin: auto;
+            padding: 15px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            border: 1px solid rgba(229,199,119,.55);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.06);
+            color: var(--gold-light);
+            font-family: "Amiri", serif;
+            font-size: 27px;
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 14px;
+            letter-spacing: .3px;
+        }
+
+        .brand-text span {
+            display: block;
+            font-size: 10px;
+            color: #aebdc7;
+            margin-top: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #dce6eb;
+            font-size: 13px;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold-light);
+        }
+
+        .nav-login {
+            border: 1px solid rgba(229,199,119,.55);
+            padding: 9px 17px;
+            border-radius: 8px;
+            color: white !important;
+        }
+
+        .nav-login:hover {
+            background: var(--gold);
+            color: var(--navy) !important;
+        }
+
+        .mobile-menu {
+            display: none;
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            min-height: 760px;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(4, 20, 31, .98) 0%,
+                    rgba(5, 29, 43, .93) 46%,
+                    rgba(5, 29, 43, .58) 100%
+                ),
+                radial-gradient(circle at 80% 30%, rgba(15,118,110,.28), transparent 35%),
+                linear-gradient(135deg, #061a29, #0d3348);
+
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: .045;
+            background-image:
+                linear-gradient(30deg, #fff 12%, transparent 12.5%, transparent 87%, #fff 87.5%, #fff),
+                linear-gradient(150deg, #fff 12%, transparent 12.5%, transparent 87%, #fff 87.5%, #fff),
+                linear-gradient(30deg, #fff 12%, transparent 12.5%, transparent 87%, #fff 87.5%, #fff),
+                linear-gradient(150deg, #fff 12%, transparent 12.5%, transparent 87%, #fff 87.5%, #fff);
+            background-size: 80px 140px;
+        }
+
+        .hero-container {
+            width: min(1180px, calc(100% - 48px));
+            margin: auto;
+            padding-top: 90px;
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            gap: 70px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(229,199,119,.3);
+            background: rgba(255,255,255,.05);
+            color: var(--gold-light);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #65c6a8;
+            box-shadow: 0 0 0 4px rgba(101,198,168,.1);
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: clamp(42px, 5vw, 70px);
+            line-height: 1.02;
+            letter-spacing: -2.5px;
+            margin-bottom: 24px;
+            font-weight: 800;
+        }
+
+        .hero h1 span {
+            color: var(--gold-light);
+        }
+
+        .hero-description {
+            color: #c6d3da;
+            font-size: 17px;
+            line-height: 1.8;
+            max-width: 590px;
+            margin-bottom: 32px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 13px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: .25s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+            box-shadow: 0 8px 25px rgba(201,155,59,.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255,255,255,.24);
+            color: white;
+            background: rgba(255,255,255,.05);
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--navy);
+        }
+
+        .hero-note {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #9eb0ba;
+            font-size: 11px;
+            margin-top: 22px;
+        }
+
+        .hero-note span {
+            color: #76c7a6;
+        }
+
+        /* Dashboard visual */
+
+        .dashboard-wrap {
+            position: relative;
+        }
+
+        .dashboard-window {
+            background: #f7f9f8;
+            border-radius: 15px;
+            box-shadow: 0 35px 90px rgba(0,0,0,.32);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.18);
+            transform: perspective(1200px) rotateY(-4deg) rotateX(2deg);
+        }
+
+        .window-top {
+            height: 43px;
+            background: #edf1ef;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 0 15px;
+            border-bottom: 1px solid #dfe5e2;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #b8c1bf;
+        }
+
+        .window-title {
+            margin-left: 8px;
+            font-size: 10px;
+            color: #718079;
+        }
+
+        .dashboard-body {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            min-height: 430px;
+        }
+
+        .dash-sidebar {
+            background: var(--navy);
+            padding: 20px 12px;
+            color: white;
+        }
+
+        .dash-logo {
+            font-family: "Amiri", serif;
+            color: var(--gold-light);
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 22px;
+        }
+
+        .dash-item {
+            padding: 9px 10px;
+            border-radius: 6px;
+            color: #9caeb8;
+            font-size: 9px;
+            margin-bottom: 4px;
+        }
+
+        .dash-item.active {
+            background: rgba(255,255,255,.1);
+            color: white;
+        }
+
+        .dash-main {
+            padding: 22px;
+            background: #f8faf9;
+        }
+
+        .dash-heading {
+            font-size: 18px;
+            font-weight: 800;
+            color: #163144;
+            margin-bottom: 3px;
+        }
+
+        .dash-subtitle {
+            color: #899793;
+            font-size: 9px;
+            margin-bottom: 17px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 9px;
+            margin-bottom: 16px;
+        }
+
+        .stat-box {
+            background: white;
+            border: 1px solid #e3e9e6;
+            border-radius: 7px;
+            padding: 12px;
+        }
+
+        .stat-box small {
+            display: block;
+            color: #82918c;
+            font-size: 8px;
+        }
+
+        .stat-box strong {
+            display: block;
+            color: #173448;
+            font-size: 18px;
+            margin-top: 3px;
+        }
+
+        .dash-section {
+            background: white;
+            border: 1px solid #e3e9e6;
+            border-radius: 7px;
+            padding: 14px;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #254456;
+            margin-bottom: 11px;
+        }
+
+        .progress-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 32px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 9px;
+        }
+
+        .progress-row span {
+            font-size: 8px;
+            color: #71817d;
+        }
+
+        .progress {
+            height: 5px;
+            background: #e8eeeb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress i {
+            display: block;
+            height: 100%;
+            background: var(--green);
+            border-radius: inherit;
+        }
+
+        .progress-row b {
+            font-size: 8px;
+            color: #4c635d;
+            text-align: right;
+        }
+
+        .floating-badge {
+            position: absolute;
+            right: -25px;
+            bottom: 30px;
+            background: white;
+            padding: 13px 16px;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.18);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .badge-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: #e6f4ef;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .floating-badge strong {
+            display: block;
+            color: var(--navy);
+            font-size: 11px;
+        }
+
+        .floating-badge span {
+            color: #83918e;
+            font-size: 8px;
+        }
+
+        /* =========================
+           TRUST BAR
+        ========================= */
+
+        .trust-bar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .trust-container {
+            max-width: 1180px;
+            margin: auto;
+            min-height: 105px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .trust-intro {
+            max-width: 260px;
+        }
+
+        .trust-intro strong {
+            color: var(--navy);
+            font-size: 13px;
+        }
+
+        .trust-intro p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .trust-items {
+            display: flex;
+            gap: 42px;
+            align-items: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #536963;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .trust-item span {
+            color: var(--green);
+            font-size: 17px;
+        }
+
+        /* =========================
+           SECTIONS
+        ========================= */
+
+        section {
+            padding: 100px 24px;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: auto;
+        }
+
+        .section-label {
+            color: var(--green);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .section-heading {
+            color: var(--navy);
+            font-size: clamp(30px, 4vw, 46px);
+            line-height: 1.12;
+            letter-spacing: -1.4px;
+            margin-bottom: 15px;
+        }
+
+        .section-description {
+            color: var(--muted);
+            font-size: 15px;
+            max-width: 650px;
+            line-height: 1.8;
+        }
+
+        .section-head {
+            margin-bottom: 50px;
+        }
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .features {
+            background: var(--cream);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            border-top: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+        }
+
+        .feature {
+            padding: 30px;
+            background: rgba(255,255,255,.45);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transition: .25s;
+        }
+
+        .feature:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #eaf4f1;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 22px;
+        }
+
+        .feature h3 {
+            color: var(--navy);
+            font-size: 16px;
+            margin-bottom: 9px;
+        }
+
+        .feature p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.75;
+        }
+
+        /* =========================
+           ABOUT
+        ========================= */
+
+        .about {
+            background: white;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: .9fr 1.1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-visual {
+            min-height: 430px;
+            background:
+                linear-gradient(145deg, rgba(7,28,44,.82), rgba(15,118,110,.72)),
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(255,255,255,.04) 0,
+                    rgba(255,255,255,.04) 1px,
+                    transparent 1px,
+                    transparent 12px
+                );
+            border-radius: 16px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .about-arabic {
+            position: absolute;
+            top: 35px;
+            right: 35px;
+            font-family: "Amiri", serif;
+            color: rgba(255,255,255,.7);
+            font-size: 58px;
+        }
+
+        .about-quote {
+            color: white;
+            max-width: 350px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-quote h3 {
+            font-size: 27px;
+            line-height: 1.25;
+            margin-bottom: 13px;
+        }
+
+        .about-quote p {
+            color: #d1e1e0;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .about-content .section-description {
+            margin-bottom: 28px;
+        }
+
+        .check-list {
+            list-style: none;
+        }
+
+        .check-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: #405661;
+            font-size: 13px;
+        }
+
+        .check {
+            min-width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e6f4ef;
+            color: var(--green);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           MODULES
+        ========================= */
+
+        .modules {
+            background: #f4f7f5;
+        }
+
+        .module-layout {
+            display: grid;
+            grid-template-columns: .8fr 1.2fr;
+            gap: 70px;
+            align-items: start;
+        }
+
+        .module-list {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 10px;
+        }
+
+        .module {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 17px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-icon {
+            color: var(--green);
+            font-size: 19px;
+        }
+
+        .module strong {
+            display: block;
+            font-size: 12px;
+            color: var(--navy);
+        }
+
+        .module span {
+            display: block;
+            font-size: 9px;
+            color: #84918f;
+            margin-top: 2px;
+        }
+
+        /* =========================
+           CTA
+        ========================= */
+
+        .cta {
+            background: var(--navy);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            border: 1px solid rgba(229,199,119,.09);
+            top: -280px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta .section-label {
+            color: var(--gold-light);
+        }
+
+        .cta h2 {
+            font-size: clamp(30px, 4vw, 47px);
+            line-height: 1.15;
+            max-width: 700px;
+            margin: 0 auto 17px;
+            letter-spacing: -1.2px;
+        }
+
+        .cta p {
+            color: #b7c7cf;
+            max-width: 590px;
+            margin: auto auto 28px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background: #04131f;
+            color: #9babb4;
+            padding: 50px 24px 25px;
+        }
+
+        .footer-grid {
+            max-width: 1180px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 45px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .footer-brand .brand {
+            margin-bottom: 15px;
+        }
+
+        .footer-brand p {
+            font-size: 11px;
+            line-height: 1.8;
+            color: #7f919c;
+        }
+
+        .footer-column h4 {
+            color: white;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        .footer-column a {
+            display: block;
+            font-size: 10px;
+            color: #80919a;
+            margin-bottom: 9px;
+        }
+
+        .footer-column a:hover {
+            color: var(--gold-light);
+        }
+
+        .footer-bottom {
+            max-width: 1180px;
+            margin: auto;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 9px;
+            color: #687b85;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 74px;
+                left: 0;
+                right: 0;
+                background: var(--navy);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 18px 24px;
+                gap: 0;
+                border-bottom: 1px solid rgba(255,255,255,.1);
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 13px 0;
+                border-bottom: 1px solid rgba(255,255,255,.06);
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero {
+                min-height: auto;
+                padding-bottom: 80px;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                padding-top: 125px;
+                gap: 50px;
+            }
+
+            .dashboard-window {
+                transform: none;
+            }
+
+            .floating-badge {
+                right: 10px;
+            }
+
+            .trust-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .trust-items {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .about-grid,
+            .module-layout {
+                grid-template-columns: 1fr;
+                gap: 45px;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .hero-description {
+                font-size: 14px;
+            }
+
+            .dashboard-body {
+                grid-template-columns: 95px 1fr;
+            }
+
+            .dash-main {
+                padding: 13px;
+            }
+
+            .dash-sidebar {
+                padding: 15px 7px;
+            }
+
+            .stat-grid {
+                gap: 5px;
+            }
+
+            .stat-box {
+                padding: 8px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .module-list {
+                grid-template-columns: 1fr;
+            }
+
+            .about-visual {
+                min-height: 340px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+            }
+
+            section {
+                padding: 75px 20px;
+            }
+
+            .trust-items {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="#" class="brand">
+
+            <div class="brand-logo">
+                ع
+            </div>
+
+            <div class="brand-text">
+                <strong>Daru Al Ibaadah</strong>
+                <span>Markaz Control System</span>
+            </div>
+
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#modules">Modules</a>
+            <a href="#contact">Contact</a>
+
+            <a href="/login.html" class="nav-login">
+                Manager Login
+            </a>
+
+        </nav>
+
+        <div class="mobile-menu" onclick="toggleMenu()">
+            ☰
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<main>
+
+<section class="hero" id="home">
+
+    <div class="hero-pattern"></div>
+
+    <div class="hero-container">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Quran Education Management
+            </div>
+
+            <h1>
+                Manage your
+                <span>Markaz</span>
+                with confidence.
+            </h1>
+
+            <p class="hero-description">
+                Daru Al Ibaadah Markaz Control System brings students,
+                Hifz progress, attendance, teachers, fees and reports
+                together in one professional management platform.
+            </p>
+
+            <div class="hero-actions">
+
+                <a href="/login.html" class="btn btn-primary">
+                    Access Markaz System
+                    →
+                </a>
+
+                <a href="#features" class="btn btn-outline">
+                    Explore Features
+                </a>
+
+            </div>
+
+            <div class="hero-note">
+                <span>●</span>
+                Built for modern Quran memorization centers
+            </div>
+
+        </div>
+
+
+        <!-- Dashboard preview -->
+
+        <div class="dashboard-wrap">
+
+            <div class="dashboard-window">
+
+                <div class="window-top">
+
+                    <span class="window-dot"></span>
+                    <span class="window-dot"></span>
+                    <span class="window-dot"></span>
+
+                    <span class="window-title">
+                        Daru Al Ibaadah — Markaz Control System
+                    </span>
+
+                </div>
+
+
+                <div class="dashboard-body">
+
+                    <aside class="dash-sidebar">
+
+                        <div class="dash-logo">
+                            دار العبادة
+                        </div>
+
+                        <div class="dash-item active">
+                            Dashboard
+                        </div>
+
+                        <div class="dash-item">
+                            Students
+                        </div>
+
+                        <div class="dash-item">
+                            Teachers
+                        </div>
+
+                        <div class="dash-item">
+                            Attendance
+                        </div>
+
+                        <div class="dash-item">
+                            Hifz Records
+                        </div>
+
+                        <div class="dash-item">
+                            Fees
+                        </div>
+
+                        <div class="dash-item">
+                            Reports
+                        </div>
+
+                    </aside>
+
+
+                    <div class="dash-main">
+
+                        <div class="dash-heading">
+                            Markaz Overview
+                        </div>
+
+                        <div class="dash-subtitle">
+                            Monitor your center's daily activities
+                        </div>
+
+
+                        <div class="stat-grid">
+
+                            <div class="stat-box">
+                                <small>Students</small>
+                                <strong>128</strong>
+                            </div>
+
+                            <div class="stat-box">
+                                <small>Teachers</small>
+                                <strong>08</strong>
+                            </div>
+
+                            <div class="stat-box">
+                                <small>Attendance</small>
+                                <strong>94%</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="dash-section">
+
+                            <div class="section-title">
+                                Hifz Progress
+                            </div>
+
+                            <div class="progress-row">
+
+                                <span>Juz 1–5</span>
+
+                                <div class="progress">
+                                    <i style="width:82%"></i>
+                                </div>
+
+                                <b>82%</b>
+
+                            </div>
+
+
+                            <div class="progress-row">
+
+                                <span>Juz 6–15</span>
+
+                                <div class="progress">
+                                    <i style="width:67%"></i>
+                                </div>
+
+                                <b>67%</b>
+
+                            </div>
+
+
+                            <div class="progress-row">
+
+                                <span>Juz 16–30</span>
+
+                                <div class="progress">
+                                    <i style="width:45%"></i>
+                                </div>
+
+                                <b>45%</b>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="floating-badge">
+
+                <div class="badge-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <strong>System Connected</strong>
+                    <span>Markaz records are organized</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TRUST BAR
+========================= -->
+
+<section class="trust-bar">
+
+    <div class="trust-container">
+
+        <div class="trust-intro">
+
+            <strong>Everything your Markaz needs.</strong>
+
+            <p>
+                One system designed around Quran education.
+            </p>
+
+        </div>
+
+        <div class="trust-items">
+
+            <div class="trust-item">
+                <span>✓</span>
+                Student Records
+            </div>
+
+            <div class="trust-item">
+                <span>✓</span>
+                Hifz Tracking
+            </div>
+
+            <div class="trust-item">
+                <span>✓</span>
+                Attendance
+            </div>
+
+            <div class="trust-item">
+                <span>✓</span>
+                Fee Management
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section class="features" id="features">
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="section-label">
+                Core capabilities
+            </div>
+
+            <h2 class="section-heading">
+                Everything organized in one place.
+            </h2>
+
+            <p class="section-description">
+                Replace scattered notebooks, spreadsheets and disconnected
+                records with one structured system for your Markaz.
+            </p>
+
+        </div>
+
+
+        <div class="features-grid">
+
+            <div class="feature">
+
+                <div class="feature-icon">👨‍🎓</div>
+
+                <h3>Student Management</h3>
+
+                <p>
+                    Maintain complete student profiles, enrollment details,
+                    teachers, levels, parent information and status.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">📖</div>
+
+                <h3>Hifz Progress</h3>
+
+                <p>
+                    Record Surah, Ayah, Juz, Sabaq and progress while
+                    maintaining a clear history of each student's journey.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">📅</div>
+
+                <h3>Attendance</h3>
+
+                <p>
+                    Track daily attendance and quickly understand student
+                    participation across the Markaz.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">👨‍🏫</div>
+
+                <h3>Teacher Management</h3>
+
+                <p>
+                    Organize teachers, Halaqas, responsibilities and
+                    student assignments.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">💰</div>
+
+                <h3>Fees & Payments</h3>
+
+                <p>
+                    Record monthly fees, payments and outstanding balances
+                    for each student.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">📊</div>
+
+                <h3>Reports</h3>
+
+                <p>
+                    Turn daily records into useful reports that help
+                    management understand the Markaz better.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section class="about" id="about">
+
+    <div class="container">
+
+        <div class="about-grid">
+
+            <div class="about-visual">
+
+                <div class="about-arabic">
+                    وَقُلْ رَبِّ زِدْنِي عِلْمًا
+                </div>
+
+                <div class="about-quote">
+
+                    <h3>
+                        Technology serving
+                        Quran education.
+                    </h3>
+
+                    <p>
+                        Daru Al Ibaadah Markaz Control System is designed
+                        to help administrators spend less time managing
+                        paperwork and more time supporting students,
+                        teachers and the mission of Quran education.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-content">
+
+                <div class="section-label">
+                    Built for the Markaz
+                </div>
+
+                <h2 class="section-heading">
+                    Simple for staff.
+                    Powerful for management.
+                </h2>
+
+                <p class="section-description">
+                    A professional digital environment for managing the
+                    everyday operations of a Quran memorization center.
+                    Every major record is connected so information can be
+                    found when it is needed.
+                </p>
+
+
+                <ul class="check-list">
+
+                    <li>
+                        <span class="check">✓</span>
+                        Centralized student and teacher records
+                    </li>
+
+                    <li>
+                        <span class="check">✓</span>
+                        Structured Quran memorization tracking
+                    </li>
+
+                    <li>
+                        <span class="check">✓</span>
+                        Daily attendance and academic monitoring
+                    </li>
+
+                    <li>
+                        <span class="check">✓</span>
+                        Fee collection and student balances
+                    </li>
+
+                    <li>
+                        <span class="check">✓</span>
+                        Management reports and system controls
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MODULES
+========================= -->
+
+<section class="modules" id="modules">
+
+    <div class="container">
+
+        <div class="module-layout">
+
+            <div>
+
+                <div class="section-label">
+                    Markaz modules
+                </div>
+
+                <h2 class="section-heading">
+                    One connected
+                    management system.
+                </h2>
+
+                <p class="section-description">
+                    Each part of your Markaz operation has a dedicated
+                    place while remaining connected to the central system.
+                </p>
+
+            </div>
+
+
+            <div class="module-list">
+
+                <div class="module">
+                    <div class="module-icon">👨‍🎓</div>
+                    <div>
+                        <strong>Students</strong>
+                        <span>Profiles & enrollment</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">👨‍🏫</div>
+                    <div>
+                        <strong>Teachers</strong>
+                        <span>Teachers & Halaqas</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">📖</div>
+                    <div>
+                        <strong>Hifz</strong>
+                        <span>Quran memorization records</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">📅</div>
+                    <div>
+                        <strong>Attendance</strong>
+                        <span>Daily attendance</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">💰</div>
+                    <div>
+                        <strong>Fees</strong>
+                        <span>Payments & balances</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">📝</div>
+                    <div>
+                        <strong>Exams</strong>
+                        <span>Academic assessment</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">🏆</div>
+                    <div>
+                        <strong>Khatm</strong>
+                        <span>Completion tracking</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-icon">📊</div>
+                    <div>
+                        <strong>Reports</strong>
+                        <span>Management insights</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CTA
+========================= -->
+
+<section class="cta" id="contact">
+
+    <div class="container">
+
+        <div class="cta-content">
+
+            <div class="section-label">
+                Daru Al Ibaadah
+            </div>
+
+            <h2>
+                Give your Markaz
+                a better way to manage.
+            </h2>
+
+            <p>
+                Bring your students, teachers, Quran progress,
+                attendance and financial records together in one
+                professional system.
+            </p>
+
+            <a href="/login.html" class="btn btn-primary">
+                Enter Markaz System
+                →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <div class="footer-grid">
+
+        <div class="footer-brand">
+
+            <a href="#" class="brand">
+
+                <div class="brand-logo">
+                    ع
+                </div>
+
+                <div class="brand-text">
+                    <strong>Daru Al Ibaadah</strong>
+                    <span>Markaz Control System</span>
+                </div>
+
+            </a>
+
+            <p>
+                A professional digital management system created to
+                support the administration of Quran memorization centers
+                and help them serve their students more effectively.
+            </p>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>System</h4>
+
+            <a href="#features">Features</a>
+            <a href="#modules">Modules</a>
+            <a href="/login.html">Manager Login</a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>Management</h4>
+
+            <a href="/students.html">Students</a>
+            <a href="/teachers.html">Teachers</a>
+            <a href="/attendance.html">Attendance</a>
+            <a href="/hifz.html">Hifz Records</a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>Finance</h4>
+
+            <a href="/fees.html">Fee Management</a>
+            <a href="/reports.html">Reports</a>
+            <a href="/backup.html">Backup</a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 Daru Al Ibaadah Markaz Control System.
+            All rights reserved.
+        </span>
+
+        <span>
+            Quran Education • Management • Excellence
+        </span>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+    function toggleMenu() {
+        document
+            .getElementById("navLinks")
+            .classList
+            .toggle("show");
+    }
+
+
+    document.querySelectorAll(".nav-links a").forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            document
+                .getElementById("navLinks")
+                .classList
+                .remove("show");
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>
