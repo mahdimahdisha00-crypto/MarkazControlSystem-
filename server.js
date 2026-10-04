@@ -1783,7 +1783,103 @@ app.get("/api/database-check", (req, res) => {
 START SERVER
 ====================================================
 */
+// =====================================================
+// TEMPORARY STUDENT RESTORE
+// =====================================================
 
+app.post("/api/restore-students", (req, res) => {
+    const students = [
+        {
+            name: "Ahmed Ali",
+            age: 14,
+            enrollmentDate: "2026-01-15",
+            teacher: "Ustaz Ibrahim",
+            level: "Hifz"
+        },
+        {
+            name: "gamachu",
+            age: 16,
+            enrollmentDate: "2026-10-03",
+            teacher: "uztaz akram",
+            level: "Intermediate"
+        }
+    ];
+
+    db.get("SELECT COUNT(*) AS count FROM students", [], (countErr, row) => {
+        if (countErr) {
+            console.error(countErr);
+            return res.status(500).json({
+                success: false,
+                error: countErr.message
+            });
+        }
+
+        // Do not create duplicates
+        if (row.count > 0) {
+            return res.json({
+                success: true,
+                message: "Students already exist. Nothing was added.",
+                count: row.count
+            });
+        }
+
+        const stmt = db.prepare(`
+            INSERT INTO students
+            (name, age, enrollmentDate, teacher, level)
+            VALUES (?, ?, ?, ?, ?)
+        `);
+
+        let completed = 0;
+        let failed = false;
+
+        students.forEach(student => {
+            stmt.run(
+                student.name,
+                student.age,
+                student.enrollmentDate,
+                student.teacher,
+                student.level,
+                function (err) {
+                    if (err && !failed) {
+                        failed = true;
+
+                        stmt.finalize();
+
+                        return res.status(500).json({
+                            success: false,
+                            error: err.message
+                        });
+                    }
+
+                    completed++;
+
+                    if (completed === students.length && !failed) {
+                        stmt.finalize(() => {
+                            db.all(
+                                "SELECT * FROM students ORDER BY id ASC",
+                                [],
+                                (selectErr, rows) => {
+                                    if (selectErr) {
+                                        return res.status(500).json({
+                                            success: false,
+                                            error: selectErr.message
+                                        });
+                                    }
+
+                                    res.json({
+                                        success: true,
+                                        message: "Students restored successfully.",
+                                        students: rows
+                                    });
+                                }
+                            );
+                        });
+                    }
+                }
+            );
+        });
+    });
+});
 app.listen(PORT, "0.0.0.0", () => {
 
     console.log("=================================");
