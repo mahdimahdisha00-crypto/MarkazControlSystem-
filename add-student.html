@@ -1,285 +1,1677 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add Student - Markaz Control System</title>
+    <title>Student Management - Markaz Control System</title>
 
-<style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f6f9;
+            color: #17212b;
+        }
 
-body{
-background:#f4f7fb;
-padding:20px;
-}
+        .header {
+            background: linear-gradient(135deg, #064e3b, #0f766e);
+            color: white;
+            padding: 22px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
 
-.container{
-max-width:800px;
-margin:auto;
-background:white;
-padding:25px;
-border-radius:15px;
-box-shadow:0 4px 15px rgba(0,0,0,.1);
-}
+        .header-content {
+            max-width: 1400px;
+            margin: auto;
+        }
 
-h1{
-text-align:center;
-color:#2563eb;
-margin-bottom:25px;
-}
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
 
-.section{
-margin-bottom:25px;
-padding-bottom:15px;
-border-bottom:1px solid #eee;
-}
+        .header p {
+            margin: 7px 0 0;
+            opacity: 0.9;
+        }
 
-.section h2{
-color:#2563eb;
-margin-bottom:15px;
-}
+        .container {
+            max-width: 1400px;
+            margin: 25px auto;
+            padding: 0 18px;
+        }
 
-label{
-display:block;
-margin-top:12px;
-font-weight:bold;
-}
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
 
-input,
-select,
-textarea{
-width:100%;
-padding:12px;
-margin-top:5px;
-border:1px solid #ccc;
-border-radius:8px;
-}
+        button {
+            border: none;
+            cursor: pointer;
+        }
 
-textarea{
-resize:none;
-}
+        .back-button {
+            background: #374151;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+        }
 
-.photo-box{
-text-align:center;
-margin-bottom:20px;
-}
+        .back-button:hover {
+            background: #1f2937;
+        }
 
-.photo-preview{
-width:120px;
-height:120px;
-margin:auto;
-border-radius:50%;
-background:#e5e7eb;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:50px;
-margin-bottom:10px;
-}
+        .add-button {
+            background: #059669;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+        }
 
-button{
-width:100%;
-padding:15px;
-background:#2563eb;
-color:white;
-border:none;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-margin-top:20px;
-}
+        .add-button:hover {
+            background: #047857;
+        }
 
-button:hover{
-background:#1d4ed8;
-}
+        .refresh-button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-left: 8px;
+        }
 
-.message{
-text-align:center;
-margin-top:15px;
-font-weight:bold;
-}
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-</style>
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+        }
+
+        .stat-title {
+            color: #6b7280;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .stat-number {
+            font-size: 27px;
+            font-weight: bold;
+            margin-top: 5px;
+            color: #064e3b;
+        }
+
+        .search-panel {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 14px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 13px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #064e3b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 7px 10px;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .view-btn {
+            background: #2563eb;
+        }
+
+        .edit-btn {
+            background: #d97706;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+            overflow-y: auto;
+            padding: 30px 15px;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: auto;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #064e3b;
+        }
+
+        .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cancel-btn,
+        .save-btn {
+            padding: 12px 20px;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .save-btn {
+            background: #059669;
+            color: white;
+        }
+
+        .profile-box {
+            line-height: 1.7;
+        }
+
+        .profile-row {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 0;
+        }
+
+        .profile-label {
+            font-weight: bold;
+            color: #4b5563;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .error {
+            text-align: center;
+            padding: 30px;
+            color: #b91c1c;
+            background: #fee2e2;
+        }
+
+        .message {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            display: none;
+            z-index: 3000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .success {
+            background: #059669;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .profile-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+
+            .header h1 {
+                font-size: 21px;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
+<div class="header">
+    <div class="header-content">
+        <h1>📚 Student Management</h1>
+        <p>Markaz Control System — Manage students from the central database</p>
+    </div>
+</div>
 
 <div class="container">
 
-<h1>👨‍🎓 Add New Student</h1>
+    <div class="top-bar">
 
-<div class="photo-box">
+        <div>
+            <button class="back-button"
+                    onclick="location.href='dashboard.html'">
+                ← Back to Dashboard
+            </button>
 
-<div class="photo-preview">
-👨‍🎓
+            <button class="refresh-button"
+                    onclick="loadStudents()">
+                🔄 Refresh
+            </button>
+        </div>
+
+        <button class="add-button"
+                onclick="openAddStudent()">
+            ➕ Add New Student
+        </button>
+
+    </div>
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <div class="stat-icon">👨‍🎓</div>
+            <div class="stat-title">Total Students</div>
+            <div class="stat-number" id="totalStudents">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-title">Active Students</div>
+            <div class="stat-number" id="activeStudents">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">⏸️</div>
+            <div class="stat-title">Inactive Students</div>
+            <div class="stat-number" id="inactiveStudents">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-title">Hifz Students</div>
+            <div class="stat-number" id="hifzStudents">0</div>
+        </div>
+
+    </div>
+
+    <div class="search-panel">
+
+        <div class="search-grid">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search student..."
+                oninput="filterStudents()"
+            >
+
+            <select id="levelFilter"
+                    onchange="filterStudents()">
+                <option value="">All Levels</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Hifz">Hifz</option>
+                <option value="Revision">Revision</option>
+            </select>
+
+            <select id="statusFilter"
+                    onchange="filterStudents()">
+                <option value="">All Status</option>
+                <option value="Active">Active</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Age</th>
+                    <th>Enrollment Date</th>
+                    <th>Level / Class</th>
+                    <th>Assigned Teacher</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="studentTableBody">
+                <tr>
+                    <td colspan="8" class="loading">
+                        Loading students...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
 
-<label>Student Photo</label>
-<input type="file" accept="image/*">
+<!-- ADD / EDIT MODAL -->
+
+<div class="modal" id="studentModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="modalTitle">
+                ➕ Add New Student
+            </h2>
+
+            <span class="close"
+                  onclick="closeStudentModal()">
+                &times;
+            </span>
+
+        </div>
+
+        <form id="studentForm">
+
+            <input type="hidden" id="studentId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Student Full Name *</label>
+                    <input
+                        type="text"
+                        id="studentName"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Age *</label>
+                    <input
+                        type="number"
+                        id="studentAge"
+                        min="3"
+                        max="100"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Enrollment Date *</label>
+                    <input
+                        type="date"
+                        id="enrollmentDate"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Level / Class *</label>
+
+                    <select id="studentLevel" required>
+                        <option value="">Select Level</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Hifz">Hifz</option>
+                        <option value="Revision">Revision</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Assigned Teacher</label>
+
+                    <input
+                        type="text"
+                        id="assignedTeacher"
+                        placeholder="e.g. Ustaz Ibrahim"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+
+                    <select id="studentGender">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Parent / Guardian Name</label>
+
+                    <input
+                        type="text"
+                        id="parentName"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Parent Phone</label>
+
+                    <input
+                        type="tel"
+                        id="parentPhone"
+                        placeholder="+251..."
+                    >
+                </div>
+
+                <div class="form-group full">
+                    <label>Address</label>
+
+                    <input
+                        type="text"
+                        id="studentAddress"
+                        placeholder="Student address"
+                    >
+                </div>
+
+                <div class="form-group full">
+                    <label>Notes</label>
+
+                    <input
+                        type="text"
+                        id="studentNotes"
+                        placeholder="Additional information"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeStudentModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-btn">
+                    💾 Save Student
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
-<div class="section">
+<!-- PROFILE MODAL -->
 
-<h2>👤 Personal Information</h2>
+<div class="modal" id="profileModal">
 
-<label>Full Name</label>
-<input type="text" id="name">
+    <div class="modal-content">
 
-<label>Gender</label>
-<select id="gender">
-<option value="">Select Gender</option>
-<option>Male</option>
-<option>Female</option>
-</select>
+        <div class="modal-header">
 
-<label>Date of Birth</label>
-<input type="date" id="dob">
+            <h2>👨‍🎓 Student Profile</h2>
 
-</div>
+            <span class="close"
+                  onclick="closeProfileModal()">
+                &times;
+            </span>
 
-<div class="section">
+        </div>
 
-<h2>📖 Academic Information</h2>
+        <div class="profile-box"
+             id="profileContent">
+        </div>
 
-<label>Current Juz</label>
-<input type="number" id="currentJuz">
-
-<label>Assigned Teacher</label>
-<input type="text" id="teacher">
+    </div>
 
 </div>
 
-<div class="section">
-
-<h2>👨 Parent Information</h2>
-
-<label>Parent Name</label>
-<input type="text" id="parentName">
-
-<label>Parent Phone</label>
-<input type="text" id="parentPhone">
-
-<label>Address</label>
-<textarea id="address" rows="3"></textarea>
-
-</div>
-
-<div class="section">
-
-<h2>⚙️ Enrollment</h2>
-
-<label>Enrollment Date</label>
-<input type="date" id="enrollmentDate" readonly>
-
-<label>Status</label>
-<select id="status">
-<option>Active</option>
-<option>Inactive</option>
-<option>Graduated</option>
-<option>Transferred</option>
-</select>
-
-</div>
-
-<button onclick="saveStudent()">
-💾 Save Student
-</button>
-
-<div class="message" id="message"></div>
-
+<div id="message"
+     class="message">
 </div>
 
 <script>
 
-// Auto Enrollment Date
+    /*
+    ============================================================
+       MARKAZ CONTROL SYSTEM
+       STUDENT MANAGEMENT
+       DATABASE VERSION
+    ============================================================
+    */
 
-const today = new Date();
+    let students = [];
 
-const year = today.getFullYear();
+    /*
+    ============================================================
+       SHOW MESSAGE
+    ============================================================
+    */
 
-const month = String(
-today.getMonth()+1
-).padStart(2,"0");
+    function showMessage(text, type = "success") {
 
-const day = String(
-today.getDate()
-).padStart(2,"0");
+        const message =
+            document.getElementById("message");
 
-document.getElementById(
-"enrollmentDate"
-).value =
-`${year}-${month}-${day}`;
+        message.textContent = text;
 
-// Save Student
+        message.className =
+            "message " + type;
 
-async function saveStudent(){
+        message.style.display = "block";
 
-const student = {
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 3500);
+    }
 
-name:
-document.getElementById("name").value,
 
-gender:
-document.getElementById("gender").value,
+    /*
+    ============================================================
+       LOAD STUDENTS FROM REAL DATABASE
+    ============================================================
+    */
 
-dob:
-document.getElementById("dob").value,
+    async function loadStudents() {
 
-currentJuz:
-document.getElementById("currentJuz").value,
+        const tbody =
+            document.getElementById("studentTableBody");
 
-teacher:
-document.getElementById("teacher").value,
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="loading">
+                    🔄 Loading students from database...
+                </td>
+            </tr>
+        `;
 
-parentName:
-document.getElementById("parentName").value,
+        try {
 
-parentPhone:
-document.getElementById("parentPhone").value,
+            const response =
+                await fetch("/api/students");
 
-address:
-document.getElementById("address").value,
+            if (!response.ok) {
+                throw new Error(
+                    "Server returned " + response.status
+                );
+            }
 
-enrollmentDate:
-document.getElementById("enrollmentDate").value,
+            const data =
+                await response.json();
 
-status:
-document.getElementById("status").value
+            students =
+                Array.isArray(data)
+                    ? data
+                    : [];
 
-};
+            renderStudents();
 
-try{
-const response = await fetch(
-"/api/students",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(student)
-}
-);
+            updateStatistics();
 
-const data = await response.json();
+        } catch (error) {
 
-document.getElementById("message").innerHTML =
-"✅ Student Saved Successfully";
+            console.error(
+                "Student loading error:",
+                error
+            );
 
-}catch(error){
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="error">
+                        ❌ Could not load students from the database.
+                        <br><br>
+                        ${error.message}
+                    </td>
+                </tr>
+            `;
 
-document.getElementById("message").innerHTML =
-"❌ Failed To Save Student";
+            showMessage(
+                "Could not connect to student database.",
+                "danger"
+            );
 
-}
+        }
 
-}
+    }
+
+
+    /*
+    ============================================================
+       OPEN ADD STUDENT
+    ============================================================
+    */
+
+    function openAddStudent() {
+
+        document
+            .getElementById("studentForm")
+            .reset();
+
+        document
+            .getElementById("studentId")
+            .value = "";
+
+        document
+            .getElementById("modalTitle")
+            .textContent =
+            "➕ Add New Student";
+
+        document
+            .getElementById("enrollmentDate")
+            .value =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
+        document
+            .getElementById("studentModal")
+            .style.display = "block";
+
+    }
+
+
+    /*
+    ============================================================
+       CLOSE ADD / EDIT MODAL
+    ============================================================
+    */
+
+    function closeStudentModal() {
+
+        document
+            .getElementById("studentModal")
+            .style.display = "none";
+
+    }
+
+
+    /*
+    ============================================================
+       SAVE STUDENT TO REAL DATABASE
+    ============================================================
+    */
+
+    document
+        .getElementById("studentForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const id =
+                    document
+                        .getElementById("studentId")
+                        .value;
+
+                const studentData = {
+
+                    name:
+                        document
+                            .getElementById("studentName")
+                            .value
+                            .trim(),
+
+                    age:
+                        Number(
+                            document
+                                .getElementById("studentAge")
+                                .value
+                        ),
+
+                    enrollmentDate:
+                        document
+                            .getElementById("enrollmentDate")
+                            .value,
+
+                    level:
+                        document
+                            .getElementById("studentLevel")
+                            .value,
+
+                    teacher:
+                        document
+                            .getElementById("assignedTeacher")
+                            .value
+                            .trim(),
+
+                    gender:
+                        document
+                            .getElementById("studentGender")
+                            .value,
+
+                    parentName:
+                        document
+                            .getElementById("parentName")
+                            .value
+                            .trim(),
+
+                    parentPhone:
+                        document
+                            .getElementById("parentPhone")
+                            .value
+                            .trim(),
+
+                    address:
+                        document
+                            .getElementById("studentAddress")
+                            .value
+                            .trim(),
+
+                    notes:
+                        document
+                            .getElementById("studentNotes")
+                            .value
+                            .trim(),
+
+                    status: "Active"
+
+                };
+
+
+                try {
+
+                    let response;
+
+                    /*
+                    ------------------------------------------------
+                       EDIT EXISTING STUDENT
+                    ------------------------------------------------
+                    */
+
+                    if (id) {
+
+                        response =
+                            await fetch(
+                                "/api/students/" + id,
+                                {
+                                    method: "PUT",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify(
+                                            studentData
+                                        )
+                                }
+                            );
+
+                    }
+
+                    /*
+                    ------------------------------------------------
+                       ADD NEW STUDENT
+                    ------------------------------------------------
+                    */
+
+                    else {
+
+                        response =
+                            await fetch(
+                                "/api/students",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify(
+                                            studentData
+                                        )
+                                }
+                            );
+
+                    }
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.error ||
+                            result.message ||
+                            "Failed to save student"
+                        );
+
+                    }
+
+
+                    showMessage(
+                        id
+                            ? "Student updated successfully."
+                            : "Student saved to database successfully."
+                    );
+
+                    closeStudentModal();
+
+                    await loadStudents();
+
+                } catch (error) {
+
+                    console.error(
+                        "Save student error:",
+                        error
+                    );
+
+                    showMessage(
+                        "Could not save student: " +
+                        error.message,
+                        "danger"
+                    );
+
+                }
+
+            }
+        );
+
+
+    /*
+    ============================================================
+       EDIT STUDENT
+    ============================================================
+    */
+
+    function editStudent(id) {
+
+        const student =
+            students.find(
+                item =>
+                    String(item.id) === String(id)
+            );
+
+        if (!student) {
+            showMessage(
+                "Student not found.",
+                "danger"
+            );
+            return;
+        }
+
+        document
+            .getElementById("studentId")
+            .value = student.id;
+
+        document
+            .getElementById("studentName")
+            .value = student.name || "";
+
+        document
+            .getElementById("studentAge")
+            .value = student.age || "";
+
+        document
+            .getElementById("enrollmentDate")
+            .value =
+            student.enrollmentDate || "";
+
+        document
+            .getElementById("studentLevel")
+            .value =
+            student.level || "";
+
+        document
+            .getElementById("assignedTeacher")
+            .value =
+            student.teacher || "";
+
+        document
+            .getElementById("studentGender")
+            .value =
+            student.gender || "";
+
+        document
+            .getElementById("parentName")
+            .value =
+            student.parentName || "";
+
+        document
+            .getElementById("parentPhone")
+            .value =
+            student.parentPhone || "";
+
+        document
+            .getElementById("studentAddress")
+            .value =
+            student.address || "";
+
+        document
+            .getElementById("studentNotes")
+            .value =
+            student.notes || "";
+
+        document
+            .getElementById("modalTitle")
+            .textContent =
+            "✏️ Edit Student";
+
+        document
+            .getElementById("studentModal")
+            .style.display = "block";
+
+    }
+
+
+    /*
+    ============================================================
+       VIEW STUDENT
+    ============================================================
+    */
+
+    function viewStudent(id) {
+
+        const student =
+            students.find(
+                item =>
+                    String(item.id) === String(id)
+            );
+
+        if (!student) return;
+
+        document
+            .getElementById("profileContent")
+            .innerHTML = `
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Student ID
+                    </div>
+                    <div>
+                        ${student.id}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Full Name
+                    </div>
+                    <div>
+                        ${student.name || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Age
+                    </div>
+                    <div>
+                        ${student.age || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Enrollment Date
+                    </div>
+                    <div>
+                        ${student.enrollmentDate || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Level / Class
+                    </div>
+                    <div>
+                        ${student.level || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Assigned Teacher
+                    </div>
+                    <div>
+                        ${student.teacher || "Not assigned"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Gender
+                    </div>
+                    <div>
+                        ${student.gender || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Parent / Guardian
+                    </div>
+                    <div>
+                        ${student.parentName || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Parent Phone
+                    </div>
+                    <div>
+                        ${student.parentPhone || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Address
+                    </div>
+                    <div>
+                        ${student.address || "Not provided"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Status
+                    </div>
+                    <div>
+                        ${student.status || "Active"}
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Notes
+                    </div>
+                    <div>
+                        ${student.notes || "No notes"}
+                    </div>
+                </div>
+            `;
+
+        document
+            .getElementById("profileModal")
+            .style.display = "block";
+
+    }
+
+
+    /*
+    ============================================================
+       CLOSE PROFILE
+    ============================================================
+    */
+
+    function closeProfileModal() {
+
+        document
+            .getElementById("profileModal")
+            .style.display = "none";
+
+    }
+
+
+    /*
+    ============================================================
+       DELETE STUDENT
+    ============================================================
+    */
+
+    async function deleteStudent(id) {
+
+        const student =
+            students.find(
+                item =>
+                    String(item.id) === String(id)
+            );
+
+        if (!student) return;
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete " +
+                student.name +
+                "?"
+            );
+
+        if (!confirmed) return;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/students/" + id,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.error ||
+                    result.message ||
+                    "Failed to delete student"
+                );
+
+            }
+
+
+            showMessage(
+                "Student deleted successfully."
+            );
+
+            await loadStudents();
+
+        } catch (error) {
+
+            console.error(
+                "Delete student error:",
+                error
+            );
+
+            showMessage(
+                "Could not delete student: " +
+                error.message,
+                "danger"
+            );
+
+        }
+
+    }
+
+
+    /*
+    ============================================================
+       SEARCH AND FILTER
+    ============================================================
+    */
+
+    function filterStudents() {
+
+        const search =
+            document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+        const level =
+            document
+                .getElementById("levelFilter")
+                .value;
+
+        const status =
+            document
+                .getElementById("statusFilter")
+                .value;
+
+
+        const filtered =
+            students.filter(student => {
+
+                const name =
+                    String(
+                        student.name || ""
+                    ).toLowerCase();
+
+                const id =
+                    String(
+                        student.id || ""
+                    ).toLowerCase();
+
+                const teacher =
+                    String(
+                        student.teacher || ""
+                    ).toLowerCase();
+
+
+                const matchesSearch =
+                    name.includes(search) ||
+                    id.includes(search) ||
+                    teacher.includes(search);
+
+
+                const matchesLevel =
+                    !level ||
+                    student.level === level;
+
+
+                const studentStatus =
+                    student.status || "Active";
+
+                const matchesStatus =
+                    !status ||
+                    studentStatus === status;
+
+
+                return (
+                    matchesSearch &&
+                    matchesLevel &&
+                    matchesStatus
+                );
+
+            });
+
+
+        renderStudents(filtered);
+
+    }
+
+
+    /*
+    ============================================================
+       RENDER STUDENTS
+    ============================================================
+    */
+
+    function renderStudents(list = students) {
+
+        const tbody =
+            document
+                .getElementById("studentTableBody");
+
+        tbody.innerHTML = "";
+
+
+        if (list.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8"
+                        class="empty">
+
+                        👨‍🎓 No students found.
+
+                        <br><br>
+
+                        Click
+                        <strong>
+                            Add New Student
+                        </strong>
+                        to register a student.
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        list.forEach(student => {
+
+            const row =
+                document.createElement("tr");
+
+
+            const status =
+                student.status || "Active";
+
+
+            const statusClass =
+                status === "Active"
+                    ? "active"
+                    : "inactive";
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${student.id}
+                </td>
+
+                <td>
+                    <span class="student-name">
+                        ${student.name || "-"}
+                    </span>
+                </td>
+
+                <td>
+                    ${student.age || "-"}
+                </td>
+
+                <td>
+                    ${student.enrollmentDate || "-"}
+                </td>
+
+                <td>
+                    ${student.level || "-"}
+                </td>
+
+                <td>
+                    ${student.teacher || "Not assigned"}
+                </td>
+
+                <td>
+                    <span class="badge ${statusClass}">
+                        ${status}
+                    </span>
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button
+                            class="action-button view-btn"
+                            onclick="viewStudent(${student.id})">
+                            View
+                        </button>
+
+                        <button
+                            class="action-button edit-btn"
+                            onclick="editStudent(${student.id})">
+                            Edit
+                        </button>
+
+                        <button
+                            class="action-button delete-btn"
+                            onclick="deleteStudent(${student.id})">
+                            Delete
+                        </button>
+
+                    </div>
+
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+        });
+
+    }
+
+
+    /*
+    ============================================================
+       STATISTICS
+    ============================================================
+    */
+
+    function updateStatistics() {
+
+        const total =
+            students.length;
+
+
+        const active =
+            students.filter(
+                student =>
+                    (student.status || "Active") ===
+                    "Active"
+            ).length;
+
+
+        const inactive =
+            students.filter(
+                student =>
+                    student.status ===
+                    "Inactive"
+            ).length;
+
+
+        const hifz =
+            students.filter(
+                student =>
+                    student.level === "Hifz" &&
+                    (student.status || "Active") ===
+                    "Active"
+            ).length;
+
+
+        document
+            .getElementById("totalStudents")
+            .textContent =
+            total;
+
+        document
+            .getElementById("activeStudents")
+            .textContent =
+            active;
+
+        document
+            .getElementById("inactiveStudents")
+            .textContent =
+            inactive;
+
+        document
+            .getElementById("hifzStudents")
+            .textContent =
+            hifz;
+
+    }
+
+
+    /*
+    ============================================================
+       CLOSE MODALS WHEN CLICKING OUTSIDE
+    ============================================================
+    */
+
+    window.onclick =
+        function(event) {
+
+            const studentModal =
+                document.getElementById(
+                    "studentModal"
+                );
+
+            const profileModal =
+                document.getElementById(
+                    "profileModal"
+                );
+
+
+            if (event.target === studentModal) {
+                closeStudentModal();
+            }
+
+
+            if (event.target === profileModal) {
+                closeProfileModal();
+            }
+
+        };
+
+
+    /*
+    ============================================================
+       START
+    ============================================================
+    */
+
+    loadStudents();
 
 </script>
 
