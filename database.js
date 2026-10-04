@@ -1,62 +1,45 @@
 const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const fs = require("fs");
 
-const db = new sqlite3.Database("./markaz.db", (err) => {
+/*
+====================================================
+DATABASE LOCATION
+====================================================
+*/
+
+const databasePath = path.join(__dirname, "markaz.db");
+
+console.log("Database location:");
+console.log(databasePath);
+
+const db = new sqlite3.Database(databasePath, (err) => {
+
     if (err) {
-        console.error("Database connection error:", err.message);
-    } else {
-        console.log("Connected to Markaz Database");
+        console.error(
+            "Database connection error:",
+            err.message
+        );
+        return;
     }
+
+    console.log("Connected to Markaz Database");
+
 });
 
 
-// =====================================================
-// HELPER - ADD COLUMN IF IT DOES NOT EXIST
-// =====================================================
-
-function addColumnIfMissing(table, column, definition) {
-
-    db.all(`PRAGMA table_info(${table})`, [], (err, columns) => {
-
-        if (err) {
-            console.error(`Cannot inspect ${table}:`, err.message);
-            return;
-        }
-
-        const exists = columns.some(col => col.name === column);
-
-        if (!exists) {
-
-            db.run(
-                `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`,
-                (alterErr) => {
-
-                    if (alterErr) {
-                        console.error(
-                            `Error adding ${column} to ${table}:`,
-                            alterErr.message
-                        );
-                    } else {
-                        console.log(`Added ${column} to ${table}`);
-                    }
-
-                }
-            );
-
-        }
-
-    });
-}
-
-
-// =====================================================
-// DATABASE TABLE SETUP
-// =====================================================
+/*
+====================================================
+DATABASE TABLES
+====================================================
+*/
 
 db.serialize(() => {
 
-    // =================================================
-    // STUDENTS
-    // =================================================
+
+    /*
+    STUDENTS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS students (
@@ -70,9 +53,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // TEACHERS
-    // =================================================
+    /*
+    TEACHERS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS teachers (
@@ -84,9 +67,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // ATTENDANCE
-    // =================================================
+    /*
+    ATTENDANCE
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS attendance (
@@ -98,9 +81,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // HIFZ
-    // =================================================
+    /*
+    HIFZ
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS hifz (
@@ -116,9 +99,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // EXAMS
-    // =================================================
+    /*
+    EXAMS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS exams (
@@ -138,9 +121,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // KHATM
-    // =================================================
+    /*
+    KHATM
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS khatm_records (
@@ -158,9 +141,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // PARENTS
-    // =================================================
+    /*
+    PARENTS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS parents (
@@ -177,9 +160,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // STUDENT ↔ PARENT
-    // =================================================
+    /*
+    STUDENT ↔ PARENT
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS student_parents (
@@ -193,9 +176,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // PARENT COMMUNICATION
-    // =================================================
+    /*
+    PARENT COMMUNICATION
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS parent_communications (
@@ -211,9 +194,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // USERS
-    // =================================================
+    /*
+    USERS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
@@ -230,9 +213,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // ACTIVITY LOGS
-    // =================================================
+    /*
+    ACTIVITY LOGS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS activity_logs (
@@ -244,9 +227,9 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // SYSTEM SETTINGS
-    // =================================================
+    /*
+    SYSTEM SETTINGS
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS system_settings (
@@ -261,87 +244,32 @@ db.serialize(() => {
     `);
 
 
-    // =================================================
-    // FEES
-    // =================================================
+    /*
+    FEES
+    */
 
     db.run(`
         CREATE TABLE IF NOT EXISTS fees (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_name TEXT,
-            monthly_fee REAL DEFAULT 0,
-            paid_amount REAL DEFAULT 0,
-            balance REAL DEFAULT 0,
+            monthly_fee REAL,
+            paid_amount REAL,
+            balance REAL,
             payment_date TEXT,
-            status TEXT
-        )
-    `);
-
-
-    // =================================================
-    // PAYMENTS
-    // =================================================
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS payments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            studentId INTEGER,
-            studentName TEXT,
-            amount REAL DEFAULT 0,
-            paymentDate TEXT,
-            paymentMethod TEXT,
-            reference TEXT,
-            feeMonth TEXT,
-            notes TEXT,
-            createdAt TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
-
-
-    // =================================================
-    // DONATIONS
-    // =================================================
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS donations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            donorName TEXT,
-            donationDate TEXT,
-            amount REAL DEFAULT 0,
-            donationType TEXT,
-            paymentMethod TEXT,
-            reference TEXT,
-            notes TEXT,
-            createdAt TEXT DEFAULT CURRENT_TIMESTAMP
+            status TEXT,
+            fee_month TEXT,
+            payment_method TEXT,
+            notes TEXT
         )
     `);
 
 });
 
 
-// =====================================================
-// UPGRADE OLD FEES TABLE
-// =====================================================
-
-// These columns are added only if they do not already exist.
-
-setTimeout(() => {
-
-    addColumnIfMissing("fees", "studentId", "INTEGER");
-    addColumnIfMissing("fees", "studentName", "TEXT");
-    addColumnIfMissing("fees", "feeMonth", "TEXT");
-    addColumnIfMissing("fees", "monthlyFee", "REAL DEFAULT 0");
-    addColumnIfMissing("fees", "paidAmount", "REAL DEFAULT 0");
-    addColumnIfMissing("fees", "paymentDate", "TEXT");
-    addColumnIfMissing("fees", "paymentMethod", "TEXT");
-    addColumnIfMissing("fees", "notes", "TEXT");
-    addColumnIfMissing("fees", "createdAt", "TEXT");
-
-}, 500);
-
-
-// =====================================================
-// EXPORT DATABASE
-// =====================================================
+/*
+====================================================
+EXPORT DATABASE
+====================================================
+*/
 
 module.exports = db;
