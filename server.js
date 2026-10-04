@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 
 const db = require("./database");
 
@@ -8,100 +9,100 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
-
-// =====================================================
-// BASIC SERVER SETTINGS
-// =====================================================
-
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+/*
+====================================================
+STATIC FILES
+====================================================
+*/
 
 app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, "public")));
+
+if (fs.existsSync(path.join(__dirname, "public"))) {
+    app.use(express.static(path.join(__dirname, "public")));
+}
 
 
-// =====================================================
-// HOME
-// =====================================================
+/*
+====================================================
+HOME
+====================================================
+*/
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "login.html"));
-});
-
-
-// =====================================================
-// LOGIN
-// =====================================================
-
-app.post("/api/login", (req, res) => {
-
-    const { username, password } = req.body;
-
-    if (username === "admin" && password === "admin123") {
-        return res.json({
-            success: true,
-            role: "Administrator"
-        });
-    }
-
-    if (username === "manager" && password === "manager123") {
-        return res.json({
-            success: true,
-            role: "Manager"
-        });
-    }
-
-    if (username === "teacher" && password === "teacher123") {
-        return res.json({
-            success: true,
-            role: "Teacher"
-        });
-    }
-
-    res.json({
-        success: false,
-        message: "Invalid username or password"
+    res.sendFile(path.join(__dirname, "index.html"), err => {
+        if (err) {
+            res.sendFile(path.join(__dirname, "login.html"));
+        }
     });
 });
 
 
-// =====================================================
-// SYSTEM STATUS
-// =====================================================
+/*
+====================================================
+SYSTEM STATUS
+====================================================
+*/
 
 app.get("/api/status", (req, res) => {
-
     res.json({
         system: "Markaz Control System",
         version: "4.0",
-        status: "Running"
+        status: "Running",
+        serverTime: new Date().toISOString()
     });
-
 });
 
 
-// =====================================================
-// STUDENTS
-// =====================================================
+/*
+====================================================
+STUDENTS
+====================================================
+*/
 
 app.get("/api/students", (req, res) => {
 
     db.all(
-        "SELECT * FROM students ORDER BY id DESC",
+        `
+        SELECT
+            id,
+            name,
+            age,
+            enrollmentDate,
+            teacher,
+            level
+        FROM students
+        ORDER BY id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
+                console.error("Students API Error:", err.message);
+
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load students",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            console.log("Students loaded:", rows.length);
+
+            res.json(rows || []);
         }
     );
+
 });
 
+
+/*
+====================================================
+CREATE STUDENT
+====================================================
+*/
 
 app.post("/api/students", (req, res) => {
 
@@ -113,41 +114,57 @@ app.post("/api/students", (req, res) => {
         level
     } = req.body;
 
-    if (!name) {
+    if (!name || !String(name).trim()) {
         return res.status(400).json({
             error: "Student name is required"
         });
     }
 
     db.run(
-        `INSERT INTO students
+        `
+        INSERT INTO students
         (name, age, enrollmentDate, teacher, level)
-        VALUES (?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?)
+        `,
         [
-            name,
+            String(name).trim(),
             age || null,
-            enrollmentDate || "",
+            enrollmentDate || new Date().toISOString().slice(0, 10),
             teacher || "",
             level || ""
         ],
         function (err) {
 
             if (err) {
+                console.error("Create student error:", err.message);
+
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to create student",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                studentId: this.lastID
+                message: "Student created successfully",
+                id: this.lastID
             });
+
         }
     );
+
 });
 
 
+/*
+====================================================
+UPDATE STUDENT
+====================================================
+*/
+
 app.put("/api/students/:id", (req, res) => {
+
+    const id = req.params.id;
 
     const {
         name,
@@ -158,80 +175,153 @@ app.put("/api/students/:id", (req, res) => {
     } = req.body;
 
     db.run(
-        `UPDATE students
-         SET name = ?,
-             age = ?,
-             enrollmentDate = ?,
-             teacher = ?,
-             level = ?
-         WHERE id = ?`,
+        `
+        UPDATE students
+        SET
+            name = ?,
+            age = ?,
+            enrollmentDate = ?,
+            teacher = ?,
+            level = ?
+        WHERE id = ?
+        `,
         [
-            name || "",
+            name,
             age || null,
-            enrollmentDate || "",
+            enrollmentDate || null,
             teacher || "",
             level || "",
-            req.params.id
+            id
         ],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to update student",
+                    details: err.message
+                });
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).json({
+                    error: "Student not found"
                 });
             }
 
             res.json({
                 success: true,
-                changes: this.changes
+                message: "Student updated successfully"
             });
+
         }
     );
+
 });
 
 
+/*
+====================================================
+DELETE STUDENT
+====================================================
+*/
+
 app.delete("/api/students/:id", (req, res) => {
+
+    const id = req.params.id;
 
     db.run(
         "DELETE FROM students WHERE id = ?",
-        [req.params.id],
+        [id],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to delete student",
+                    details: err.message
+                });
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).json({
+                    error: "Student not found"
                 });
             }
 
             res.json({
                 success: true,
-                changes: this.changes
+                message: "Student deleted successfully"
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// TEACHERS
-// =====================================================
+/*
+====================================================
+SEARCH STUDENT
+====================================================
+*/
+
+app.get("/api/search-student", (req, res) => {
+
+    const q = req.query.q || "";
+
+    db.all(
+        `
+        SELECT *
+        FROM students
+        WHERE name LIKE ?
+        ORDER BY id DESC
+        `,
+        [`%${q}%`],
+        (err, rows) => {
+
+            if (err) {
+                return res.status(500).json({
+                    error: "Search failed",
+                    details: err.message
+                });
+            }
+
+            res.json(rows || []);
+
+        }
+    );
+
+});
+
+
+/*
+====================================================
+TEACHERS
+====================================================
+*/
 
 app.get("/api/teachers", (req, res) => {
 
     db.all(
-        "SELECT * FROM teachers ORDER BY id DESC",
+        `
+        SELECT *
+        FROM teachers
+        ORDER BY id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load teachers",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
+
 });
 
 
@@ -250,9 +340,11 @@ app.post("/api/teachers", (req, res) => {
     }
 
     db.run(
-        `INSERT INTO teachers
+        `
+        INSERT INTO teachers
         (name, phone, qualification)
-        VALUES (?, ?, ?)`,
+        VALUES (?, ?, ?)
+        `,
         [
             name,
             phone || "",
@@ -262,16 +354,63 @@ app.post("/api/teachers", (req, res) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to create teacher",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                teacherId: this.lastID
+                message: "Teacher created successfully",
+                id: this.lastID
             });
+
         }
     );
+
+});
+
+
+app.put("/api/teachers/:id", (req, res) => {
+
+    const {
+        name,
+        phone,
+        qualification
+    } = req.body;
+
+    db.run(
+        `
+        UPDATE teachers
+        SET
+            name = ?,
+            phone = ?,
+            qualification = ?
+        WHERE id = ?
+        `,
+        [
+            name,
+            phone || "",
+            qualification || "",
+            req.params.id
+        ],
+        function (err) {
+
+            if (err) {
+                return res.status(500).json({
+                    error: "Failed to update teacher",
+                    details: err.message
+                });
+            }
+
+            res.json({
+                success: true,
+                message: "Teacher updated successfully"
+            });
+
+        }
+    );
+
 });
 
 
@@ -284,39 +423,55 @@ app.delete("/api/teachers/:id", (req, res) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to delete teacher",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                changes: this.changes
+                message: "Teacher deleted successfully"
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// ATTENDANCE
-// =====================================================
+/*
+====================================================
+ATTENDANCE
+====================================================
+*/
 
 app.get("/api/attendance", (req, res) => {
 
     db.all(
-        "SELECT * FROM attendance ORDER BY id DESC",
+        `
+        SELECT
+            a.*,
+            s.name AS studentName
+        FROM attendance a
+        LEFT JOIN students s
+            ON s.id = a.studentId
+        ORDER BY a.date DESC, a.id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load attendance",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
+
 });
 
 
@@ -328,52 +483,76 @@ app.post("/api/attendance", (req, res) => {
         status
     } = req.body;
 
+    if (!studentId || !status) {
+        return res.status(400).json({
+            error: "Student and attendance status are required"
+        });
+    }
+
     db.run(
-        `INSERT INTO attendance
+        `
+        INSERT INTO attendance
         (studentId, date, status)
-        VALUES (?, ?, ?)`,
+        VALUES (?, ?, ?)
+        `,
         [
-            studentId || null,
-            date || "",
-            status || "Present"
+            studentId,
+            date || new Date().toISOString().slice(0, 10),
+            status
         ],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to save attendance",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                attendanceId: this.lastID
+                id: this.lastID
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// HIFZ
-// =====================================================
+/*
+====================================================
+HIFZ
+====================================================
+*/
 
 app.get("/api/hifz", (req, res) => {
 
     db.all(
-        "SELECT * FROM hifz ORDER BY id DESC",
+        `
+        SELECT
+            h.*,
+            s.name AS studentName
+        FROM hifz h
+        LEFT JOIN students s
+            ON s.id = h.studentId
+        ORDER BY h.id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load Hifz records",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
+
 });
 
 
@@ -390,55 +569,73 @@ app.post("/api/hifz", (req, res) => {
     } = req.body;
 
     db.run(
-        `INSERT INTO hifz
+        `
+        INSERT INTO hifz
         (studentId, surah, ayahFrom, ayahTo, juz, grade, logDate)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
         [
-            studentId || null,
+            studentId,
             surah || "",
             ayahFrom || null,
             ayahTo || null,
             juz || null,
             grade || "",
-            logDate || ""
+            logDate || new Date().toISOString().slice(0, 10)
         ],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to save Hifz record",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                hifzId: this.lastID
+                id: this.lastID
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// EXAMS
-// =====================================================
+/*
+====================================================
+EXAMS
+====================================================
+*/
 
 app.get("/api/exams", (req, res) => {
 
     db.all(
-        "SELECT * FROM exams ORDER BY id DESC",
+        `
+        SELECT
+            e.*,
+            s.name AS studentName
+        FROM exams e
+        LEFT JOIN students s
+            ON s.id = e.studentId
+        ORDER BY e.id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load exams",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
+
 });
 
 
@@ -458,7 +655,8 @@ app.post("/api/exams", (req, res) => {
     } = req.body;
 
     db.run(
-        `INSERT INTO exams
+        `
+        INSERT INTO exams
         (
             studentId,
             examDate,
@@ -471,10 +669,11 @@ app.post("/api/exams", (req, res) => {
             result,
             remarks
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
         [
-            studentId || null,
-            examDate || "",
+            studentId,
+            examDate || null,
             examType || "",
             examiner || "",
             surah || "",
@@ -488,39 +687,55 @@ app.post("/api/exams", (req, res) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to save exam",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                examId: this.lastID
+                id: this.lastID
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// KHATM
-// =====================================================
+/*
+====================================================
+KHATM
+====================================================
+*/
 
 app.get("/api/khatm", (req, res) => {
 
     db.all(
-        "SELECT * FROM khatm_records ORDER BY id DESC",
+        `
+        SELECT
+            k.*,
+            s.name AS studentName
+        FROM khatm_records k
+        LEFT JOIN students s
+            ON s.id = k.studentId
+        ORDER BY k.id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load Khatm records",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
+
 });
 
 
@@ -538,7 +753,8 @@ app.post("/api/khatm", (req, res) => {
     } = req.body;
 
     db.run(
-        `INSERT INTO khatm_records
+        `
+        INSERT INTO khatm_records
         (
             studentId,
             startDate,
@@ -549,14 +765,15 @@ app.post("/api/khatm", (req, res) => {
             certificateNumber,
             remarks
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `,
         [
-            studentId || null,
-            startDate || "",
-            completionDate || "",
+            studentId,
+            startDate || null,
+            completionDate || null,
             teacher || "",
-            totalJuz || null,
-            status || "",
+            totalJuz || 30,
+            status || "In Progress",
             certificateNumber || "",
             remarks || ""
         ],
@@ -564,544 +781,69 @@ app.post("/api/khatm", (req, res) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to save Khatm record",
+                    details: err.message
                 });
             }
 
             res.json({
                 success: true,
-                khatmId: this.lastID
+                id: this.lastID
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// FEES
-// =====================================================
-
-app.get("/api/fees", (req, res) => {
-
-    const sql = `
-        SELECT
-            f.*,
-            COALESCE(f.studentName, f.student_name) AS displayStudentName,
-            COALESCE(f.monthlyFee, f.monthly_fee, 0) AS displayMonthlyFee,
-            COALESCE(f.paidAmount, f.paid_amount, 0) AS displayPaidAmount,
-            COALESCE(
-                f.balance,
-                COALESCE(f.monthlyFee, f.monthly_fee, 0)
-                - COALESCE(f.paidAmount, f.paid_amount, 0)
-            ) AS displayBalance
-        FROM fees f
-        ORDER BY f.id DESC
-    `;
-
-    db.all(sql, [], (err, rows) => {
-
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
-
-        const result = rows.map(row => ({
-            ...row,
-            studentName: row.studentName || row.student_name || row.displayStudentName || "",
-            monthlyFee: Number(row.monthlyFee ?? row.monthly_fee ?? 0),
-            paidAmount: Number(row.paidAmount ?? row.paid_amount ?? 0),
-            balance: Number(row.balance ?? row.displayBalance ?? 0)
-        }));
-
-        res.json(result);
-    });
-});
-
-
-app.post("/api/fees", (req, res) => {
-
-    const {
-        studentId,
-        studentName,
-        feeMonth,
-        monthlyFee,
-        paidAmount,
-        paymentDate,
-        paymentMethod,
-        notes
-    } = req.body;
-
-    const monthly = Number(monthlyFee) || 0;
-    const paid = Number(paidAmount) || 0;
-
-    const balance = Math.max(monthly - paid, 0);
-
-    let status = "Unpaid";
-
-    if (paid >= monthly && monthly > 0) {
-        status = "Paid";
-    } else if (paid > 0) {
-        status = "Partial";
-    }
-
-    db.run(
-        `INSERT INTO fees
-        (
-            studentId,
-            studentName,
-            student_name,
-            feeMonth,
-            monthlyFee,
-            monthly_fee,
-            paidAmount,
-            paid_amount,
-            balance,
-            payment_date,
-            paymentDate,
-            paymentMethod,
-            notes,
-            status,
-            createdAt
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-        [
-            studentId || null,
-            studentName || "",
-            studentName || "",
-            feeMonth || "",
-            monthly,
-            monthly,
-            paid,
-            paid,
-            balance,
-            paymentDate || "",
-            paymentDate || "",
-            paymentMethod || "",
-            notes || "",
-            status
-        ],
-        function (err) {
-
-            if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
-            }
-
-            const feeId = this.lastID;
-
-            // Also create a payment record when an initial payment exists.
-            if (paid > 0) {
-
-                db.run(
-                    `INSERT INTO payments
-                    (
-                        studentId,
-                        studentName,
-                        amount,
-                        paymentDate,
-                        paymentMethod,
-                        reference,
-                        feeMonth,
-                        notes
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [
-                        studentId || null,
-                        studentName || "",
-                        paid,
-                        paymentDate || "",
-                        paymentMethod || "",
-                        "",
-                        feeMonth || "",
-                        notes || ""
-                    ],
-                    function (paymentErr) {
-
-                        if (paymentErr) {
-                            console.error(
-                                "Fee saved but payment record failed:",
-                                paymentErr.message
-                            );
-                        }
-
-                        res.json({
-                            success: true,
-                            feeId: feeId,
-                            message: "Fee saved successfully"
-                        });
-                    }
-                );
-
-            } else {
-
-                res.json({
-                    success: true,
-                    feeId: feeId,
-                    message: "Fee saved successfully"
-                });
-            }
-        }
-    );
-});
-
-
-// =====================================================
-// PAYMENTS
-// =====================================================
-
-app.get("/api/payments", (req, res) => {
-
-    const sql = `
-        SELECT
-            p.*,
-            COALESCE(s.name, p.studentName) AS studentName
-        FROM payments p
-        LEFT JOIN students s
-            ON s.id = p.studentId
-        ORDER BY p.id DESC
-    `;
-
-    db.all(sql, [], (err, rows) => {
-
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
-
-        res.json(rows);
-    });
-});
-
-
-app.post("/api/payments", (req, res) => {
-
-    const {
-        studentId,
-        studentName,
-        amount,
-        paymentDate,
-        paymentMethod,
-        reference,
-        feeMonth,
-        notes
-    } = req.body;
-
-    const paymentAmount = Number(amount) || 0;
-
-    if (paymentAmount <= 0) {
-        return res.status(400).json({
-            error: "Payment amount must be greater than zero"
-        });
-    }
-
-    db.run(
-        `INSERT INTO payments
-        (
-            studentId,
-            studentName,
-            amount,
-            paymentDate,
-            paymentMethod,
-            reference,
-            feeMonth,
-            notes
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-            studentId || null,
-            studentName || "",
-            paymentAmount,
-            paymentDate || "",
-            paymentMethod || "",
-            reference || "",
-            feeMonth || "",
-            notes || ""
-        ],
-        function (err) {
-
-            if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
-            }
-
-            const paymentId = this.lastID;
-
-            // Update matching fee.
-            if (studentId && feeMonth) {
-
-                db.get(
-                    `SELECT *
-                     FROM fees
-                     WHERE studentId = ?
-                     AND feeMonth = ?
-                     ORDER BY id DESC
-                     LIMIT 1`,
-                    [studentId, feeMonth],
-                    (feeErr, fee) => {
-
-                        if (feeErr) {
-                            return res.json({
-                                success: true,
-                                paymentId
-                            });
-                        }
-
-                        if (!fee) {
-                            return res.json({
-                                success: true,
-                                paymentId
-                            });
-                        }
-
-                        const oldPaid = Number(
-                            fee.paidAmount ?? fee.paid_amount ?? 0
-                        );
-
-                        const monthly = Number(
-                            fee.monthlyFee ?? fee.monthly_fee ?? 0
-                        );
-
-                        const newPaid = oldPaid + paymentAmount;
-                        const newBalance = Math.max(monthly - newPaid, 0);
-
-                        let newStatus = "Unpaid";
-
-                        if (newPaid >= monthly && monthly > 0) {
-                            newStatus = "Paid";
-                        } else if (newPaid > 0) {
-                            newStatus = "Partial";
-                        }
-
-                        db.run(
-                            `UPDATE fees
-                             SET
-                                paidAmount = ?,
-                                paid_amount = ?,
-                                balance = ?,
-                                status = ?
-                             WHERE id = ?`,
-                            [
-                                newPaid,
-                                newPaid,
-                                newBalance,
-                                newStatus,
-                                fee.id
-                            ],
-                            () => {
-
-                                res.json({
-                                    success: true,
-                                    paymentId
-                                });
-
-                            }
-                        );
-
-                    }
-                );
-
-            } else {
-
-                res.json({
-                    success: true,
-                    paymentId
-                });
-
-            }
-        }
-    );
-});
-
-
-app.delete("/api/payments/:id", (req, res) => {
-
-    db.get(
-        "SELECT * FROM payments WHERE id = ?",
-        [req.params.id],
-        (findErr, payment) => {
-
-            if (findErr) {
-                return res.status(500).json({
-                    error: findErr.message
-                });
-            }
-
-            if (!payment) {
-                return res.status(404).json({
-                    error: "Payment not found"
-                });
-            }
-
-            db.run(
-                "DELETE FROM payments WHERE id = ?",
-                [req.params.id],
-                function (err) {
-
-                    if (err) {
-                        return res.status(500).json({
-                            error: err.message
-                        });
-                    }
-
-                    res.json({
-                        success: true,
-                        changes: this.changes
-                    });
-                }
-            );
-        }
-    );
-});
-
-
-// =====================================================
-// DONATIONS
-// =====================================================
-
-app.get("/api/donations", (req, res) => {
+/*
+====================================================
+PARENTS
+====================================================
+*/
+
+app.get("/api/parents", (req, res) => {
 
     db.all(
-        "SELECT * FROM donations ORDER BY id DESC",
+        `
+        SELECT *
+        FROM parents
+        ORDER BY id DESC
+        `,
         [],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load parents",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
-});
 
-
-app.post("/api/donations", (req, res) => {
-
-    const {
-        donorName,
-        donationDate,
-        amount,
-        donationType,
-        paymentMethod,
-        reference,
-        notes
-    } = req.body;
-
-    const donationAmount = Number(amount) || 0;
-
-    if (donationAmount <= 0) {
-        return res.status(400).json({
-            error: "Donation amount must be greater than zero"
-        });
-    }
-
-    db.run(
-        `INSERT INTO donations
-        (
-            donorName,
-            donationDate,
-            amount,
-            donationType,
-            paymentMethod,
-            reference,
-            notes
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-            donorName || "",
-            donationDate || "",
-            donationAmount,
-            donationType || "",
-            paymentMethod || "",
-            reference || "",
-            notes || ""
-        ],
-        function (err) {
-
-            if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
-            }
-
-            res.json({
-                success: true,
-                donationId: this.lastID,
-                message: "Donation saved successfully"
-            });
-        }
-    );
-});
-
-
-app.delete("/api/donations/:id", (req, res) => {
-
-    db.run(
-        "DELETE FROM donations WHERE id = ?",
-        [req.params.id],
-        function (err) {
-
-            if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
-            }
-
-            res.json({
-                success: true,
-                changes: this.changes
-            });
-        }
-    );
-});
-
-
-// =====================================================
-// PARENTS
-// =====================================================
-
-app.get("/api/parents", (req, res) => {
-
-    const sql = `
-        SELECT
-            p.*,
-            COUNT(sp.studentId) AS studentCount
-        FROM parents p
-        LEFT JOIN student_parents sp
-            ON p.id = sp.parentId
-        GROUP BY p.id
-        ORDER BY p.name ASC
-    `;
-
-    db.all(sql, [], (err, rows) => {
-
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
-
-        res.json(rows);
-    });
 });
 
 
 app.get("/api/parents/:id", (req, res) => {
 
     db.get(
-        "SELECT * FROM parents WHERE id = ?",
+        `
+        SELECT *
+        FROM parents
+        WHERE id = ?
+        `,
         [req.params.id],
         (err, row) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load parent",
+                    details: err.message
                 });
             }
 
@@ -1112,8 +854,10 @@ app.get("/api/parents/:id", (req, res) => {
             }
 
             res.json(row);
+
         }
     );
+
 });
 
 
@@ -1129,14 +873,15 @@ app.post("/api/parents", (req, res) => {
         preferredContact
     } = req.body;
 
-    if (!name || !name.trim()) {
+    if (!name) {
         return res.status(400).json({
             error: "Parent name is required"
         });
     }
 
     db.run(
-        `INSERT INTO parents
+        `
+        INSERT INTO parents
         (
             name,
             relationship,
@@ -1146,73 +891,66 @@ app.post("/api/parents", (req, res) => {
             address,
             preferredContact
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
         [
-            name.trim(),
+            name,
             relationship || "",
             phone || "",
             whatsapp || "",
             email || "",
             address || "",
-            preferredContact || "Phone"
+            preferredContact || ""
         ],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to create parent",
+                    details: err.message
                 });
             }
 
-            res.status(201).json({
+            res.json({
                 success: true,
                 id: this.lastID
             });
+
         }
     );
+
 });
 
 
 app.delete("/api/parents/:id", (req, res) => {
 
-    const parentId = req.params.id;
+    db.run(
+        "DELETE FROM parents WHERE id = ?",
+        [req.params.id],
+        function (err) {
 
-    db.serialize(() => {
-
-        db.run(
-            "DELETE FROM student_parents WHERE parentId = ?",
-            [parentId]
-        );
-
-        db.run(
-            "DELETE FROM parent_communications WHERE parentId = ?",
-            [parentId]
-        );
-
-        db.run(
-            "DELETE FROM parents WHERE id = ?",
-            [parentId],
-            function (err) {
-
-                if (err) {
-                    return res.status(500).json({
-                        error: err.message
-                    });
-                }
-
-                res.json({
-                    success: true,
-                    changes: this.changes
+            if (err) {
+                return res.status(500).json({
+                    error: "Failed to delete parent",
+                    details: err.message
                 });
             }
-        );
-    });
+
+            res.json({
+                success: true
+            });
+
+        }
+    );
+
 });
 
 
-// =====================================================
-// STUDENT ↔ PARENT
-// =====================================================
+/*
+====================================================
+STUDENT ↔ PARENT
+====================================================
+*/
 
 app.post("/api/student-parents", (req, res) => {
 
@@ -1223,21 +961,17 @@ app.post("/api/student-parents", (req, res) => {
         isPrimary
     } = req.body;
 
-    if (!studentId || !parentId) {
-        return res.status(400).json({
-            error: "Student and parent are required"
-        });
-    }
-
     db.run(
-        `INSERT INTO student_parents
+        `
+        INSERT INTO student_parents
         (
             studentId,
             parentId,
             relationship,
             isPrimary
         )
-        VALUES (?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?)
+        `,
         [
             studentId,
             parentId,
@@ -1248,7 +982,8 @@ app.post("/api/student-parents", (req, res) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to connect student and parent",
+                    details: err.message
                 });
             }
 
@@ -1256,49 +991,53 @@ app.post("/api/student-parents", (req, res) => {
                 success: true,
                 id: this.lastID
             });
+
         }
     );
+
 });
 
 
 app.get("/api/parents/:id/students", (req, res) => {
 
-    const sql = `
-        SELECT
-            s.*,
-            sp.relationship,
-            sp.isPrimary
-        FROM student_parents sp
-        INNER JOIN students s
-            ON s.id = sp.studentId
-        WHERE sp.parentId = ?
-        ORDER BY s.name ASC
-    `;
-
     db.all(
-        sql,
+        `
+        SELECT
+            s.*
+        FROM students s
+        INNER JOIN student_parents sp
+            ON sp.studentId = s.id
+        WHERE sp.parentId = ?
+        ORDER BY s.name
+        `,
         [req.params.id],
         (err, rows) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to load parent's students",
+                    details: err.message
                 });
             }
 
-            res.json(rows);
+            res.json(rows || []);
+
         }
     );
+
 });
 
 
-// =====================================================
-// PARENT COMMUNICATION
-// =====================================================
+/*
+====================================================
+PARENT COMMUNICATION
+====================================================
+*/
 
 app.get("/api/parent-communications", (req, res) => {
 
-    const sql = `
+    db.all(
+        `
         SELECT
             pc.*,
             p.name AS parentName,
@@ -1309,18 +1048,22 @@ app.get("/api/parent-communications", (req, res) => {
         LEFT JOIN students s
             ON s.id = pc.studentId
         ORDER BY pc.communicationDate DESC
-    `;
+        `,
+        [],
+        (err, rows) => {
 
-    db.all(sql, [], (err, rows) => {
+            if (err) {
+                return res.status(500).json({
+                    error: "Failed to load communications",
+                    details: err.message
+                });
+            }
 
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
+            res.json(rows || []);
+
         }
+    );
 
-        res.json(rows);
-    });
 });
 
 
@@ -1335,14 +1078,9 @@ app.post("/api/parent-communications", (req, res) => {
         status
     } = req.body;
 
-    if (!message || !message.trim()) {
-        return res.status(400).json({
-            error: "Message is required"
-        });
-    }
-
     db.run(
-        `INSERT INTO parent_communications
+        `
+        INSERT INTO parent_communications
         (
             parentId,
             studentId,
@@ -1351,120 +1089,624 @@ app.post("/api/parent-communications", (req, res) => {
             contactMethod,
             status
         )
-        VALUES (?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?)
+        `,
         [
             parentId || null,
             studentId || null,
-            messageType || "General Update",
-            message.trim(),
-            contactMethod || "Phone",
+            messageType || "",
+            message || "",
+            contactMethod || "",
             status || "Sent"
         ],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to save communication",
+                    details: err.message
                 });
             }
 
-            res.status(201).json({
+            res.json({
                 success: true,
                 id: this.lastID
             });
+
         }
     );
+
 });
 
 
 app.delete("/api/parent-communications/:id", (req, res) => {
 
     db.run(
-        "DELETE FROM parent_communications WHERE id = ?",
+        `
+        DELETE FROM parent_communications
+        WHERE id = ?
+        `,
         [req.params.id],
         function (err) {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Failed to delete communication",
+                    details: err.message
+                });
+            }
+
+            res.json({
+                success: true
+            });
+
+        }
+    );
+
+});
+
+
+/*
+====================================================
+FEES DATABASE MIGRATION
+====================================================
+*/
+
+function ensureFeeColumns(callback) {
+
+    db.all(
+        "PRAGMA table_info(fees)",
+        [],
+        (err, columns) => {
+
+            if (err) {
+                console.error(
+                    "Fee table check error:",
+                    err.message
+                );
+
+                return callback(err);
+            }
+
+            const existing =
+                columns.map(column => column.name);
+
+            const requiredColumns = [
+                {
+                    name: "fee_month",
+                    sql: "ALTER TABLE fees ADD COLUMN fee_month TEXT"
+                },
+                {
+                    name: "payment_method",
+                    sql: "ALTER TABLE fees ADD COLUMN payment_method TEXT"
+                },
+                {
+                    name: "notes",
+                    sql: "ALTER TABLE fees ADD COLUMN notes TEXT"
+                }
+            ];
+
+            let pending =
+                requiredColumns.filter(
+                    column =>
+                        !existing.includes(column.name)
+                );
+
+            if (pending.length === 0) {
+                return callback(null);
+            }
+
+            let completed = 0;
+
+            pending.forEach(column => {
+
+                db.run(
+                    column.sql,
+                    [],
+                    err => {
+
+                        if (err) {
+                            console.error(
+                                "Fee migration error:",
+                                err.message
+                            );
+
+                            return callback(err);
+                        }
+
+                        completed++;
+
+                        if (completed === pending.length) {
+                            callback(null);
+                        }
+
+                    }
+                );
+
+            });
+
+        }
+    );
+
+}
+
+
+/*
+====================================================
+FEES
+====================================================
+*/
+
+app.get("/api/fees", (req, res) => {
+
+    ensureFeeColumns(err => {
+
+        if (err) {
+            return res.status(500).json({
+                error: "Fee database setup failed",
+                details: err.message
+            });
+        }
+
+        db.all(
+            `
+            SELECT
+                f.id,
+                f.student_name,
+                f.monthly_fee,
+                f.paid_amount,
+                f.balance,
+                f.payment_date,
+                f.status,
+                f.fee_month,
+                f.payment_method,
+                f.notes,
+                s.id AS studentId,
+                s.name AS studentName,
+                s.level AS studentLevel
+            FROM fees f
+            LEFT JOIN students s
+                ON s.name = f.student_name
+            ORDER BY f.id DESC
+            `,
+            [],
+            (err, rows) => {
+
+                if (err) {
+                    console.error(
+                        "Fees GET error:",
+                        err.message
+                    );
+
+                    return res.status(500).json({
+                        error: "Failed to load fees",
+                        details: err.message
+                    });
+                }
+
+                res.json(rows || []);
+
+            }
+        );
+
+    });
+
+});
+
+
+/*
+====================================================
+FEE SUMMARY
+====================================================
+*/
+
+app.get("/api/fees/summary", (req, res) => {
+
+    ensureFeeColumns(err => {
+
+        if (err) {
+            return res.status(500).json({
+                error: "Fee database setup failed",
+                details: err.message
+            });
+        }
+
+        db.get(
+            `
+            SELECT
+                COALESCE(SUM(monthly_fee), 0) AS expectedFees,
+                COALESCE(SUM(paid_amount), 0) AS collected,
+                COALESCE(SUM(balance), 0) AS outstanding,
+                COUNT(*) AS payments,
+                COUNT(DISTINCT student_name) AS studentsWithFees
+            FROM fees
+            `,
+            [],
+            (err, row) => {
+
+                if (err) {
+                    return res.status(500).json({
+                        error: "Failed to load fee summary",
+                        details: err.message
+                    });
+                }
+
+                res.json({
+                    expectedFees:
+                        Number(row.expectedFees || 0),
+
+                    collected:
+                        Number(row.collected || 0),
+
+                    outstanding:
+                        Number(row.outstanding || 0),
+
+                    payments:
+                        Number(row.payments || 0),
+
+                    studentsWithFees:
+                        Number(row.studentsWithFees || 0)
+                });
+
+            }
+        );
+
+    });
+
+});
+
+
+/*
+====================================================
+CREATE FEE
+====================================================
+*/
+
+app.post("/api/fees", (req, res) => {
+
+    ensureFeeColumns(err => {
+
+        if (err) {
+            return res.status(500).json({
+                error: "Fee database setup failed",
+                details: err.message
+            });
+        }
+
+        const {
+            studentId,
+            student_name,
+            monthly_fee,
+            paid_amount,
+            payment_date,
+            status,
+            fee_month,
+            payment_method,
+            notes
+        } = req.body;
+
+
+        const monthlyFee =
+            Number(monthly_fee || 0);
+
+        const paidAmount =
+            Number(paid_amount || 0);
+
+
+        if (monthlyFee <= 0) {
+            return res.status(400).json({
+                error: "Monthly fee must be greater than zero"
+            });
+        }
+
+
+        if (paidAmount < 0) {
+            return res.status(400).json({
+                error: "Paid amount cannot be negative"
+            });
+        }
+
+
+        function saveFee(studentName) {
+
+            const balance =
+                Math.max(
+                    monthlyFee - paidAmount,
+                    0
+                );
+
+
+            let finalStatus =
+                "Unpaid";
+
+
+            if (paidAmount >= monthlyFee) {
+                finalStatus = "Paid";
+            } else if (paidAmount > 0) {
+                finalStatus = "Partial";
+            }
+
+
+            db.run(
+                `
+                INSERT INTO fees
+                (
+                    student_name,
+                    monthly_fee,
+                    paid_amount,
+                    balance,
+                    payment_date,
+                    status,
+                    fee_month,
+                    payment_method,
+                    notes
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `,
+                [
+                    studentName,
+                    monthlyFee,
+                    paidAmount,
+                    balance,
+                    payment_date ||
+                        new Date()
+                            .toISOString()
+                            .slice(0, 10),
+                    finalStatus,
+                    fee_month || "",
+                    payment_method || "Cash",
+                    notes || ""
+                ],
+                function (err) {
+
+                    if (err) {
+
+                        console.error(
+                            "Create fee error:",
+                            err.message
+                        );
+
+                        return res.status(500).json({
+                            error: "Failed to save fee record",
+                            details: err.message
+                        });
+
+                    }
+
+
+                    res.json({
+                        success: true,
+                        message: "Fee record saved successfully",
+                        id: this.lastID,
+                        balance: balance,
+                        status: finalStatus
+                    });
+
+                }
+            );
+
+        }
+
+
+        /*
+        If studentId is provided,
+        get the real student name.
+        */
+
+        if (studentId) {
+
+            db.get(
+                `
+                SELECT id, name
+                FROM students
+                WHERE id = ?
+                `,
+                [studentId],
+                (err, student) => {
+
+                    if (err) {
+                        return res.status(500).json({
+                            error: "Failed to find student",
+                            details: err.message
+                        });
+                    }
+
+                    if (!student) {
+                        return res.status(404).json({
+                            error: "Student not found"
+                        });
+                    }
+
+                    saveFee(student.name);
+
+                }
+            );
+
+        } else {
+
+            if (!student_name) {
+                return res.status(400).json({
+                    error: "Student is required"
+                });
+            }
+
+            saveFee(student_name);
+
+        }
+
+    });
+
+});
+
+
+/*
+====================================================
+DELETE FEE
+====================================================
+*/
+
+app.delete("/api/fees/:id", (req, res) => {
+
+    db.run(
+        `
+        DELETE FROM fees
+        WHERE id = ?
+        `,
+        [req.params.id],
+        function (err) {
+
+            if (err) {
+                return res.status(500).json({
+                    error: "Failed to delete fee",
+                    details: err.message
+                });
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).json({
+                    error: "Fee record not found"
                 });
             }
 
             res.json({
                 success: true,
-                changes: this.changes
+                message: "Fee record deleted successfully"
             });
+
         }
     );
+
 });
 
 
-// =====================================================
-// DASHBOARD
-// =====================================================
+/*
+====================================================
+LOGIN
+====================================================
+*/
 
-app.get("/api/dashboard", (req, res) => {
+app.post("/api/login", (req, res) => {
+
+    const {
+        username,
+        password
+    } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({
+            error: "Username and password are required"
+        });
+    }
 
     db.get(
-        "SELECT COUNT(*) AS totalStudents FROM students",
-        [],
-        (err, studentData) => {
+        `
+        SELECT
+            id,
+            username,
+            role,
+            fullName,
+            status
+        FROM users
+        WHERE username = ?
+        AND password = ?
+        `,
+        [
+            username,
+            password
+        ],
+        (err, user) => {
 
             if (err) {
                 return res.status(500).json({
-                    error: err.message
+                    error: "Login failed",
+                    details: err.message
                 });
             }
 
-            db.get(
-                "SELECT COUNT(*) AS totalTeachers FROM teachers",
-                [],
-                (err2, teacherData) => {
+            if (!user) {
+                return res.status(401).json({
+                    error: "Invalid username or password"
+                });
+            }
 
-                    if (err2) {
-                        return res.status(500).json({
-                            error: err2.message
-                        });
+            res.json({
+                success: true,
+                userId: user.id,
+                username: user.username,
+                role: user.role,
+                fullName: user.fullName,
+                status: user.status
+            });
+
+        }
+    );
+
+});
+
+
+/*
+====================================================
+DASHBOARD
+====================================================
+*/
+
+app.get("/api/dashboard", (req, res) => {
+
+    const result = {
+        totalStudents: 0,
+        totalTeachers: 0,
+        totalFees: 0,
+        outstandingFees: 0
+    };
+
+
+    db.get(
+        "SELECT COUNT(*) AS count FROM students",
+        [],
+        (err, studentRow) => {
+
+            if (!err && studentRow) {
+                result.totalStudents =
+                    studentRow.count || 0;
+            }
+
+
+            db.get(
+                "SELECT COUNT(*) AS count FROM teachers",
+                [],
+                (err, teacherRow) => {
+
+                    if (!err && teacherRow) {
+                        result.totalTeachers =
+                            teacherRow.count || 0;
                     }
 
-                    db.get(
-                        `SELECT
-                            COALESCE(SUM(monthlyFee),0) AS expectedFees,
-                            COALESCE(SUM(paidAmount),0) AS collectedFees,
-                            COALESCE(SUM(balance),0) AS outstandingFees
-                         FROM fees`,
-                        [],
-                        (err3, financialData) => {
 
-                            if (err3) {
-                                return res.status(500).json({
-                                    error: err3.message
-                                });
+                    db.get(
+                        `
+                        SELECT
+                            COALESCE(SUM(paid_amount), 0) AS collected,
+                            COALESCE(SUM(balance), 0) AS outstanding
+                        FROM fees
+                        `,
+                        [],
+                        (err, feeRow) => {
+
+                            if (!err && feeRow) {
+
+                                result.totalFees =
+                                    Number(
+                                        feeRow.collected || 0
+                                    );
+
+                                result.outstandingFees =
+                                    Number(
+                                        feeRow.outstanding || 0
+                                    );
+
                             }
 
-                            db.get(
-                                `SELECT COALESCE(SUM(amount),0) AS donations
-                                 FROM donations`,
-                                [],
-                                (err4, donationData) => {
-
-                                    if (err4) {
-                                        return res.status(500).json({
-                                            error: err4.message
-                                        });
-                                    }
-
-                                    res.json({
-                                        totalStudents: studentData.totalStudents,
-                                        totalTeachers: teacherData.totalTeachers,
-                                        expectedFees: financialData.expectedFees,
-                                        collectedFees: financialData.collectedFees,
-                                        outstandingFees: financialData.outstandingFees,
-                                        donations: donationData.donations
-                                    });
-
-                                }
-                            );
+                            res.json(result);
 
                         }
                     );
@@ -1474,18 +1716,83 @@ app.get("/api/dashboard", (req, res) => {
 
         }
     );
+
 });
 
 
-// =====================================================
-// START SERVER
-// =====================================================
+/*
+====================================================
+DATABASE DIAGNOSTIC
+====================================================
+*/
+
+app.get("/api/database-check", (req, res) => {
+
+    const result = {};
+
+    db.get(
+        "SELECT COUNT(*) AS count FROM students",
+        [],
+        (err, students) => {
+
+            result.students =
+                err
+                    ? null
+                    : students.count;
+
+            db.get(
+                "SELECT COUNT(*) AS count FROM teachers",
+                [],
+                (err, teachers) => {
+
+                    result.teachers =
+                        err
+                            ? null
+                            : teachers.count;
+
+                    db.get(
+                        "SELECT COUNT(*) AS count FROM fees",
+                        [],
+                        (err, fees) => {
+
+                            result.fees =
+                                err
+                                    ? null
+                                    : fees.count;
+
+                            res.json({
+                                success: true,
+                                database: "markaz.db",
+                                counts: result
+                            });
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+});
+
+
+/*
+====================================================
+START SERVER
+====================================================
+*/
 
 app.listen(PORT, "0.0.0.0", () => {
 
     console.log("=================================");
-    console.log("Markaz Control System");
+    console.log("   MARKAZ CONTROL SYSTEM");
+    console.log("=================================");
     console.log("Server running on port " + PORT);
+    console.log("Students API: /api/students");
+    console.log("Fees API: /api/fees");
+    console.log("Dashboard API: /api/dashboard");
     console.log("=================================");
 
 });
